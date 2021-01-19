@@ -1,4 +1,4 @@
-package it.niedermann.fis;
+package it.niedermann.fis.operation;
 
 public class OperationInformationDto {
 

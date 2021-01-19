@@ -1,4 +1,4 @@
-package it.niedermann.fis;
+package it.niedermann.fis.weather;
 
 public class WeatherInformationDto {
 

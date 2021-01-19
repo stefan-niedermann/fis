@@ -1,4 +1,4 @@
-package it.niedermann.fis;
+package it.niedermann.fis.operation;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,6 @@ import static org.springframework.util.ObjectUtils.isEmpty;
 public class OperationController {
 
     private final Logger logger = LoggerFactory.getLogger(OperationController.class);
-    private final int operationDuration;
     private final SimpMessagingTemplate socketMessage;
     private final Collection<String> connectedUsers = new LinkedHashSet<>();
 
@@ -32,11 +31,9 @@ public class OperationController {
             @Value("${ftp.file.suffix}") String ftpFileSuffix,
             @Value("#{new Integer('${ftp.poll.interval}')}") Integer ftpPollInterval,
             @Value("${tesseract.tessdata}") String tessdataPath,
-            @Value("${tesseract.lang}") String tessLang,
-            @Value("#{new Integer('${operation.duration}')}") Integer operationDuration
+            @Value("${tesseract.lang}") String tessLang
     ) {
         this.socketMessage = socketMessage;
-        this.operationDuration = operationDuration;
         if (isEmpty(tessdataPath)) {
             tessdataPath = System.getProperty("user.home") + "/tessdata";
         }
@@ -76,7 +73,9 @@ public class OperationController {
     }
 
     @GetMapping("/operation/duration")
-    ResponseEntity<Integer> getOperationDuration() {
+    ResponseEntity<Integer> getOperationDuration(
+            @Value("#{new Integer('${operation.duration}')}") Integer operationDuration
+    ) {
         return ResponseEntity.ok(operationDuration);
     }
 }

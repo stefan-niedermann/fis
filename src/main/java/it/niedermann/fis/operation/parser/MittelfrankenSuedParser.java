@@ -1,6 +1,6 @@
-package it.niedermann.fis.parser;
+package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.OperationInformationDto;
+import it.niedermann.fis.operation.OperationInformationDto;
 
 import java.util.*;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package it.niedermann.fis;
+package it.niedermann.fis.weather;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;

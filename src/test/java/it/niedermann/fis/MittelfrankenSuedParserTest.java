@@ -1,6 +1,7 @@
 package it.niedermann.fis;
 
-import it.niedermann.fis.parser.OperationFaxParser;
+import it.niedermann.fis.operation.OperationInformationDto;
+import it.niedermann.fis.operation.parser.OperationFaxParser;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

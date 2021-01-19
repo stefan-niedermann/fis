@@ -1,6 +1,8 @@
-package it.niedermann.fis;
+package it.niedermann.fis.operation;
 
-import it.niedermann.fis.parser.OperationFaxParser;
+import it.niedermann.fis.operation.parser.OperationFaxParser;
+import net.sourceforge.tess4j.ITesseract;
+import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -20,7 +22,11 @@ public class OperationWatcherThread extends Thread {
     public OperationWatcherThread(String ftpUrl, String ftpUsername, String ftpPassword, String ftpPath,
                                   String ftpSuffix, int ftpPollInterval, String tessdataPath, String tessLang, Consumer<OperationInformationDto> operationListener) {
         super(() -> {
-            final OperationsUtil operationsUtil = new OperationsUtil(tessdataPath, tessLang);
+            final ITesseract tesseract = new Tesseract();
+            tesseract.setTessVariable("LC_ALL", "C");
+            tesseract.setDatapath(tessdataPath);
+            tesseract.setLanguage(tessLang);
+
             final FTPClient ftpClient = new FTPClient();
             try {
                 ftpClient.connect(ftpUrl);
@@ -69,7 +75,7 @@ public class OperationWatcherThread extends Thread {
 
                             if (success) {
                                 logger.info("🚒 → Downloaded file to: " + localFile.getName());
-                                final String ocrText = operationsUtil.fromImage(localFile);
+                                final String ocrText = tesseract.doOCR(localFile);
                                 final OperationInformationDto dto = parser.parse(ocrText);
                                 operationListener.accept(dto);
                                 logger.info("🚒 → Successfully extracted text from PDF file.");

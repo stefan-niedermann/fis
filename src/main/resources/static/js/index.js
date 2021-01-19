@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 let stompClient = Stomp.over(new SockJS('/socket'))
                 stompClient.connect({}, () => resolve(stompClient))
             })
-                .then((stompClient) => stompClientSendMessage(stompClient, '/app/register', username))
+                .then((stompClient) => stompClientSendMessage(stompClient, '/register', username))
                 .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/operation`, (data) => {
                     mainElement.classList.add('active-operation');
                     setTimeout(() => {

@@ -27,14 +27,15 @@ public class OperationWatcherThread extends Thread {
                 if (!ftpClient.login(ftpUsername, ftpPassword)) {
                     throw new IllegalArgumentException("Could not connect to FTP server + " + ftpUrl + ". Please check FTP credentials.");
                 }
-                logger.info("🚒 Connected to FTP server " + ftpUrl);
+                logger.info("🚒 Connected to FTP server " + ftpUrl + ", palling each " + ftpPollInterval / 1000 +  " seconds.");
 
                 final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
 
                 String lastPdfName = "";
 
+                //noinspection InfiniteLoopStatement
                 while (true) {
-                    logger.trace("Checking FTP server for incoming operations");
+                    logger.debug("Checking FTP server for incoming operations");
                     try {
                         final String finalLastPdfName = lastPdfName;
                         final Optional<FTPFile> ftpFileOptional = Arrays.stream(ftpClient.listFiles(ftpPath))
@@ -50,14 +51,18 @@ public class OperationWatcherThread extends Thread {
                             final FTPFile ftpFile = ftpFileOptional.get();
 
                             lastPdfName = ftpFile.getName();
+                            logger.debug("Found a new file: \"" + ftpFile.getName() + "\"");
 
                             if ("".equals(finalLastPdfName)) {
-                                // Skip first recognized file after startup
+                                logger.debug("Skipping first recognized file after startup");
                                 continue;
                             }
 
                             logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
+
                             final File localFile = File.createTempFile("operation-", ".pdf");
+                            logger.debug("→ Created temporary file: " + localFile.getName());
+
                             final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
                             final boolean success = ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream);
                             outputStream.close();
@@ -74,7 +79,10 @@ public class OperationWatcherThread extends Thread {
                             } else {
                                 logger.warn("🚒 → Could not download new FTP file!");
                             }
+                        } else {
+                            logger.debug("→ No new file with suffix \"" + ftpSuffix + "\" is present at the server.");
                         }
+                        //noinspection BusyWait
                         sleep(ftpPollInterval);
                     } catch (TesseractException e) {
                         logger.error("🚒 → Could not parse", e);

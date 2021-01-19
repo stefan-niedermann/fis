@@ -1,3 +1,4 @@
+let clock;
 let operation;
 let operationTopicKeyword;
 let operationTopicTags;
@@ -10,6 +11,9 @@ let icon_mapping;
 let keywords;
 
 document.addEventListener('DOMContentLoaded', () => {
+    clock = document.getElementById('info-clock');
+    setInterval(updateClock, 5 * 1000);
+    updateClock();
     Promise.all([
         fetch('/weather').then(resp => resp.json()),
         fetch('/operation/duration').then(resp => resp.json()),
@@ -49,6 +53,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 });
 
+const updateClock = () => {
+    const date = new Date();
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    clock.textContent = `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes} Uhr`;
+}
+
 const resetOperationData = () => {
     operation.removeAttribute('class');
     operationTopicKeyword.innerHTML = '';
@@ -82,10 +93,10 @@ const fillOperationData = (data) => {
 const getOperationTypeClass = (keyword) => keywords.find(k => keyword.toLowerCase().startsWith(k)) || '';
 const getOperationKeyword = (keyword) => {
     const keywordLowerCase = keyword.toLowerCase();
-    if(keywordLowerCase.startsWith('b') || keywordLowerCase.startsWith('thl')) {
+    if (keywordLowerCase.startsWith('b') || keywordLowerCase.startsWith('thl')) {
         const splitted = keywordLowerCase.split(" ");
-        if(splitted.length > 1) {
-            if(splitted[1].length < 3) {
+        if (splitted.length > 1) {
+            if (splitted[1].length < 3) {
                 return splitted[0] + splitted[1];
             } else {
                 return splitted[0];
@@ -93,8 +104,8 @@ const getOperationKeyword = (keyword) => {
         }
     } else {
         const splitted = keywordLowerCase.split(" ");
-        if(splitted.length > 0) {
-            if(splitted[0].length <= 3) {
+        if (splitted.length > 0) {
+            if (splitted[0].length <= 3) {
                 return splitted[0];
             } else {
                 return splitted[0].substring(0, 3);
@@ -117,8 +128,8 @@ const requestNewWeatherInformation = (lang, location, units, key) => {
                 return data;
             })
             .then(data => {
-                document.getElementById('weather-temperature').innerText = formatTemperature(data.main.temp);
-                document.getElementById('weather-icon').setAttribute('src', mapOpenWeatherMapIconToImageUrl(data.weather[0].id, data.sys.sunrise, data.sys.sunset));
+                document.getElementById('info-weather-temperature').innerText = formatTemperature(data.main.temp);
+                document.getElementById('info-weather-icon').setAttribute('src', mapOpenWeatherMapIconToImageUrl(data.weather[0].id, data.sys.sunrise, data.sys.sunset));
             });
     }
 };

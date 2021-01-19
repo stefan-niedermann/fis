@@ -1,0 +1,4 @@
+Source: https://www.dovora.com/resources/weather-icons/
+License: CC-BY-SA 4.0 https://creativecommons.org/licenses/by-sa/4.0/
+Adjustments:
+- Remove invalid opacity stylesheet properties

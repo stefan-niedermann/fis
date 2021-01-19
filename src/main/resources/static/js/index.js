@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
             icon_mapping = iconMapping;
             keywords = operationKeywords;
 
+            document.documentElement.setAttribute('lang', weatherInformation.lang);
+
             operation = document.getElementById('operation');
             operationTopicKeyword = document.getElementById('operation-topic-keyword');
             operationTopicTags = document.getElementById('operation-topic-tags');

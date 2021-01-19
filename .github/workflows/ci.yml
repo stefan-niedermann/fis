@@ -12,8 +12,8 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-  jar:
-    name: Test & Build
+  test:
+    name: Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -22,8 +22,21 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Test & Build
-        run: bash ./gradlew build
+      - name: Unit tests
+        run: bash ./gradlew test
+
+  jar:
+    name: Build JAR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build JAR
+        run: bash ./gradlew assemble
       - name: Upload JAR
         uses: actions/upload-artifact@v2
         with:

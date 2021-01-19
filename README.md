@@ -73,6 +73,7 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 --weather.location
 --weather.poll.interval
 --operation.duration
+--operation.highlight
 ```
 
 ## License

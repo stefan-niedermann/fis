@@ -10,14 +10,22 @@ html {
     --operation-abc-bg-color: #060;
     --operation-abc-fg-color: white;
     --vehicles-bg-color: #eee;
-    --vehicles-fg-color: black;
+    --vehicles-fg-color: #333;
+    --vehicles-highlight-fg-color: var(--main-fg-color);
+
+    /* Avoid ugly scrollbars, because we can't scroll on an info screen anyway */
+    overflow: hidden;
 }
 
 html.dark-theme {
     --main-bg-color: black;
     --main-fg-color: white;
     --vehicles-bg-color: #222;
-    --vehicles-fg-color: white;
+    --vehicles-fg-color: #ccc;
+}
+
+html.no-highlight {
+    --vehicles-fg-color: var(--main-fg-color);
 }
 
 body {
@@ -140,7 +148,12 @@ main:not(.active-operation) > #operation {
 #operation #operation-vehicles ul {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     padding: 0;
+}
+
+#operation #operation-vehicles strong {
+    color: var(--vehicles-highlight-fg-color);
 }
 
 #operation #operation-inner li {

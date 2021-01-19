@@ -78,4 +78,11 @@ public class OperationController {
     ) {
         return ResponseEntity.ok(operationDuration);
     }
+
+    @GetMapping("/operation/highlight")
+    ResponseEntity<String> getOperationHighlight(
+            @Value("${operation.highlight}") String operationHighlight
+    ) {
+        return ResponseEntity.ok(operationHighlight);
+    }
 }

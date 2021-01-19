@@ -17,14 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
     Promise.all([
         fetch('/weather').then(resp => resp.json()),
         fetch('/operation/duration').then(resp => resp.json()),
+        fetch('/operation/highlight').then(resp => resp.text()),
         fetch('/js/icon-mapping.json').then(resp => resp.json()),
         fetch('/js/operation-keywords.json').then(resp => resp.json())
     ])
-        .then(([weatherInformation, operationDuration, iconMapping, operationKeywords]) => {
+        .then(([weatherInformation, operationDuration, operationHighlight, iconMapping, operationKeywords]) => {
             icon_mapping = iconMapping;
             keywords = operationKeywords;
 
             document.documentElement.setAttribute('lang', weatherInformation.lang);
+            if(!operationHighlight) {
+                document.documentElement.classList.add('no-highlight');
+            }
 
             operation = document.getElementById('operation');
             operationTopicKeyword = document.getElementById('operation-topic-keyword');
@@ -48,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         mainElement.classList.remove('active-operation');
                         resetOperationData();
                     }, operationDuration);
-                    fillOperationData(JSON.parse(data.body).payload);
+                    fillOperationData(JSON.parse(data.body).payload, (operationHighlight || '').toLowerCase());
                 }));
         });
 });
@@ -68,7 +72,7 @@ const resetOperationData = () => {
     operationVehicleList.innerHTML = '';
 }
 
-const fillOperationData = (data) => {
+const fillOperationData = (data, highlight) => {
     resetOperationData();
     operation.classList.add(getOperationTypeClass(data.keyword));
     operationTopicKeyword.innerHTML = getOperationKeyword(data.keyword);
@@ -84,7 +88,13 @@ const fillOperationData = (data) => {
     if (Array.isArray(data.vehicles)) {
         data.vehicles.forEach(vehicle => {
             const li = document.createElement('li');
-            li.innerText = vehicle;
+            if(highlight && vehicle.toLowerCase().indexOf(highlight) >= 0) {
+                const strong = document.createElement('strong');
+                strong.innerText = vehicle;
+                li.appendChild(strong);
+            } else {
+                li.innerText = vehicle;
+            }
             operationVehicleList.appendChild(li);
         });
     }

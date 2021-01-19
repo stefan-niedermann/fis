@@ -1,8 +1,8 @@
 # JarFIS
 
 [![Android CI](https://github.com/stefan-niedermann/fis/workflows/Android%20CI/badge.svg)](https://github.com/stefan-niedermann/fis/actions)
-[![GitHub issues](https://img.shields.io/github/issues/stefan-niedermann/nextcloud-fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/issues)
-[![GitHub stars](https://img.shields.io/github/stars/stefan-niedermann/nextcloud-fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/stargazers)
+[![GitHub issues](https://img.shields.io/github/issues/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/issues)
+[![GitHub stars](https://img.shields.io/github/stars/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/stargazers)
 [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 **J**ava **ar**chive **F**irefighter **I**nformation **S**ystem

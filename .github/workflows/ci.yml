@@ -1,6 +1,6 @@
 name: Android CI
 
-on: [push, pull_request]
+on: [ push, pull_request ]
 
 jobs:
   validation:
@@ -18,34 +18,27 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
       - name: Unit tests
         run: bash ./gradlew test
 
-  codeql:
-    name: CodeQL security scan
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: java
-      - name: Build debug APK
-        run: bash ./gradlew assembleDev
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
-
   jar:
-    name: Generate JAR
+    name: Build JAR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Build debug APK
-        run: bash ./gradlew build
-      - name: Upload APK
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Build JAR
+        run: bash ./gradlew assemble
+      - name: Upload JAR
         uses: actions/upload-artifact@v2
         with:
-          name: app-dev-debug
-          path: app/build/libs/fis*.jar
+          name: artifact
+          path: build/libs/fis*.jar

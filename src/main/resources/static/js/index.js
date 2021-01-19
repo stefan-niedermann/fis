@@ -133,7 +133,7 @@ const requestNewWeatherInformation = (lang, location, units, key) => {
             });
     }
 };
-const formatTemperature = (temperature) => `${(Math.round(temperature * 100) / 100).toFixed(1)}°`;
+const formatTemperature = (temperature) => `${(Math.round(temperature * 100) / 100).toFixed((temperature > -10 && temperature < 10) ? 1 : 0)}°`;
 const mapOpenWeatherMapIconToImageUrl = (openWeatherMapId, sunrise, sunset) => {
     return isDay(sunrise, sunset)
         ? `./icons/${icon_mapping[openWeatherMapId].day}.svg`

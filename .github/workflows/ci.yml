@@ -1,0 +1,51 @@
+name: Android CI
+
+on: [push, pull_request]
+
+jobs:
+  validation:
+    name: Validate Gradle Wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+  test:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Unit tests
+        run: bash ./gradlew test
+
+  codeql:
+    name: CodeQL security scan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: java
+      - name: Build debug APK
+        run: bash ./gradlew assembleDev
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1
+
+  jar:
+    name: Generate JAR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build debug APK
+        run: bash ./gradlew build
+      - name: Upload APK
+        uses: actions/upload-artifact@v2
+        with:
+          name: app-dev-debug
+          path: app/build/libs/fis*.jar

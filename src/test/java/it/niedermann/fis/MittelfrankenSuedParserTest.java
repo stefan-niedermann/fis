@@ -24,7 +24,7 @@ public class MittelfrankenSuedParserTest {
 
         assertEquals("", dto.number);
 
-        assertEquals("Musterdstraße", dto.street);
+        assertEquals("Musterstraße", dto.street);
 
         assertEquals(3, dto.tags.length);
         assertEquals("B1014", dto.tags[0]);

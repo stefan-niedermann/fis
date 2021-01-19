@@ -75,7 +75,7 @@ public class MittelfrankenSuedParserTest {
         assertEquals("Musterwehr 24/1", dto.vehicles[1]);
         assertEquals("Roth Land 7/8", dto.vehicles[2]);
         assertEquals("Roth Land 9/5", dto.vehicles[3]);
-        assertEquals("Mustergemeinde 14/5", dto.vehicles[4]);
+        assertEquals("Muastergemeinde 14/5", dto.vehicles[4]);
 
         assertEquals("Container qualmt leicht - vmtl. heiße Asche (sichtbar)\n" +
                         "im Gelände ehem. Brennerei", dto.note);

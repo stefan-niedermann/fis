@@ -60,7 +60,7 @@ const resetOperationData = () => {
 const fillOperationData = (data) => {
     resetOperationData();
     operation.classList.add(getOperationTypeClass(data.keyword));
-    operationTopicKeyword.innerHTML = data.keyword;
+    operationTopicKeyword.innerHTML = getOperationKeyword(data.keyword);
     operationLocation.innerHTML = `${data.street} ${data.number} ${data.location}`;
     if (Array.isArray(data.tags)) {
         data.tags.forEach(tag => {
@@ -80,6 +80,29 @@ const fillOperationData = (data) => {
 }
 
 const getOperationTypeClass = (keyword) => keywords.find(k => keyword.toLowerCase().startsWith(k)) || '';
+const getOperationKeyword = (keyword) => {
+    const keywordLowerCase = keyword.toLowerCase();
+    if(keywordLowerCase.startsWith('b') || keywordLowerCase.startsWith('thl')) {
+        const splitted = keywordLowerCase.split(" ");
+        if(splitted.length > 1) {
+            if(splitted[1].length < 3) {
+                return splitted[0] + splitted[1];
+            } else {
+                return splitted[0];
+            }
+        }
+    } else {
+        const splitted = keywordLowerCase.split(" ");
+        if(splitted.length > 0) {
+            if(splitted[0].length <= 3) {
+                return splitted[0];
+            } else {
+                return splitted[0].substring(0, 3);
+            }
+        }
+    }
+    return '';
+};
 
 const requestNewWeatherInformation = (lang, location, units, key) => {
     if (!activeOperation) {

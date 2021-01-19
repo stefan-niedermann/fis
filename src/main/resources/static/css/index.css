@@ -16,7 +16,7 @@ html {
 html.dark-theme {
     --main-bg-color: black;
     --main-fg-color: white;
-    --vehicles-bg-color: #333;
+    --vehicles-bg-color: #222;
     --vehicles-fg-color: white;
 }
 
@@ -70,7 +70,7 @@ main:not(.active-operation) > #operation {
 }
 
 #operation ul {
-    padding-left: 1rem;
+    margin-left: 1rem;
 }
 
 #operation #operation-topic,
@@ -100,21 +100,41 @@ main:not(.active-operation) > #operation {
     color: var(--operation-thl-fg-color);
 }
 
+#operation #operation-inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 0 1 100%;
+}
+
 #operation #operation-location {
     font-size: 6vw;
-    flex: 0 0 50%;
+    flex: 1 1 100%;
     text-align: center;
 }
 
 #operation #operation-vehicles {
     font-size: 3vw;
-    flex: 0 1 25%;
+    flex: 0 1 0;
     background-color: var(--vehicles-bg-color);
     color: var(--vehicles-fg-color);
+}
+
+#operation #operation-vehicles ul {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0;
+}
+
+#operation #operation-inner li {
+    flex: 0 0 auto;
+    margin-left: 5vw;
 }
 
 #operation #operation-topic #operation-topic-keyword {
     font-size: 11vw;
     font-weight: bold;
     text-align: center;
+    text-transform: uppercase;
+    white-space: nowrap;
 }

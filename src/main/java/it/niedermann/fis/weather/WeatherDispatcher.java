@@ -43,12 +43,12 @@ public class WeatherDispatcher {
     public void dispatch() throws IOException {
         final Collection<String> listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
-            logger.debug("⛅ Skip weather poll because no listeners are registered.");
+            logger.debug("Skip weather poll because no listeners are registered.");
             return;
         }
         final WeatherDto newWeatherInformation = weatherProvider.fetchWeather();
         if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
-            logger.debug("⛅ Skip weather push because it didn't change.");
+            logger.debug("Skip weather push because it didn't change.");
         } else {
             lastWeatherInformation = newWeatherInformation;
             for (String listener : listeners) {

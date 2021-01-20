@@ -75,25 +75,27 @@ public class OperationDispatcher {
     public void dispatch() {
         final Collection<String> listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
-            logger.debug("🚒 Skip operations poll because no listeners are registered.");
+            logger.debug("Skip operations poll because no listeners are registered.");
             return;
         }
         try {
-            final Optional<FTPFile> ftpFileOptional = poll(lastPdfName);
+            final String finalLastPdfName = lastPdfName;
+            final Optional<FTPFile> ftpFileOptional = poll(finalLastPdfName);
             if (ftpFileOptional.isPresent()) {
                 final FTPFile ftpFile = ftpFileOptional.get();
-                logger.debug("🚒 Found a new file: \"" + ftpFile.getName() + "\"");
 
-                if ("".equals(lastPdfName)) {
-                    logger.debug("🚒 Skipping first recognized file after startup");
+                lastPdfName = ftpFile.getName();
+                logger.debug("Found a new file: \"" + ftpFile.getName() + "\"");
+
+                if ("".equals(finalLastPdfName)) {
+                    logger.debug("Skipping first recognized file after startup");
                     return;
                 }
 
-                lastPdfName = ftpFile.getName();
                 logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
                 final File localFile = File.createTempFile("operation-", ".pdf");
-                logger.debug("🚒 → Created temporary file: " + localFile.getName());
+                logger.debug("→ Created temporary file: " + localFile.getName());
 
                 final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
                 final boolean success = ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream);
@@ -112,7 +114,7 @@ public class OperationDispatcher {
                     logger.warn("🚒 → Could not download new FTP file!");
                 }
             } else {
-                logger.debug("🚒 → No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
+                logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
             }
         } catch (TesseractException e) {
             logger.error("🚒 → Could not parse", e);
@@ -122,7 +124,7 @@ public class OperationDispatcher {
     }
 
     private Optional<FTPFile> poll(String lastPdfName) throws IOException {
-        logger.debug("🚒 Checking FTP server for incoming operations");
+        logger.debug("Checking FTP server for incoming operations");
         return Arrays.stream(ftpClient.listFiles(ftpPath))
                 .filter(FTPFile::isFile)
                 .filter(file -> file.getName().endsWith(ftpFileSuffix))
@@ -136,7 +138,7 @@ public class OperationDispatcher {
 
     private static void notifyListeners(Iterable<String> listeners, SimpMessagingTemplate template, OperationDto dto) {
         for (String listener : listeners) {
-            logger.debug("🚒 Sending operation to \"" + listener + "\": " + dto.keyword);
+            logger.debug("Sending operation to \"" + listener + "\": " + dto.keyword);
             SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
             headerAccessor.setSessionId(listener);
             headerAccessor.setLeaveMutable(true);

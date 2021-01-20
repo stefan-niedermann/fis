@@ -23,7 +23,7 @@ public class WeatherDispatcher {
 
     private final SocketRegistry socketRegistry;
     private final WeatherProvider weatherProvider;
-    private WeatherInformationDto lastWeatherInformation;
+    private WeatherDto lastWeatherInformation;
     private final SimpMessagingTemplate template;
 
     public WeatherDispatcher(
@@ -46,7 +46,7 @@ public class WeatherDispatcher {
             logger.debug("⛅ Skip weather poll because no listeners are registered.");
             return;
         }
-        final WeatherInformationDto newWeatherInformation = weatherProvider.fetchWeather();
+        final WeatherDto newWeatherInformation = weatherProvider.fetchWeather();
         if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
             logger.debug("⛅ Skip weather push because it didn't change.");
         } else {

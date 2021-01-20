@@ -1,6 +1,6 @@
 package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.operation.OperationInformationDto;
+import it.niedermann.fis.operation.OperationDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -10,12 +10,12 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     final static List<Character> characters = Arrays.asList(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
 
     @Override
-    public OperationInformationDto parse(String input) {
+    public OperationDto parse(String input) {
         return parseFax(input);
     }
 
-    private static OperationInformationDto parseFax(String input) {
-        final var dto = new OperationInformationDto();
+    private static OperationDto parseFax(String input) {
+        final var dto = new OperationDto();
         if (input == null || input.isEmpty()) {
             return dto;
         }

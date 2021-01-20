@@ -2,7 +2,7 @@ package it.niedermann.fis.weather;
 
 import java.util.Objects;
 
-public class WeatherInformationDto {
+public class WeatherDto {
     public float temperature;
     public String icon;
     public boolean isDay;
@@ -11,7 +11,7 @@ public class WeatherInformationDto {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        WeatherInformationDto that = (WeatherInformationDto) o;
+        WeatherDto that = (WeatherDto) o;
         return Float.compare(that.temperature, temperature) == 0 && isDay == that.isDay && Objects.equals(icon, that.icon);
     }
 

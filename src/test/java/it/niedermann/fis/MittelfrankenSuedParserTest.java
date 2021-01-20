@@ -1,7 +1,7 @@
 package it.niedermann.fis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.niedermann.fis.operation.OperationInformationDto;
+import it.niedermann.fis.operation.OperationDto;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
@@ -19,8 +19,8 @@ public class MittelfrankenSuedParserTest {
         final int[] samples = new int[] {1};
         final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
         for(int sample : samples) {
-            final OperationInformationDto sampleDto = parser.parse(getSampleInput(sample));
-            final OperationInformationDto expectedDto = getSampleExpected(sample);
+            final OperationDto sampleDto = parser.parse(getSampleInput(sample));
+            final OperationDto expectedDto = getSampleExpected(sample);
             assertEquals(expectedDto, sampleDto);
         }
     }
@@ -29,7 +29,7 @@ public class MittelfrankenSuedParserTest {
         return IOUtils.toString(new ClassPathResource("samples/mittelfranken-sued/" + number + "-sample.txt").getInputStream(), UTF_8);
     }
 
-    private OperationInformationDto getSampleExpected(@SuppressWarnings("SameParameterValue") int number) throws IOException {
-        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/" + number + "-expected.json").getInputStream(), OperationInformationDto.class);
+    private OperationDto getSampleExpected(@SuppressWarnings("SameParameterValue") int number) throws IOException {
+        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/" + number + "-expected.json").getInputStream(), OperationDto.class);
     }
 }

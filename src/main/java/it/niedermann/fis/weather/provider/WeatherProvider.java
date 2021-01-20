@@ -1,10 +1,10 @@
 package it.niedermann.fis.weather.provider;
 
-import it.niedermann.fis.weather.WeatherInformationDto;
+import it.niedermann.fis.weather.WeatherDto;
 
 import java.io.IOException;
 
 public interface WeatherProvider {
 
-    WeatherInformationDto fetchWeather() throws IOException;
+    WeatherDto fetchWeather() throws IOException;
 }

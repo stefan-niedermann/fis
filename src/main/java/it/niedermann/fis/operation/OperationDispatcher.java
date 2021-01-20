@@ -78,29 +78,18 @@ public class OperationDispatcher {
             logger.debug("🚒 Skip operations poll because no listeners are registered.");
             return;
         }
-        logger.debug("🚒 Checking FTP server for incoming operations");
         try {
-            final String finalLastPdfName = lastPdfName;
-            final Optional<FTPFile> ftpFileOptional = Arrays.stream(ftpClient.listFiles(ftpPath))
-                    .filter(FTPFile::isFile)
-                    .filter(file -> file.getName().endsWith(ftpFileSuffix))
-                    .sorted(Comparator
-                            .comparingLong(file -> ((FTPFile) file).getTimestamp().getTimeInMillis())
-                            .reversed())
-                    .limit(1)
-                    .filter(file -> !finalLastPdfName.equals(file.getName()))
-                    .findFirst();
+            final Optional<FTPFile> ftpFileOptional = poll(lastPdfName);
             if (ftpFileOptional.isPresent()) {
                 final FTPFile ftpFile = ftpFileOptional.get();
-
-                lastPdfName = ftpFile.getName();
                 logger.debug("🚒 Found a new file: \"" + ftpFile.getName() + "\"");
 
-                if ("".equals(finalLastPdfName)) {
+                if ("".equals(lastPdfName)) {
                     logger.debug("🚒 Skipping first recognized file after startup");
                     return;
                 }
 
+                lastPdfName = ftpFile.getName();
                 logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
                 final File localFile = File.createTempFile("operation-", ".pdf");
@@ -113,19 +102,8 @@ public class OperationDispatcher {
                 if (success) {
                     logger.info("🚒 → Downloaded file to: " + localFile.getName());
                     final String ocrText = tesseract.doOCR(localFile);
-                    final OperationInformationDto dto = parser.parse(ocrText);
-                    for (String listener : listeners) {
-                        logger.info("🚒 Sending operation to \"" + listener + "\": " + dto.keyword);
-
-                        SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-                        headerAccessor.setSessionId(listener);
-                        headerAccessor.setLeaveMutable(true);
-                        template.convertAndSendToUser(
-                                listener,
-                                "/notification/operation",
-                                dto,
-                                headerAccessor.getMessageHeaders());
-                    }
+                    final OperationDto dto = parser.parse(ocrText);
+                    notifyListeners(listeners, template, dto);
                     logger.info("🚒 → Successfully extracted text from PDF file.");
                     if (!localFile.delete()) {
                         logger.warn("🚒 → Could not delete downloaded FTP file!");
@@ -140,6 +118,29 @@ public class OperationDispatcher {
             logger.error("🚒 → Could not parse", e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    private Optional<FTPFile> poll(String lastPdfName) throws IOException {
+        logger.debug("🚒 Checking FTP server for incoming operations");
+        return Arrays.stream(ftpClient.listFiles(ftpPath))
+                .filter(FTPFile::isFile)
+                .filter(file -> file.getName().endsWith(ftpFileSuffix))
+                .sorted(Comparator
+                        .comparingLong(file -> ((FTPFile) file).getTimestamp().getTimeInMillis())
+                        .reversed())
+                .limit(1)
+                .filter(file -> !lastPdfName.equals(file.getName()))
+                .findFirst();
+    }
+
+    private static void notifyListeners(Iterable<String> listeners, SimpMessagingTemplate template, OperationDto dto) {
+        for (String listener : listeners) {
+            logger.debug("🚒 Sending operation to \"" + listener + "\": " + dto.keyword);
+            SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+            headerAccessor.setSessionId(listener);
+            headerAccessor.setLeaveMutable(true);
+            template.convertAndSendToUser(listener, "/notification/operation", dto, headerAccessor.getMessageHeaders());
         }
     }
 }

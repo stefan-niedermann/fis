@@ -1,9 +1,9 @@
 package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.operation.OperationInformationDto;
+import it.niedermann.fis.operation.OperationDto;
 
 public interface OperationFaxParser {
-    OperationInformationDto parse(String input);
+    OperationDto parse(String input);
 
     static OperationFaxParser create(String type) {
         //noinspection SwitchStatementWithTooFewBranches

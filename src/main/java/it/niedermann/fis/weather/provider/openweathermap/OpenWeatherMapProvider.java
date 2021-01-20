@@ -1,6 +1,6 @@
 package it.niedermann.fis.weather.provider.openweathermap;
 
-import it.niedermann.fis.weather.WeatherInformationDto;
+import it.niedermann.fis.weather.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +35,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
     }
 
     @Override
-    public WeatherInformationDto fetchWeather() throws IOException {
+    public WeatherDto fetchWeather() throws IOException {
         OpenWeatherMapResponseDto dto;
         try {
             final Response<OpenWeatherMapResponseDto> response = service.fetchWeather(lang, Long.parseLong(location), units, key).execute();
@@ -49,11 +49,11 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         return fromOpenWeatherMapResponseDto(dto);
     }
 
-    private WeatherInformationDto fromOpenWeatherMapResponseDto(OpenWeatherMapResponseDto response) {
+    private WeatherDto fromOpenWeatherMapResponseDto(OpenWeatherMapResponseDto response) {
         if (response == null) {
             return null;
         }
-        final WeatherInformationDto dto = new WeatherInformationDto();
+        final WeatherDto dto = new WeatherDto();
         dto.temperature = response.main.temp;
         if (response.sys == null) {
             dto.isDay = true;

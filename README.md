@@ -31,11 +31,11 @@ character recognition, parse the text to a machine-readable JSON file and displa
 
 - You will need at least a Java Runtime Environment 11 or higher
 - Install `Tesseract`, on Ubuntu based systems, this is usually done with
-  ```aidl
+  ```sh
   sudo apt install tesseract-ocr
   ```
 - The optical character software `Tesseract` expects the following environment variable to be set:
-  ```
+  ```sh
   LC_ALL=C
   ```
 - Make sure that you pass the path to the `tessdata` folder as an argument. If it is not present, we'll assume, that it
@@ -45,7 +45,7 @@ character recognition, parse the text to a machine-readable JSON file and displa
 
 ### Starting the server
 
-```aidl
+```sh
 java -jar fis.jar
 ```
 

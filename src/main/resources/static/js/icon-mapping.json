@@ -55,7 +55,7 @@
   "781": {"day": "tornado", "night": "tornado"},
 
   "800": {"day": "day_clear", "night": "night_full_moon_clear"},
-  "801": {"day": "day_partial_partial_cloud", "night": "night_full_moon_partial_cloud"},
+  "801": {"day": "day_partial_cloud", "night": "night_full_moon_partial_cloud"},
   "802": {"day": "cloudy", "night": "cloudy"},
   "803": {"day": "angry_clouds", "night": "angry_clouds"},
   "804": {"day": "angry_clouds", "night": "angry_clouds"}

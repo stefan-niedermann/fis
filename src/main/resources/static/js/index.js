@@ -15,18 +15,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setInterval(updateClock, 5 * 1000);
     updateClock();
     Promise.all([
-        fetch('/weather').then(resp => resp.json()),
-        fetch('/operation/duration').then(resp => resp.json()),
-        fetch('/operation/highlight').then(resp => resp.text()),
-        fetch('/js/icon-mapping.json').then(resp => resp.json()),
-        fetch('/js/operation-keywords.json').then(resp => resp.json())
+        fetch('/parameter').then(resp => resp.json()),
+        fetch('/json/icon-mapping.json').then(resp => resp.json()),
+        fetch('/json/operation-keywords.json').then(resp => resp.json())
     ])
-        .then(([weatherInformation, operationDuration, operationHighlight, iconMapping, operationKeywords]) => {
+        .then(([params, iconMapping, operationKeywords]) => {
+            console.log('Parameter:', params);
             icon_mapping = iconMapping;
             keywords = operationKeywords;
 
-            document.documentElement.setAttribute('lang', weatherInformation.lang);
-            if(!operationHighlight) {
+            document.documentElement.setAttribute('lang', params.weather.lang);
+            if (!params.operation.highlight) {
                 document.documentElement.classList.add('no-highlight');
             }
 
@@ -37,8 +36,8 @@ document.addEventListener('DOMContentLoaded', () => {
             operationVehicleList = document.getElementById('operation-vehicles-list');
 
             const mainElement = document.querySelector('body>main');
-            setInterval(() => requestNewWeatherInformation(weatherInformation.lang, weatherInformation.location, weatherInformation.units, weatherInformation.key), weatherInformation.pollInterval);
-            requestNewWeatherInformation(weatherInformation.lang, weatherInformation.location, weatherInformation.units, weatherInformation.key);
+            setInterval(() => requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key), params.weather.pollInterval);
+            requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key);
 
             const username = 'dashboard-ui';
             new Promise((resolve) => {
@@ -49,10 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/operation`, (data) => {
                     mainElement.classList.add('active-operation');
                     setTimeout(() => {
+                        console.debug('Timeout over… unset active operation.');
                         mainElement.classList.remove('active-operation');
                         resetOperationData();
-                    }, operationDuration);
-                    fillOperationData(JSON.parse(data.body).payload, (operationHighlight || '').toLowerCase());
+                    }, params.operation.duration);
+                    fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
                 }));
         });
 });
@@ -88,7 +88,7 @@ const fillOperationData = (data, highlight) => {
     if (Array.isArray(data.vehicles)) {
         data.vehicles.forEach(vehicle => {
             const li = document.createElement('li');
-            if(highlight && vehicle.toLowerCase().indexOf(highlight) >= 0) {
+            if (highlight && vehicle.toLowerCase().indexOf(highlight) >= 0) {
                 const strong = document.createElement('strong');
                 strong.innerText = vehicle;
                 li.appendChild(strong);

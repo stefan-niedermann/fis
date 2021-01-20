@@ -3,10 +3,8 @@ package it.niedermann.fis.operation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.socket.WebSocketMessage;
 
@@ -29,7 +27,7 @@ public class OperationController {
             @Value("${ftp.password}") String ftpPassword,
             @Value("${ftp.path}") String ftpPath,
             @Value("${ftp.file.suffix}") String ftpFileSuffix,
-            @Value("#{new Integer('${ftp.poll.interval}')}") Integer ftpPollInterval,
+            @Value("#{new Long('${ftp.poll.interval}')}") Integer ftpPollInterval,
             @Value("${tesseract.tessdata}") String tessdataPath,
             @Value("${tesseract.lang}") String tessLang
     ) {
@@ -70,19 +68,5 @@ public class OperationController {
             logger.debug("Posting new active operation to \"" + connectedUser + "\"");
             socketMessage.convertAndSendToUser(connectedUser, "/operation", message);
         }
-    }
-
-    @GetMapping("/operation/duration")
-    ResponseEntity<Integer> getOperationDuration(
-            @Value("#{new Integer('${operation.duration}')}") Integer operationDuration
-    ) {
-        return ResponseEntity.ok(operationDuration);
-    }
-
-    @GetMapping("/operation/highlight")
-    ResponseEntity<String> getOperationHighlight(
-            @Value("${operation.highlight}") String operationHighlight
-    ) {
-        return ResponseEntity.ok(operationHighlight);
     }
 }

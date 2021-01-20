@@ -109,6 +109,7 @@ public class OperationDispatcher {
 
         try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
             if (ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream)) {
+                outputStream.close();
                 logger.info("🚒 → Downloaded content to: " + localFile.getName());
 
                 final String ocrText = tesseract.doOCR(localFile);
@@ -122,7 +123,7 @@ public class OperationDispatcher {
             logger.error("🚒 → Could not parse", e);
         } finally {
             if (!localFile.delete()) {
-                logger.warn("🚒 → Could not delete downloaded FTP file!");
+                logger.warn("🚒 → Could not delete downloaded FTP file: " + localFile.getName());
             }
         }
     }

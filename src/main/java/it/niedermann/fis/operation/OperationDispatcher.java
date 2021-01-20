@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -132,16 +133,16 @@ public class OperationDispatcher {
         }
     }
 
-    private Optional<FTPFile> poll(String lastPdfName) throws IOException {
+    private Optional<FTPFile> poll(String excludeFileName) throws IOException {
         logger.debug("Checking FTP server for incoming operations");
         return Arrays.stream(ftpClient.listFiles(ftpPath))
                 .filter(FTPFile::isFile)
                 .filter(file -> file.getName().endsWith(ftpFileSuffix))
                 .sorted(Comparator
-                        .comparingLong(file -> ((FTPFile) file).getTimestamp().getTimeInMillis())
+                        .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                         .reversed())
                 .limit(1)
-                .filter(file -> !lastPdfName.equals(file.getName()))
+                .filter(file -> !Objects.equals(excludeFileName, file.getName()))
                 .findFirst();
     }
 

@@ -9,7 +9,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
 import org.springframework.messaging.simp.SimpMessageType;
@@ -29,8 +28,7 @@ public class OperationDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationDispatcher.class);
 
-    @Autowired
-    private SocketRegistry socketRegistry;
+    private final SocketRegistry socketRegistry;
     private final SimpMessagingTemplate template;
 
     private final ITesseract tesseract;
@@ -44,6 +42,7 @@ public class OperationDispatcher {
     private String ftpFileSuffix;
 
     public OperationDispatcher(
+            SocketRegistry socketRegistry,
             SimpMessagingTemplate template,
             @Value("${ftp.host}") String ftpUrl,
             @Value("${ftp.user}") String ftpUsername,
@@ -51,6 +50,7 @@ public class OperationDispatcher {
             @Value("#{new Long('${ftp.poll.interval}')}") Integer ftpPollInterval,
             @Value("${tesseract.tessdata}") String tessdataPath,
             @Value("${tesseract.lang}") String tessLang) throws IOException {
+        this.socketRegistry = socketRegistry;
         this.template = template;
 
         if (ObjectUtils.isEmpty(tessdataPath)) {
@@ -64,7 +64,7 @@ public class OperationDispatcher {
         ftpClient = new FTPClient();
         ftpClient.connect(ftpUrl);
         if (!ftpClient.login(ftpUsername, ftpPassword)) {
-            throw new IllegalArgumentException("Could not connect to FTP server + " + ftpUrl + ". Please check FTP credentials.");
+            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + ftpUrl + ". Please check FTP credentials.");
         }
         logger.info("🚒 Connected to FTP server " + ftpUrl + ", palling each " + ftpPollInterval / 1000 + " seconds.");
 
@@ -75,10 +75,10 @@ public class OperationDispatcher {
     public void dispatch() {
         final Collection<String> listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
-            logger.info("Skip operations poll because no listeners are registered.");
+            logger.debug("🚒 Skip operations poll because no listeners are registered.");
             return;
         }
-        logger.debug("Checking FTP server for incoming operations");
+        logger.debug("🚒 Checking FTP server for incoming operations");
         try {
             final String finalLastPdfName = lastPdfName;
             final Optional<FTPFile> ftpFileOptional = Arrays.stream(ftpClient.listFiles(ftpPath))
@@ -94,17 +94,17 @@ public class OperationDispatcher {
                 final FTPFile ftpFile = ftpFileOptional.get();
 
                 lastPdfName = ftpFile.getName();
-                logger.debug("Found a new file: \"" + ftpFile.getName() + "\"");
+                logger.debug("🚒 Found a new file: \"" + ftpFile.getName() + "\"");
 
                 if ("".equals(finalLastPdfName)) {
-                    logger.debug("Skipping first recognized file after startup");
+                    logger.debug("🚒 Skipping first recognized file after startup");
                     return;
                 }
 
                 logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
                 final File localFile = File.createTempFile("operation-", ".pdf");
-                logger.debug("→ Created temporary file: " + localFile.getName());
+                logger.debug("🚒 → Created temporary file: " + localFile.getName());
 
                 final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
                 final boolean success = ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream);
@@ -115,7 +115,7 @@ public class OperationDispatcher {
                     final String ocrText = tesseract.doOCR(localFile);
                     final OperationInformationDto dto = parser.parse(ocrText);
                     for (String listener : listeners) {
-                        logger.info("Sending notification to " + listener);
+                        logger.info("🚒 Sending operation to \"" + listener + "\": " + dto.keyword);
 
                         SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
                         headerAccessor.setSessionId(listener);
@@ -134,7 +134,7 @@ public class OperationDispatcher {
                     logger.warn("🚒 → Could not download new FTP file!");
                 }
             } else {
-                logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
+                logger.debug("🚒 → No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
             }
         } catch (TesseractException e) {
             logger.error("🚒 → Could not parse", e);

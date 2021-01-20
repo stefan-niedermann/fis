@@ -9,35 +9,29 @@ let operationVehicleList;
 
 let activeOperation = false;
 
-let keywords;
+const keywords = ["b", "thl", "abc", "rd", "son", "inf", "dekon"];
 
 document.addEventListener('DOMContentLoaded', () => {
     clock = document.getElementById('info-clock');
+    infoWeatherTemperature = document.getElementById('info-weather-temperature');
+    infoWeatherIcon = document.getElementById('info-weather-icon');
+    operation = document.getElementById('operation');
+    operationTopicKeyword = document.getElementById('operation-topic-keyword');
+    operationTopicTags = document.getElementById('operation-topic-tags');
+    operationLocation = document.getElementById('operation-location');
+    operationVehicleList = document.getElementById('operation-vehicles-list');
+
     setInterval(updateClock, 5 * 1000);
     updateClock();
-    Promise.all([
-        fetch('/parameter').then(resp => resp.json()),
-        fetch('/json/operation-keywords.json').then(resp => resp.json())
-    ])
-        .then(([params, operationKeywords]) => {
+    fetch('/parameter')
+        .then(resp => resp.json())
+        .then((params) => {
             console.info('⚙️ Parameter:', params);
-            keywords = operationKeywords;
+            document.documentElement.setAttribute('lang', params.lang);
 
-            // TODO
-            // document.documentElement.setAttribute('lang', params.weather.lang);
             if (!params.operation.highlight) {
                 document.documentElement.classList.add('no-highlight');
             }
-
-            infoWeatherTemperature = document.getElementById('info-weather-temperature');
-            infoWeatherIcon = document.getElementById('info-weather-icon');
-            operation = document.getElementById('operation');
-            operationTopicKeyword = document.getElementById('operation-topic-keyword');
-            operationTopicTags = document.getElementById('operation-topic-tags');
-            operationLocation = document.getElementById('operation-location');
-            operationVehicleList = document.getElementById('operation-vehicles-list');
-
-            const mainElement = document.querySelector('body>main');
 
             new Promise((resolve) => {
                 let stompClient = Stomp.over(new SockJS('/socket'))
@@ -47,6 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .then((stompClient) => stompSubscribe(stompClient, `/user/notification/operation`, (data) => {
                     const operation = JSON.parse(data.body);
                     console.info('🚒️ New operation:', operation);
+                    const mainElement = document.querySelector('body>main');
                     mainElement.classList.add('active-operation');
                     setTimeout(() => {
                         console.debug('Timeout over… unset active operation.');
@@ -65,7 +60,7 @@ document.addEventListener('DOMContentLoaded', () => {
                                 document.documentElement.classList.add('dark-theme');
                             }
                         }
-                        infoWeatherTemperature.innerText = formatTemperature(weather.temperature);
+                        infoWeatherTemperature.innerText = `${(Math.round(weather.temperature * 100) / 100).toFixed((weather.temperature > -10 && weather.temperature < 10) ? 1 : 0)}°`;
                         infoWeatherIcon.setAttribute('src', `./icons/${weather.icon}.svg`);
                     })
                 );
@@ -139,8 +134,6 @@ const getOperationKeyword = (keyword) => {
     }
     return '';
 };
-
-const formatTemperature = (temperature) => `${(Math.round(temperature * 100) / 100).toFixed((temperature > -10 && temperature < 10) ? 1 : 0)}°`;
 
 const stompSubscribe = (stompClient, endpoint, callback) => {
     stompClient.subscribe(endpoint, callback)

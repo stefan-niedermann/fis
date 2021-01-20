@@ -11,7 +11,7 @@ class OpenWeatherMapResponseDto {
     }
 
     class Main {
-        float temperature;
+        float temp;
     }
 
     class Sys {

@@ -11,9 +11,11 @@ public class ParameterController {
     private final ParameterDto dto = new ParameterDto();
 
     public ParameterController(
+            @Value("${weather.lang}") String language,
             @Value("${operation.highlight}") String operationHighlight,
             @Value("#{new Long('${operation.duration}')}") Long operationDuration
     ) {
+        dto.language = language;
         dto.operation.duration = operationDuration;
         dto.operation.highlight = operationHighlight;
     }

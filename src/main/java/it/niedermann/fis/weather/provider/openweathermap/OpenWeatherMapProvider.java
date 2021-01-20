@@ -2,6 +2,9 @@ package it.niedermann.fis.weather.provider.openweathermap;
 
 import it.niedermann.fis.weather.WeatherInformationDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -10,6 +13,7 @@ import java.time.Instant;
 
 public class OpenWeatherMapProvider implements WeatherProvider {
 
+    private static final Logger logger = LoggerFactory.getLogger(OpenWeatherMapProvider.class);
     private static final IconMap iconMap = new IconMap();
 
     private final String lang;
@@ -23,12 +27,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             .build();
     private final OpenWeatherMapService service = retrofit.create(OpenWeatherMapService.class);
 
-    public OpenWeatherMapProvider(
-            String lang,
-            String location,
-            String units,
-            String key
-    ) {
+    public OpenWeatherMapProvider(String lang, String location, String units, String key) {
         this.lang = lang;
         this.location = location;
         this.units = units;
@@ -37,7 +36,17 @@ public class OpenWeatherMapProvider implements WeatherProvider {
 
     @Override
     public WeatherInformationDto fetchWeather() throws IOException {
-        return fromOpenWeatherMapResponseDto(service.fetchWeather(lang, location, units, key).execute().body());
+        OpenWeatherMapResponseDto dto;
+        try {
+            final Response<OpenWeatherMapResponseDto> response = service.fetchWeather(lang, Long.parseLong(location), units, key).execute();
+            logger.debug("Requested weather: " + response.raw().request().url());
+            dto = response.body();
+        } catch (NumberFormatException e) {
+            final Response<OpenWeatherMapResponseDto> response = service.fetchWeather(lang, location, units, key).execute();
+            logger.debug("Requested weather: " + response.raw().request().url());
+            dto = response.body();
+        }
+        return fromOpenWeatherMapResponseDto(dto);
     }
 
     private WeatherInformationDto fromOpenWeatherMapResponseDto(OpenWeatherMapResponseDto response) {
@@ -45,7 +54,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             return null;
         }
         final WeatherInformationDto dto = new WeatherInformationDto();
-        dto.temperature = response.main.temperature;
+        dto.temperature = response.main.temp;
         if (response.sys == null) {
             dto.isDay = true;
         } else {

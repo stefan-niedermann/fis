@@ -39,21 +39,32 @@ document.addEventListener('DOMContentLoaded', () => {
             setInterval(() => requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key), params.weather.pollInterval);
             requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key);
 
-            const username = 'dashboard-ui';
             new Promise((resolve) => {
                 let stompClient = Stomp.over(new SockJS('/socket'))
                 stompClient.connect({}, () => resolve(stompClient))
             })
-                .then((stompClient) => stompClientSendMessage(stompClient, '/register', username))
-                .then((stompClient) => stompSubscribe(stompClient, `/user/${username}/operation`, (data) => {
-                    mainElement.classList.add('active-operation');
-                    setTimeout(() => {
-                        console.debug('Timeout over… unset active operation.');
-                        mainElement.classList.remove('active-operation');
-                        resetOperationData();
-                    }, params.operation.duration);
-                    fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
-                }));
+                .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
+                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/operation`, (data) => {
+                    console.log('received operation push notification: ', data.body);
+                    // mainElement.classList.add('active-operation');
+                    // setTimeout(() => {
+                    //     console.debug('Timeout over… unset active operation.');
+                    //     mainElement.classList.remove('active-operation');
+                    //     resetOperationData();
+                    // }, params.operation.duration);
+                    // fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
+                }))
+                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/weather`, (data) => {
+                        console.log('received weather push notification: ', data.body);
+                        // mainElement.classList.add('active-operation');
+                        // setTimeout(() => {
+                        //     console.debug('Timeout over… unset active operation.');
+                        //     mainElement.classList.remove('active-operation');
+                        //     resetOperationData();
+                        // }, params.operation.duration);
+                        // fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
+                    })
+                );
         });
 });
 
@@ -159,7 +170,7 @@ const stompSubscribe = (stompClient, endpoint, callback) => {
     return stompClient
 }
 
-const stompClientSendMessage = (stompClient, endpoint, message) => {
-    stompClient.send(endpoint, {}, message)
+const stompClientSendMessage = (stompClient, endpoint) => {
+    stompClient.send(endpoint, {})
     return stompClient
 }

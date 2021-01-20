@@ -2,6 +2,7 @@ package it.niedermann.fis;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.Console;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.Collection;
 import java.util.Scanner;
 
 @SpringBootApplication
+@EnableScheduling
 public class FisApplication {
 
     private static final Scanner scanner = new Scanner(System.in);

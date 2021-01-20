@@ -28,15 +28,19 @@ jobs:
   codeql:
     name: CodeQL security scan
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java', 'javascript' ]
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v2
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v1
         with:
-          languages: java
-      - name: Build debug APK
-        run: bash ./gradlew assembleDev --stacktrace
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
 

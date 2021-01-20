@@ -4,7 +4,6 @@ import it.niedermann.fis.weather.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -14,7 +13,6 @@ import java.time.Instant;
 public class OpenWeatherMapProvider implements WeatherProvider {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenWeatherMapProvider.class);
-    private static final IconMap iconMap = new IconMap();
 
     private final String lang;
     private final String location;
@@ -38,11 +36,11 @@ public class OpenWeatherMapProvider implements WeatherProvider {
     public WeatherDto fetchWeather() throws IOException {
         OpenWeatherMapResponseDto dto;
         try {
-            final Response<OpenWeatherMapResponseDto> response = service.fetchWeather(lang, Long.parseLong(location), units, key).execute();
+            final var response = service.fetchWeather(lang, Long.parseLong(location), units, key).execute();
             logger.debug("Requested weather: " + response.raw().request().url());
             dto = response.body();
         } catch (NumberFormatException e) {
-            final Response<OpenWeatherMapResponseDto> response = service.fetchWeather(lang, location, units, key).execute();
+            final var response = service.fetchWeather(lang, location, units, key).execute();
             logger.debug("Requested weather: " + response.raw().request().url());
             dto = response.body();
         }
@@ -53,7 +51,7 @@ public class OpenWeatherMapProvider implements WeatherProvider {
         if (response == null) {
             return null;
         }
-        final WeatherDto dto = new WeatherDto();
+        final var dto = new WeatherDto();
         dto.temperature = response.main.temp;
         if (response.sys == null) {
             dto.isDay = true;
@@ -61,17 +59,13 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             dto.isDay = isDay(response.sys);
         }
         if (response.weather != null && response.weather.length > 0) {
-            dto.icon = getIcon(response.weather[0].id, dto.isDay);
+            dto.icon = OpenWeatherMapIconMappingUtil.get(response.weather[0].id, dto.isDay);
         }
         return dto;
     }
 
-    private String getIcon(String openWeatherMapId, boolean isDay) {
-        return iconMap.get(openWeatherMapId, isDay);
-    }
-
     private boolean isDay(OpenWeatherMapResponseDto.Sys sys) {
-        final Instant now = Instant.now();
+        final var now = Instant.now();
         return now.isAfter(Instant.ofEpochMilli(sys.sunrise * 1000)) && now.isBefore(Instant.ofEpochMilli(sys.sunset * 1000));
     }
 }

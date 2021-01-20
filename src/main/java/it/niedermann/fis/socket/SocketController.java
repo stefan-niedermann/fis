@@ -39,6 +39,7 @@ public class SocketController {
 
     @MessageMapping("/unregister")
     public void stop(StompHeaderAccessor stompHeaderAccessor) {
+        logger.info("Unregistered socket client: " + stompHeaderAccessor.getSessionId());
         socketRegistry.remove(stompHeaderAccessor.getSessionId());
     }
 }

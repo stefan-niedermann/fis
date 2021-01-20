@@ -1,9 +1,11 @@
 package it.niedermann.fis.weather.provider.openweathermap;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
-public class IconMap extends HashMap<String, IconMap.DayNightIcon> {
-    {
+public class OpenWeatherMapIconMappingUtil {
+    private static final Map<String, DayNightIcon> ICON_MAPPING = Collections.unmodifiableMap(new HashMap<>() {{
         put("200", new DayNightIcon("day_rain_thunder", "night_full_moon_rain_thunder"));
         put("201", new DayNightIcon("rain_thunder", "rain_thunder"));
         put("202", new DayNightIcon("rain_thunder", "rain_thunder"));
@@ -59,15 +61,15 @@ public class IconMap extends HashMap<String, IconMap.DayNightIcon> {
         put("802", new DayNightIcon("cloudy", "cloudy"));
         put("803", new DayNightIcon("angry_clouds", "angry_clouds"));
         put("804", new DayNightIcon("angry_clouds", "angry_clouds"));
+    }});
+
+    public static String get(String key, boolean isDay) {
+        return isDay ? ICON_MAPPING.get(key).day : ICON_MAPPING.get(key).night;
     }
 
-    public String get(Object key, boolean isDay) {
-        return isDay ? get(key).day : get(key).night;
-    }
-
-    protected static class DayNightIcon {
-        protected final String day;
-        protected final String night;
+    private static class DayNightIcon {
+        private final String day;
+        private final String night;
 
         public DayNightIcon(String day, String night) {
             this.day = day;

@@ -9,8 +9,7 @@ import java.util.stream.Collectors;
 class MittelfrankenSuedParser implements OperationFaxParser {
 
     private final static Collection<String> OP_FAX_REQUIRED_KEYWORDS = Arrays.asList(
-            "ILS MITTELFRANKEN SÜD",
-            "ALARMFAX"
+            "ILS MITTELFRANKEN SÜD", "ALARMFAX", "EINSATZGRUND", "EINSATZMITTEL", "ILS MF-S"
     );
     private final static Collection<Character> UNDESIRED_CHARACTERS = Arrays.asList(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
 
@@ -42,7 +41,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         if(ObjectUtils.isEmpty(input)) {
             return false;
         }
-        final String upper = input.toUpperCase(Locale.ROOT);
+        final var upper = input.toUpperCase(Locale.ROOT);
         return OP_FAX_REQUIRED_KEYWORDS
                 .stream()
                 .anyMatch(upper::contains);

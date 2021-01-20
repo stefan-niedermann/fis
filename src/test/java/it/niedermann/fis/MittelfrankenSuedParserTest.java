@@ -18,8 +18,8 @@ public class MittelfrankenSuedParserTest {
     @Test
     public void parseOperationFaxTest() throws IOException {
         final int[] samples = new int[] {1};
-        final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
-        for(int sample : samples) {
+        final var parser = OperationFaxParser.create("mittelfranken-sued");
+        for(var sample : samples) {
             final OperationDto sampleDto = parser.parse(getSampleInput(sample));
             final OperationDto expectedDto = getSampleExpected(sample);
             assertEquals(expectedDto, sampleDto);
@@ -28,7 +28,7 @@ public class MittelfrankenSuedParserTest {
 
     @Test
     public void parseNoOperationFaxTest() {
-        final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
+        final var parser = OperationFaxParser.create("mittelfranken-sued");
         assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parse("This is any other fax but has nothing to do with an operation."));

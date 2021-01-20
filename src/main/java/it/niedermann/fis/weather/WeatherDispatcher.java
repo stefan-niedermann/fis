@@ -13,7 +13,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collection;
 import java.util.Objects;
 
 @Service
@@ -41,20 +40,20 @@ public class WeatherDispatcher {
 
     @Scheduled(fixedDelayString = "${weather.poll.interval}")
     public void dispatch() throws IOException {
-        final Collection<String> listeners = socketRegistry.getListeners();
+        final var listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
             logger.debug("Skip weather poll because no listeners are registered.");
             return;
         }
-        final WeatherDto newWeatherInformation = weatherProvider.fetchWeather();
+        final var newWeatherInformation = weatherProvider.fetchWeather();
         if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
             logger.debug("Skip weather push because it didn't change.");
         } else {
             lastWeatherInformation = newWeatherInformation;
-            for (String listener : listeners) {
+            for (var listener : listeners) {
                 logger.info("⛅ Sending new weather to \"" + listener + "\": " + newWeatherInformation.temperature + "°");
 
-                final SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+                final var headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
                 headerAccessor.setSessionId(listener);
                 headerAccessor.setLeaveMutable(true);
                 template.convertAndSendToUser(

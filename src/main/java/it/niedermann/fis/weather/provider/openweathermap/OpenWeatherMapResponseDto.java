@@ -6,15 +6,15 @@ class OpenWeatherMapResponseDto {
     Main main;
     Sys sys;
 
-    class Weather {
+    static class Weather {
         String id;
     }
 
-    class Main {
+    static class Main {
         float temp;
     }
 
-    class Sys {
+    static class Sys {
         long sunrise;
         long sunset;
     }

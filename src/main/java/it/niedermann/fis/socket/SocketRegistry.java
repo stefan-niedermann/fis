@@ -30,7 +30,7 @@ public class SocketRegistry {
 
     @EventListener
     public void sessionDisconnectionHandler(SessionDisconnectEvent event) {
-        String sessionId = event.getSessionId();
+        var sessionId = event.getSessionId();
         logger.info("Disconnecting " + sessionId + "!");
         remove(sessionId);
     }

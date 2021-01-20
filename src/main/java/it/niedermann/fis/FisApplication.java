@@ -7,7 +7,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import java.io.Console;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Scanner;
 
 @SpringBootApplication
@@ -18,7 +17,7 @@ public class FisApplication {
     private static final Console console = System.console();
 
     public static void main(String[] args) {
-        final Collection<String> mutableArgs = new ArrayList<>(Arrays.asList(args));
+        final var mutableArgs = new ArrayList<>(Arrays.asList(args));
 
         if (Arrays.stream(args).noneMatch(arg -> arg.startsWith("--ftp.user="))) {
             System.out.print("FTP username: ");

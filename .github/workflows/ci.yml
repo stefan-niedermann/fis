@@ -1,4 +1,4 @@
-name: Android CI
+name: CI pipeline
 
 on: [ push, pull_request ]
 

@@ -1,6 +1,6 @@
 # JarFIS
 
-[![Android CI](https://github.com/stefan-niedermann/fis/workflows/Android%20CI/badge.svg)](https://github.com/stefan-niedermann/fis/actions)
+[![Build](https://github.com/stefan-niedermann/fis/workflows/Android%20CI/badge.svg)](https://github.com/stefan-niedermann/fis/actions)
 [![GitHub issues](https://img.shields.io/github/issues/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/issues)
 [![GitHub stars](https://img.shields.io/github/stars/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/stargazers)
 [![License: GPL v3](https://img.shields.io/badge/License-AGPL%20v3-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
@@ -9,7 +9,7 @@
 
 ## What is this?
 
-`JarFIS` covers a special use case for german firefighters, who usually are notified about new operations via Fax. The
+`JarFIS` covers a special use case for german firefighters, who usually are notified about new operations via fax. The
 tool is capable of displaying the same information on an info screen to better spread the incoming information to new
 volunteer firefighters who arrive at the fire department.
 
@@ -18,8 +18,8 @@ screen for some time to an operation screen and return to the default info scree
 
 ## How does it work?
 
-The environment can vary of course, but the idea is that a Fax arrives at the primary number (1) and gets routed to the
-Fax printing device (2). The Fax printing device should print the information and then forward the fax to a secondary
+The environment can vary of course, but the idea is that a fax arrives at the primary number (1) and gets routed to the
+fax printing device (2). The fax printing device should print the information and then forward the fax to a secondary
 number (3) which will be stored by the router on an internal memory / FTP server as a PDF file.
 
 `JarFIS` will poll this FTP storage (4) and download a new incoming PDF file (5). Then it extracts the text using optical

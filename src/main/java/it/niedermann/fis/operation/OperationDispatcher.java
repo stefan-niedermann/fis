@@ -92,36 +92,38 @@ public class OperationDispatcher {
                     return;
                 }
 
-                logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
-
-                final File localFile = File.createTempFile("operation-", ".pdf");
-                logger.debug("→ Created temporary file: " + localFile.getName());
-
-                final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile));
-                final boolean success = ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream);
-                outputStream.close();
-
-                if (success) {
-                    logger.info("🚒 → Downloaded file to: " + localFile.getName());
-                    try {
-                        final String ocrText = tesseract.doOCR(localFile);
-                        final OperationDto dto = parser.parse(ocrText);
-                        notifyListeners(listeners, template, dto);
-                        logger.info("🚒 → Successfully extracted text from PDF file.");
-                    } catch (TesseractException e) {
-                        logger.error("🚒 → Could not parse", e);
-                    }
-                    if (!localFile.delete()) {
-                        logger.warn("🚒 → Could not delete downloaded FTP file!");
-                    }
-                } else {
-                    logger.warn("🚒 → Could not download new FTP file!");
-                }
+                downloadAndProcessFTPFile(ftpFile, listeners);
             } else {
                 logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
+        }
+    }
+
+    private void downloadAndProcessFTPFile(FTPFile ftpFile, Iterable<String> listeners) throws IOException {
+        logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
+
+        final File localFile = File.createTempFile("operation-", ".pdf");
+        logger.debug("→ Created temporary file: " + localFile.getName());
+
+        try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
+            if (ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream)) {
+                logger.info("🚒 → Downloaded content to: " + localFile.getName());
+
+                final String ocrText = tesseract.doOCR(localFile);
+                final OperationDto dto = parser.parse(ocrText);
+                notifyListeners(listeners, template, dto);
+                logger.info("🚒 → Successfully extracted text from PDF file.");
+            } else {
+                logger.warn("🚒 → Could not download new FTP file!");
+            }
+        } catch (TesseractException e) {
+            logger.error("🚒 → Could not parse", e);
+        } finally {
+            if (!localFile.delete()) {
+                logger.warn("🚒 → Could not delete downloaded FTP file!");
+            }
         }
     }
 

@@ -17,7 +17,7 @@ public class MittelfrankenSuedParserTest {
 
     @Test
     public void parseOperationFaxTest() throws IOException {
-        final int[] samples = new int[] {1};
+        final var samples = new int[] {1};
         final var parser = OperationFaxParser.create("mittelfranken-sued");
         for(var sample : samples) {
             final OperationDto sampleDto = parser.parse(getSampleInput(sample));

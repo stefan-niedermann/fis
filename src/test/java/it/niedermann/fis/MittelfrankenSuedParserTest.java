@@ -26,10 +26,10 @@ public class MittelfrankenSuedParserTest {
     }
 
     private String getSampleInput(@SuppressWarnings("SameParameterValue") int number) throws IOException {
-        return IOUtils.toString(new ClassPathResource("samples/mittelfranken-sued/sample-" + number + ".txt").getInputStream(), UTF_8);
+        return IOUtils.toString(new ClassPathResource("samples/mittelfranken-sued/" + number + "-sample.txt").getInputStream(), UTF_8);
     }
 
     private OperationInformationDto getSampleExpected(@SuppressWarnings("SameParameterValue") int number) throws IOException {
-        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/expected-" + number + ".json").getInputStream(), OperationInformationDto.class);
+        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/" + number + "-sample.json").getInputStream(), OperationInformationDto.class);
     }
 }

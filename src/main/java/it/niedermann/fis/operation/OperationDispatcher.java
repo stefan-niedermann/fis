@@ -103,10 +103,14 @@ public class OperationDispatcher {
 
                 if (success) {
                     logger.info("🚒 → Downloaded file to: " + localFile.getName());
-                    final String ocrText = tesseract.doOCR(localFile);
-                    final OperationDto dto = parser.parse(ocrText);
-                    notifyListeners(listeners, template, dto);
-                    logger.info("🚒 → Successfully extracted text from PDF file.");
+                    try {
+                        final String ocrText = tesseract.doOCR(localFile);
+                        final OperationDto dto = parser.parse(ocrText);
+                        notifyListeners(listeners, template, dto);
+                        logger.info("🚒 → Successfully extracted text from PDF file.");
+                    } catch (TesseractException e) {
+                        logger.error("🚒 → Could not parse", e);
+                    }
                     if (!localFile.delete()) {
                         logger.warn("🚒 → Could not delete downloaded FTP file!");
                     }
@@ -116,8 +120,6 @@ public class OperationDispatcher {
             } else {
                 logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
             }
-        } catch (TesseractException e) {
-            logger.error("🚒 → Could not parse", e);
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
         }

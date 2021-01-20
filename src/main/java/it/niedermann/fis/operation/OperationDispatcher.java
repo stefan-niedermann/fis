@@ -75,7 +75,7 @@ public class OperationDispatcher {
     }
 
     @Scheduled(fixedDelayString = "${ftp.poll.interval}")
-    public void dispatch() {
+    public void pollOperations() {
         final var listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
             logger.debug("Skip operations poll because no listeners are registered.");

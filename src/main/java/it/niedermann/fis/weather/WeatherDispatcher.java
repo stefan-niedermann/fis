@@ -39,7 +39,7 @@ public class WeatherDispatcher {
     }
 
     @Scheduled(fixedDelayString = "${weather.poll.interval}")
-    public void dispatch() throws IOException {
+    public void pollWeather() throws IOException {
         final var listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
             logger.debug("Skip weather poll because no listeners are registered.");
@@ -50,18 +50,27 @@ public class WeatherDispatcher {
             logger.debug("Skip weather push because it didn't change.");
         } else {
             lastWeatherInformation = newWeatherInformation;
-            for (var listener : listeners) {
-                logger.info("⛅ Sending new weather to \"" + listener + "\": " + newWeatherInformation.temperature + "°");
+            listeners.forEach(this::sendCurrentWeatherInformation);
+        }
+    }
 
-                final var headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-                headerAccessor.setSessionId(listener);
-                headerAccessor.setLeaveMutable(true);
-                template.convertAndSendToUser(
-                        listener,
-                        "/notification/weather",
-                        newWeatherInformation,
-                        headerAccessor.getMessageHeaders());
-            }
+    /**
+     * Sends the last available {@link WeatherDto} to the {@param listener}, as long as it is not {@code null}
+     */
+    public void sendCurrentWeatherInformation(String listener) {
+        if (lastWeatherInformation != null) {
+            logger.info("⛅ Sending weather information to \"" + listener + "\": " + lastWeatherInformation.temperature + "°");
+
+            final var headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+            headerAccessor.setSessionId(listener);
+            headerAccessor.setLeaveMutable(true);
+            template.convertAndSendToUser(
+                    listener,
+                    "/notification/weather",
+                    lastWeatherInformation,
+                    headerAccessor.getMessageHeaders());
+        } else {
+            logger.debug("Did not send current weather information because it is not yet available.");
         }
     }
 }

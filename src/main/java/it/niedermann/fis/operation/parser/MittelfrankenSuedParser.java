@@ -48,7 +48,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     }
 
     private static String findNote(String[] lines) {
-        final Collection<String> notes = new LinkedList<>();
+        final var notes = new LinkedList<String>();
         int cursor = 0;
         while (cursor < lines.length && !lines[cursor].contains("BEMERKUNG")) {
             cursor++;

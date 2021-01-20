@@ -30,6 +30,6 @@ public class MittelfrankenSuedParserTest {
     }
 
     private OperationInformationDto getSampleExpected(@SuppressWarnings("SameParameterValue") int number) throws IOException {
-        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/" + number + "-sample.json").getInputStream(), OperationInformationDto.class);
+        return new ObjectMapper().readValue(new ClassPathResource("samples/mittelfranken-sued/" + number + "-expected.json").getInputStream(), OperationInformationDto.class);
     }
 }

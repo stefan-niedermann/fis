@@ -1,4 +1,6 @@
 let clock;
+let infoWeatherTemperature;
+let infoWeatherIcon;
 let operation;
 let operationTopicKeyword;
 let operationTopicTags;
@@ -7,7 +9,6 @@ let operationVehicleList;
 
 let activeOperation = false;
 
-let icon_mapping;
 let keywords;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -16,19 +17,20 @@ document.addEventListener('DOMContentLoaded', () => {
     updateClock();
     Promise.all([
         fetch('/parameter').then(resp => resp.json()),
-        fetch('/json/icon-mapping.json').then(resp => resp.json()),
         fetch('/json/operation-keywords.json').then(resp => resp.json())
     ])
-        .then(([params, iconMapping, operationKeywords]) => {
-            console.log('Parameter:', params);
-            icon_mapping = iconMapping;
+        .then(([params, operationKeywords]) => {
+            console.info('⚙️ Parameter:', params);
             keywords = operationKeywords;
 
-            document.documentElement.setAttribute('lang', params.weather.lang);
+            // TODO
+            // document.documentElement.setAttribute('lang', params.weather.lang);
             if (!params.operation.highlight) {
                 document.documentElement.classList.add('no-highlight');
             }
 
+            infoWeatherTemperature = document.getElementById('info-weather-temperature');
+            infoWeatherIcon = document.getElementById('info-weather-icon');
             operation = document.getElementById('operation');
             operationTopicKeyword = document.getElementById('operation-topic-keyword');
             operationTopicTags = document.getElementById('operation-topic-tags');
@@ -36,8 +38,6 @@ document.addEventListener('DOMContentLoaded', () => {
             operationVehicleList = document.getElementById('operation-vehicles-list');
 
             const mainElement = document.querySelector('body>main');
-            setInterval(() => requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key), params.weather.pollInterval);
-            requestNewWeatherInformation(params.weather.lang, params.weather.location, params.weather.units, params.weather.key);
 
             new Promise((resolve) => {
                 let stompClient = Stomp.over(new SockJS('/socket'))
@@ -45,24 +45,28 @@ document.addEventListener('DOMContentLoaded', () => {
             })
                 .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
                 .then((stompClient) => stompSubscribe(stompClient, `/user/notification/operation`, (data) => {
-                    console.log('received operation push notification: ', data.body);
-                    // mainElement.classList.add('active-operation');
-                    // setTimeout(() => {
-                    //     console.debug('Timeout over… unset active operation.');
-                    //     mainElement.classList.remove('active-operation');
-                    //     resetOperationData();
-                    // }, params.operation.duration);
-                    // fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
+                    const operation = JSON.parse(data.body);
+                    console.info('🚒️ New operation:', operation);
+                    mainElement.classList.add('active-operation');
+                    setTimeout(() => {
+                        console.debug('Timeout over… unset active operation.');
+                        mainElement.classList.remove('active-operation');
+                        resetOperationData();
+                    }, params.operation.duration);
+                    fillOperationData(operation, (params.operation.highlight || '').toLowerCase());
                 }))
                 .then((stompClient) => stompSubscribe(stompClient, `/user/notification/weather`, (data) => {
-                        console.log('received weather push notification: ', data.body);
-                        // mainElement.classList.add('active-operation');
-                        // setTimeout(() => {
-                        //     console.debug('Timeout over… unset active operation.');
-                        //     mainElement.classList.remove('active-operation');
-                        //     resetOperationData();
-                        // }, params.operation.duration);
-                        // fillOperationData(JSON.parse(data.body).payload, (params.operation.highlight || '').toLowerCase());
+                        const weather = JSON.parse(data.body);
+                        console.info('⛅️ New weather:', weather);
+                        if (!activeOperation) {
+                            if (weather.isDay) {
+                                document.documentElement.classList.remove('dark-theme');
+                            } else {
+                                document.documentElement.classList.add('dark-theme');
+                            }
+                        }
+                        infoWeatherTemperature.innerText = formatTemperature(weather.temperature);
+                        infoWeatherIcon.setAttribute('src', `./icons/${weather.icon}.svg`);
                     })
                 );
         });
@@ -136,34 +140,7 @@ const getOperationKeyword = (keyword) => {
     return '';
 };
 
-const requestNewWeatherInformation = (lang, location, units, key) => {
-    if (!activeOperation) {
-        fetch(`https://api.openweathermap.org/data/2.5/weather?lang=${lang}&${isNaN(parseInt(location)) ? 'q' : 'id'}=${location}&units=${units}&appId=${key}`)
-            .then(data => data.json())
-            .then(data => {
-                if (isDay(data.sys.sunrise, data.sys.sunset)) {
-                    document.documentElement.classList.remove('dark-theme');
-                } else {
-                    document.documentElement.classList.add('dark-theme');
-                }
-                return data;
-            })
-            .then(data => {
-                document.getElementById('info-weather-temperature').innerText = formatTemperature(data.main.temp);
-                document.getElementById('info-weather-icon').setAttribute('src', mapOpenWeatherMapIconToImageUrl(data.weather[0].id, data.sys.sunrise, data.sys.sunset));
-            });
-    }
-};
 const formatTemperature = (temperature) => `${(Math.round(temperature * 100) / 100).toFixed((temperature > -10 && temperature < 10) ? 1 : 0)}°`;
-const mapOpenWeatherMapIconToImageUrl = (openWeatherMapId, sunrise, sunset) => {
-    return isDay(sunrise, sunset)
-        ? `./icons/${icon_mapping[openWeatherMapId].day}.svg`
-        : `./icons/${icon_mapping[openWeatherMapId].night}.svg`;
-};
-const isDay = (sunrise, sunset) => {
-    const currentTime = new Date().getTime();
-    return currentTime > sunrise * 1000 && currentTime < sunset * 1000;
-};
 
 const stompSubscribe = (stompClient, endpoint, callback) => {
     stompClient.subscribe(endpoint, callback)

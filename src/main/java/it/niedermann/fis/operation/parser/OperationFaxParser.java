@@ -3,7 +3,7 @@ package it.niedermann.fis.operation.parser;
 import it.niedermann.fis.operation.OperationDto;
 
 public interface OperationFaxParser {
-    OperationDto parse(String input);
+    OperationDto parse(String input) throws IllegalArgumentException;
 
     static OperationFaxParser create(String type) {
         //noinspection SwitchStatementWithTooFewBranches

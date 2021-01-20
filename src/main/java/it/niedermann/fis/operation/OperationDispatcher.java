@@ -17,9 +17,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
-import java.io.*;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.Optional;
 
@@ -73,16 +75,16 @@ public class OperationDispatcher {
 
     @Scheduled(fixedDelayString = "${ftp.poll.interval}")
     public void dispatch() {
-        final Collection<String> listeners = socketRegistry.getListeners();
+        final var listeners = socketRegistry.getListeners();
         if (listeners.size() == 0) {
             logger.debug("Skip operations poll because no listeners are registered.");
             return;
         }
         try {
-            final String finalLastPdfName = lastPdfName;
-            final Optional<FTPFile> ftpFileOptional = poll(finalLastPdfName);
-            if (ftpFileOptional.isPresent()) {
-                final FTPFile ftpFile = ftpFileOptional.get();
+            final var finalLastPdfName = lastPdfName;
+            final var optionalFtpFile = poll(finalLastPdfName);
+            if (optionalFtpFile.isPresent()) {
+                final FTPFile ftpFile = optionalFtpFile.get();
 
                 lastPdfName = ftpFile.getName();
                 logger.debug("Found a new file: \"" + ftpFile.getName() + "\"");
@@ -104,16 +106,16 @@ public class OperationDispatcher {
     private void downloadAndProcessFTPFile(FTPFile ftpFile, Iterable<String> listeners) throws IOException {
         logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
-        final File localFile = File.createTempFile("operation-", ".pdf");
+        final var localFile = File.createTempFile("operation-", ".pdf");
         logger.debug("→ Created temporary file: " + localFile.getName());
 
-        try (final OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
+        try (final var outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
             if (ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream)) {
                 outputStream.close();
                 logger.info("🚒 → Downloaded content to: " + localFile.getName());
 
-                final String ocrText = tesseract.doOCR(localFile);
-                final OperationDto dto = parser.parse(ocrText);
+                final var ocrText = tesseract.doOCR(localFile);
+                final var dto = parser.parse(ocrText);
                 notifyListeners(listeners, template, dto);
                 logger.info("🚒 → Successfully extracted text from PDF file.");
             } else {
@@ -121,6 +123,8 @@ public class OperationDispatcher {
             }
         } catch (TesseractException e) {
             logger.error("🚒 → Could not parse", e);
+        } catch (IllegalArgumentException e) {
+            logger.info("🚒 → The given file could not be validated as an operation fax.");
         } finally {
             if (!localFile.delete()) {
                 logger.warn("🚒 → Could not delete downloaded FTP file: " + localFile.getName());
@@ -142,9 +146,9 @@ public class OperationDispatcher {
     }
 
     private static void notifyListeners(Iterable<String> listeners, SimpMessagingTemplate template, OperationDto dto) {
-        for (String listener : listeners) {
+        for (var listener : listeners) {
             logger.debug("Sending operation to \"" + listener + "\": " + dto.keyword);
-            SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+            final var headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
             headerAccessor.setSessionId(listener);
             headerAccessor.setLeaveMutable(true);
             template.convertAndSendToUser(listener, "/notification/operation", dto, headerAccessor.getMessageHeaders());

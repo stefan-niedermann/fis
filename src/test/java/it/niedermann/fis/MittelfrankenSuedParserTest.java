@@ -11,11 +11,12 @@ import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class MittelfrankenSuedParserTest {
 
     @Test
-    public void parseTest() throws IOException {
+    public void parseOperationFaxTest() throws IOException {
         final int[] samples = new int[] {1};
         final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
         for(int sample : samples) {
@@ -23,6 +24,14 @@ public class MittelfrankenSuedParserTest {
             final OperationDto expectedDto = getSampleExpected(sample);
             assertEquals(expectedDto, sampleDto);
         }
+    }
+
+    @Test
+    public void parseNoOperationFaxTest() {
+        final OperationFaxParser parser = OperationFaxParser.create("mittelfranken-sued");
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
+        assertThrows(IllegalArgumentException.class, () -> parser.parse("This is any other fax but has nothing to do with an operation."));
     }
 
     private String getSampleInput(@SuppressWarnings("SameParameterValue") int number) throws IOException {

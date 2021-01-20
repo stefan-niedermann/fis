@@ -1,25 +1,30 @@
 package it.niedermann.fis.operation.parser;
 
 import it.niedermann.fis.operation.OperationDto;
+import org.springframework.util.ObjectUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 class MittelfrankenSuedParser implements OperationFaxParser {
 
-    final static List<Character> characters = Arrays.asList(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
+    private final static Collection<String> OP_FAX_REQUIRED_KEYWORDS = Arrays.asList(
+            "ILS MITTELFRANKEN SÜD",
+            "ALARMFAX"
+    );
+    private final static Collection<Character> UNDESIRED_CHARACTERS = Arrays.asList(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
 
     @Override
-    public OperationDto parse(String input) {
+    public OperationDto parse(String input) throws IllegalArgumentException {
         return parseFax(input);
     }
 
-    private static OperationDto parseFax(String input) {
-        final var dto = new OperationDto();
-        if (input == null || input.isEmpty()) {
-            return dto;
+    private static OperationDto parseFax(String input) throws IllegalArgumentException {
+        if(!isOperationFax(input)) {
+            throw new IllegalArgumentException("The input seems not to be an operation fax.");
         }
-
+        
+        final var dto = new OperationDto();
         final var lines = input.split("\n");
 
         dto.keyword = findValue("Stichwort", lines);
@@ -31,6 +36,16 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         dto.note = findNote(lines);
 
         return dto;
+    }
+
+    private static boolean isOperationFax(String input) {
+        if(ObjectUtils.isEmpty(input)) {
+            return false;
+        }
+        final String upper = input.toUpperCase(Locale.ROOT);
+        return OP_FAX_REQUIRED_KEYWORDS
+                .stream()
+                .anyMatch(upper::contains);
     }
 
     private static String findNote(String[] lines) {
@@ -100,10 +115,10 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     }
 
     private static String trimSpecialCharacters(String value) {
-        while (value.length() > 0 && characters.contains(value.charAt(0))) {
+        while (value.length() > 0 && UNDESIRED_CHARACTERS.contains(value.charAt(0))) {
             value = value.substring(1).stripLeading();
         }
-        while (value.length() > 0 && characters.contains(value.charAt(value.length() - 1))) {
+        while (value.length() > 0 && UNDESIRED_CHARACTERS.contains(value.charAt(value.length() - 1))) {
             value = value.substring(0, value.length() - 1).stripTrailing();
         }
         return value;

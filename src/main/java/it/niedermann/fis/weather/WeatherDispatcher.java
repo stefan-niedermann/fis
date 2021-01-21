@@ -5,8 +5,6 @@ import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -47,16 +45,12 @@ public class WeatherDispatcher {
         }
     }
 
-    public void pushOnRegister(String listener) {
-        if (lastWeatherInformation == null) {
-            logger.debug("Skip sending weather to \"" + listener + "\" because it is not there yet.");
-        } else {
-            final SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-            headerAccessor.setSessionId(listener);
-            headerAccessor.setLeaveMutable(true);
-            template.convertAndSendToUser(listener, "/notification/weather", lastWeatherInformation,
-                    headerAccessor.getMessageHeaders());
-            logger.info("⛅ Sending weather information to \"" + listener + "\": " + lastWeatherInformation.temperature + "°");
-        }
+    /**
+     * @return the last cached weather information if available, a freshly fetched info otherwise.
+     */
+    public WeatherDto getCurrentWeather() throws IOException {
+        return lastWeatherInformation == null
+                ? weatherProvider.fetchWeather()
+                : lastWeatherInformation;
     }
 }

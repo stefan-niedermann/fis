@@ -102,14 +102,19 @@ public class OperationDispatcher {
         try (final var outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
             if (ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream)) {
                 outputStream.close();
-                logger.info("🚒 → Starting OCR for \"" + localFile.getName() + "\"…");
 
+                logger.info("🚒 → Start OCR for \"" + localFile.getName() + "\"…");
                 final var ocrText = tesseract.doOCR(localFile);
-                final var dto = parser.parse(ocrText);
+                logger.debug("→ Finished OCR");
 
-                logger.debug("Broadcasting operation: " + dto.keyword);
+                logger.debug("→ Start parsing with " + parser.getClass().getSimpleName() + "…");
+                final var dto = parser.parse(ocrText);
+                logger.debug("→ Finished parsing");
+
+                logger.debug("→ Start Broadcasting operation: \"" + dto.keyword + "\"…");
                 template.convertAndSend("/notification/operation", dto);
-                logger.info("🚒 → OCR successful. Broadcast " + dto.keyword + ".");
+                logger.info("🚒 → Finished broadcast for \"" + dto.keyword + "\".");
+
             } else {
                 logger.warn("🚒 → Could not download new FTP file!");
             }

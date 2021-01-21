@@ -23,22 +23,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setInterval(updateClock, 5 * 1000);
     updateClock();
-    fetch('/parameter')
-        .then(resp => resp.json())
-        .then((params) => {
-            console.info('⚙️ Parameter:', params);
-            document.documentElement.setAttribute('lang', params.lang);
+    Promise.all([
+        fetch('/weather').then(resp => resp.json()),
+        fetch('/parameter').then(resp => resp.json())
+    ]).then(([weather, params]) => {
+        console.info('⚙️ Parameter:', params);
+        document.documentElement.setAttribute('lang', params.lang);
 
-            if (!params.operation.highlight) {
-                document.documentElement.classList.add('no-highlight');
-            }
+        handleIncomingWeather(weather);
 
-            initStompClient('/socket')
-                .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
-                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/weather`, (data) => handleIncomingWeather(JSON.parse(data.body))))
-                .then((stompClient) => stompSubscribe(stompClient, `/notification/operation`, (data) => handleIncomingOperation(JSON.parse(data.body), params)))
-                .then((stompClient) => stompSubscribe(stompClient, `/notification/weather`, (data) => handleIncomingWeather(JSON.parse(data.body))));
-        });
+        if (!params.operation.highlight) {
+            document.documentElement.classList.add('no-highlight');
+        }
+
+        initStompClient('/socket')
+            .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
+            .then((stompClient) => stompSubscribe(stompClient, `/notification/operation`, (data) => handleIncomingOperation(JSON.parse(data.body), params)))
+            .then((stompClient) => stompSubscribe(stompClient, `/notification/weather`, (data) => handleIncomingWeather(JSON.parse(data.body))));
+    });
 });
 
 const handleIncomingWeather = (weather) => {

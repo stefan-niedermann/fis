@@ -1,0 +1,44 @@
+na FAX mm FAX mm FAX mm FAX mmekın FAX wenns FAX enden
+Absender : ILS MITTELFRANKEN SÜD .
+Fax : +49 (1234) / 9876543
+Termin :
+Einsatznummer: T 5.3 123456 1234
+a“ MITTEILER „Anm
+A EINSATZORT nm
+Straße : Musterstraße
+‚Haus-Nr. : 1
+Ort : 99999 Musterort - Mustergemeinde Mustergemeinde
+Objekt :
+Station ;
+X=1234567.98
+Y=1234567.98
+Tamm ZIELORT
+Straße : Haus-Nr. : ;
+Ort :
+Objekt ı
+Station :
+mm PATIENT ELLE
+um EINSATZGRUND - m m m
+Schlagw.: #T2410#Rettung#Wohnung öffnen akut .
+Stichwort: THL P EINGESCHLOSSEN
+Se FINSATZMITTEL. +
+Name : 5.3.2 RH FF Musterwehr
+Alarmiert : 31.12.2019 07:11:32
+Aus :
+Name : 5.3.2 RH Florian Musterwehr 42/1
+Alarmiert + 31.12.2019 07:11:32
+Aus :
+Name : 5.3.2 RH Florian Musterkreis Land 3/1 (KBM Mustergem./Anderegemeinde)
+Alarmiert ı 31.12.2019 07:11:32
+Aus :
+Name : 5.3.2 RH Florian Elsewhere 40/1
+Alarmiert + 31.12.2019 07:11:33
+Aus :
+m BEMERKUNG: nr
+Sturz / Schlüssel steckt von innen
+m  ALARMFAX- ENDE mr
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes , insbesondere personenbezogene Daten, dürfen
+ausschließlich für einsatzbezogene Zwecke verwendet werden. Der
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+diesen Informationen erhalten.

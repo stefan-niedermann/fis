@@ -1,0 +1,42 @@
+=== FAX ==----- FAX ------ FAX ------ FAX ------ FAX ------ FAX -------
+Absender : ILS MITTELFRANKEN SÜD
+Fax : +49 (1234) / 9876543
+Termin z
+Einsatznummer: T 5.3 123456 123
+u MITTEILER
+u EINSATZORT A
+Straße : 5.3 B123 (880) Musterort <> LkrGrenze AN /Höhe Anderswo
+Haus-Nr. : 2
+Ort : 99999 5.3.2 RH B123 Lkr. Musterkreis
+Objekt :
+Station :
+X=1234567. 987654
+Y=1234567.987654
+A nn
+Straße : Haus-Nr. :
+Ort :
+Objekt :
+Station $
+PATIENT re
+Ser EINSATZGRUND Senne
+Schlagw.: #T2711#klein#Baum auf Straße
+Stichwort: THL 1
+u -- EINSATZMITTEL A
+Name : 5.3.2 RH FF Musterwehr
+Alarmiert : 28.02.2020 06:19:56
+Aus :
+Name : 5.3.2 RH Florian Musterwehr 48/1
+Alarmiert : 28.02.2020 06:19:56
+Aus :
+Name : 5.3.2 RH Florian Musterwehr 42/1
+Alarmiert : 28.02.2020 06:19:56
+Aus :
+Ser BEMERKUNG rennen
+@ RH 99
+am Berg höhe Musterort
+See rrrr------ ALARMFAX ENDE rennen
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes , insbesondere personenbezogene Daten, dürfen
+ausschließlich für einsatzbezogene Zwecke verwendet werden. Der
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+diesen Informationen erhalten.

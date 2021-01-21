@@ -1,0 +1,49 @@
+Sy Tote 178)9988878  Mıı [m o4.07.2020 IO_ 8:28 ZA
+==... FAX ------ FAX ------ FAX =----- FAX ------ FAX ------ FAX -------
+Absender : ILS MITTELFRANKEN SÜD
+Fax : +49 (1234) / 9876543
+Termin : |
+Einsatznummer: B 5.3 123456 123 ;
+N a
+a
+Straße : Musterwehr
+Haus-Nr. : 5
+Ort : 99999 Musterort - Mustergemeinde Mustergemeinde .
+
+Objekt : 5.3.2 RH FA Musterfirma Businessart Musterort
+Station :
+X=1234567.98
+Y=1234567.98
+u ZIELORT A
+Straße : Haus-Nr. : :
+Ort :
+Objekt : ;
+Station :
+A
+| A EINSATZGRUND nn
+Schlagw.: #B1710#Meldeanlage#Brandmeldeanlage
+Stichwort: B BMA
+u -- EINSATZMITTEL
+Name : 5.3.2 RH FF Musterwehr
+Alarmiert : 04.07.2020 08:27:03
+Aus z
+Name : 5.3.2 RH Florian Musterwehr 42/1
+Alarmiert : 04.07.2020 08:27:03
+Aus z
+Name : 5.3.2 RH Florian Musterkreis Land 3/1 (KBM Mustergem./Anderegemeinde)
+Alarmiert : 04.07.2020 08:27:04 . . ;
+Aus : S
+Name : 5.3.2 RH Florian Musterkreis Land 2/1 (KBI Bereich 1)
+Alarmiert : 04.07.2020 08:27:04
+Aus : e
+Name : 5.3.2 RH Florian Mustergemeinde 40/1
+Alarmiert : 04.07.2020 08:27:05
+_ Aus :
+u BEMERKUNG rennen
+53021133-03: Brandmelder über BMZ ;
+u ---------- ALARMFAX ENDE ernennen
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes , insbesondere personenbezogene Daten, dürfen
+ausschließlich für einsatzbezogene Zwecke verwendet werden. Der
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+diesen Informationen erhalten.

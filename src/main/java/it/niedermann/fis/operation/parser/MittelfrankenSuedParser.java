@@ -1,6 +1,8 @@
 package it.niedermann.fis.operation.parser;
 
 import it.niedermann.fis.operation.OperationDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
@@ -8,10 +10,26 @@ import java.util.stream.Collectors;
 
 class MittelfrankenSuedParser implements OperationFaxParser {
 
-    private final static Collection<String> OP_FAX_REQUIRED_KEYWORDS = Arrays.asList(
-            "ILS MITTELFRANKEN SÜD", "ALARMFAX", "EINSATZGRUND", "EINSATZMITTEL", "ILS MF-S"
-    );
-    private final static Collection<Character> UNDESIRED_CHARACTERS = Arrays.asList(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
+    private static final Logger logger = LoggerFactory.getLogger(MittelfrankenSuedParser.class);
+
+    /**
+     * A list of all operation keywords, uppercase and sorted by length.
+     *
+     * @see <a href="https://www.stmi.bayern.de/assets/stmi/sus/rettungswesen/id3_26e_03_voe_03_fachthema_abek_in_by_einsatzstichwoerter_anl_2-1-4_20170307.pdf">stmi.bayern.de</a>
+     */
+    private static final Collection<String> OP_KEYWORDS = List.of("ABC GEFAHRSTOFFMELDEANLAGE", "INF ÖFFENTLICHKEITSARBEIT", "EINSATZLEITUNG FEUERWEHR", "THL HUBSCHRAUBERLANDUNG", "THL VU SCHIFF KOLLISION", "SON HUBSCHRAUBERLANDUNG", "SON HILFE / SONSTIGES", "INF APOTHEKENAUSKUNFT", "INF HOCHWASSERMELDUNG", "INF VERKEHRSSICHERUNG", "INF ZAHNARZTNOTDIENST", "MED. TASK FORCE (MTF)", "THL GROSSTIERRETTUNG", "THL P EINGESCHLOSSEN", "ABC THL BIO / CHEMIE", "RD HILFE / SONSTIGES", "SON THW BEREITSCHAFT", "INF KASSENÄRZTLICHER", "INF SICHERHEITSWACHE", "GERÄTESATZ WALDBRAND", "THL FIRST RESPONDER", "THL GEBÄUDEEINSTURZ", "THL P RETTUNG H / T", "SON MOTORRADSTREIFE", "BEREITSCHAFTSDIENST", "INF LUFTBEOBACHTUNG", "INF UNWETTERWARNUNG", "DEKON-EINSATZKRÄFTE", "THL P STRASSENBAHN", "THL VU SCHIFF LECK", "ABC B BIO / CHEMIE", "EINSATZLEITUNG THW", "THL BOMBENDROHUNG", "THL P VERSCHÜTTET", "THL VU FLUGZEUG 1", "THL VU FLUGZEUG 2", "RD INFEKT GR4 / E", "SON ÜBERÖRTLICHER", "INF WACHBESETZUNG", "EINSATZLEITER BWB", "B SCHIENENTUNNEL", "B STRASSENTUNNEL", "THL RETTUNGSKORB", "RD MANV 51 – 100", "EINSATZLEITER RD", "EINSATZLEITER WR", "SCHWERG. PATIENT", "KATS-SONDERPLÄNE", "B ELEKTROANLAGE", "THL BELEUCHTUNG", "RD MANV 10 – 15", "RD MANV 16 – 25", "RD MANV 26 – 50", "SON BELEUCHTUNG", "INF ABNAHME BMA", "INF BMA STÖRUNG", "INF EIGENUNFALL", "SEG VERPFLEGUNG", "WASSERFÖRDERUNG", "WASSERTRANSPORT", "THL BOMBENFUND", "THL TRAGEHILFE", "ABC KRAFTSTOFF", "RD ABSICHERUNG", "RD BERGRETTUNG", "RD EISUNFALL 1", "RD EISUNFALL 2", "RD EISUNFALL 3", "RD MANV AB 100", "RD TAUCHUNFALL", "RD ÜBERÖRTLICH", "RD WASSERNOT 0", "RD WASSERNOT 1", "RD WASSERNOT 2", "RD WASSERNOT 3", "RD WASSERNOT 4", "RD WASSERNOT 5", "SON EINGLEISEN", "SON TRAGEHILFE", "INF GIFTNOTRUF", "INF PROBEALARM", "INF SAN-DIENST", "ERSTVERSORGUNG", "RETTUNGSZUG RD", "SEG BEHANDLUNG", "THL ERKUNDUNG", "ABC EXPLOSION", "ABC ÖL WASSER", "INF BMA PROBE", "SEG BETREUUNG", "SEG TRANSPORT", "THL P AUFZUG", "THL P U-BAHN", "THL UNWETTER", "ABC THL ATOM", "RD BETREUUNG", "RD KTP / RTW", "SON PSNV (B)", "SON PSNV (E)", "GEFAHRGUTZUG", "HUNDESTAFFEL", "THL AMOK FW", "THL P STROM", "THL SCHIENE", "ABC ÖL LAND", "RD SONSTIGE", "INF AUSFALL", "B 2 PERSON", "B 3 PERSON", "THL WASSER", "THL VU ZUG", "ABC B ATOM", "RD AMOK RD", "THL P ZUG", "RD 2-KIND", "SEG CBRNE", "B SCHIFF", "UG SANEL", "EINSATZ", "SEG IUK", "SEG T+S", "SEG THW", "B BOOT", "B WALD", "RD ITH", "RD ITW", "RD KTP", "RD VEF", "MESSEN", "UG ÖEL", "WARNEN", "B BMA", "B ZUG", "THL 1", "THL 2", "THL 3", "THL 4", "THL 5", "ABC 1", "ABC 2", "ABC 3", "ABC B", "SANEL", "RD 1", "RD 2", "RD 3", "RD 4", "RD 5", "B 1", "B 2", "B 3", "B 4", "B 5", "B 6", "B 7", "B 8", "ÖEL", "FW");
+    /**
+     * A list of possible terminating string literals, uppercase and sorted by most probable case.
+     */
+    private static final Collection<String> OP_FAX_END = List.of("ALARMFAX ENDE", "ALARMFAX-ENDE", "ALARMFAX- ENDE", "RECHTLICHER HINWEIS");
+    /**
+     * A list of uppercase words which indicate that this is an actual operation fax.
+     */
+    private static final Collection<String> OP_FAX_REQUIRED_KEYWORDS = List.of("ILS MITTELFRANKEN SÜD", "ALARMFAX", "EINSATZGRUND", "EINSATZMITTEL", "ILS MF-S");
+    /**
+     * A list of common OCR mistakes which should be purged from the input.
+     */
+    private static final Collection<Character> UNDESIRED_CHARACTERS = List.of(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
 
     @Override
     public OperationDto parse(String input) throws IllegalArgumentException {
@@ -19,26 +37,40 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     }
 
     private static OperationDto parseFax(String input) throws IllegalArgumentException {
-        if(!isOperationFax(input)) {
+        if (!isOperationFax(input)) {
             throw new IllegalArgumentException("The input seems not to be an operation fax.");
         }
-        
+
         final var dto = new OperationDto();
         final var lines = input.split("\n");
 
-        dto.keyword = findValue("Stichwort", lines);
-        dto.tags = findTags(lines);
-        dto.street = findStreet(lines);
-        dto.number = findValue("Haus-Nr.", lines);
-        dto.location = findLocation(lines);
-        dto.vehicles = findVehicles(lines);
-        dto.note = findNote(lines);
+        runSafe("keyword", () -> dto.keyword = findKeyword(lines));
+        runSafe("tags", () -> dto.tags = findTags(lines));
+        runSafe("street", () -> dto.street = findStreet(lines));
+        runSafe("number", () -> dto.number = findValue("Haus-Nr.", lines));
+        runSafe("location", () -> dto.location = findLocation(lines));
+        runSafe("vehicles", () -> dto.vehicles = findVehicles(lines));
+        runSafe("note", () -> dto.note = findNote(lines));
 
         return dto;
     }
 
+    /**
+     * We should not stop trying to get the extract the content of the operation if one part of the extraction fails unexpectedly
+     *
+     * @param subject  just a hint in case an exception occurs about where to look
+     * @param runnable the actual extraction
+     */
+    private static void runSafe(String subject, Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            logger.warn("Error while trying to find " + subject, e);
+        }
+    }
+
     private static boolean isOperationFax(String input) {
-        if(ObjectUtils.isEmpty(input)) {
+        if (ObjectUtils.isEmpty(input)) {
             return false;
         }
         final var upper = input.toUpperCase(Locale.ROOT);
@@ -50,14 +82,30 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     private static String findNote(String[] lines) {
         final var notes = new LinkedList<String>();
         int cursor = 0;
-        while (cursor < lines.length && !lines[cursor].contains("BEMERKUNG")) {
+        while (cursor < lines.length && !lines[cursor].toUpperCase(Locale.ROOT).contains("BEMERKUNG")) {
             cursor++;
         }
-        while (cursor < lines.length && !lines[cursor + 1].contains("ALARMFAX ENDE")) {
+        while (cursor + 1 < lines.length && !lineContainsEnd(lines[cursor + 1])) {
             cursor++;
             notes.add(trimSpecialCharacters(lines[cursor]));
         }
-        return String.join("\n", notes);
+        return trimSpecialCharacters(String.join("\n", notes));
+    }
+
+    private static boolean lineContainsEnd(String line) {
+        final var upper = line.toUpperCase(Locale.ROOT);
+        return OP_FAX_END.stream().anyMatch(upper::contains);
+    }
+
+    private static String findKeyword(String[] lines) {
+        final var value = findValue("Stichwort", lines);
+        // In case the found value contains any more unwanted characters
+        for (var knownKeyword : OP_KEYWORDS) {
+            if (value.contains(knownKeyword)) {
+                return knownKeyword;
+            }
+        }
+        return value;
     }
 
     private static String[] findTags(String[] lines) {
@@ -85,7 +133,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
 
     private static String[] findVehicles(String[] lines) {
         final var term = "Name";
-        final var hits = new ArrayList<String>();
+        final var hits = new LinkedList<String>();
         for (var line : lines) {
             final var cleanedLine = trimSpecialCharacters(line);
             if (cleanedLine.startsWith(term)) {
@@ -96,7 +144,9 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         return hits.stream()
                 .map(vehicle -> vehicle.replace("Florian", ""))
                 .map(MittelfrankenSuedParser::trimSpecialCharacters)
-                .map(vehicle -> vehicle.replace("Länd", "Land"))
+                .map(vehicle -> vehicle.replace("änd", "and"))
+                .map(vehicle -> vehicle.replace(".RH", "RH"))
+                .map(vehicle -> vehicle.replaceAll("\\s+", " "))
                 .filter(potentialVehicle -> !potentialVehicle.isEmpty())
                 .collect(Collectors.toCollection(LinkedHashSet::new))
                 .toArray(String[]::new);
@@ -120,6 +170,6 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         while (value.length() > 0 && UNDESIRED_CHARACTERS.contains(value.charAt(value.length() - 1))) {
             value = value.substring(0, value.length() - 1).stripTrailing();
         }
-        return value;
+        return value.trim();
     }
 }

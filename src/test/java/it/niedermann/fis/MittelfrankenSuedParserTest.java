@@ -6,23 +6,33 @@ import it.niedermann.fis.operation.parser.OperationFaxParser;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class MittelfrankenSuedParserTest {
 
     @Test
     public void parseOperationFaxTest() throws IOException {
-        final var samples = new int[] {1};
+        final var samples = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
         final var parser = OperationFaxParser.create("mittelfranken-sued");
-        for(var sample : samples) {
-            final OperationDto sampleDto = parser.parse(getSampleInput(sample));
-            final OperationDto expectedDto = getSampleExpected(sample);
-            assertEquals(expectedDto, sampleDto);
+        for (var sample : samples) {
+            final var expected = getSampleExpected(sample);
+            final var input = getSampleInput(sample);
+
+            final var stopWatch = new StopWatch();
+
+            stopWatch.start();
+            final var sampleDto = parser.parse(input);
+            stopWatch.stop();
+
+            assertTrue(stopWatch.getTotalTimeSeconds() <= 1, "Sample " + sample + " took more than one second to parse.");
+            assertEquals("Failed to parse sample " + sample, expected, sampleDto);
         }
     }
 

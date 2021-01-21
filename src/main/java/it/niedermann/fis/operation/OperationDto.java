@@ -5,14 +5,14 @@ import java.util.Objects;
 
 public class OperationDto {
 
-    public String keyword;
-    public String[] tags;
-    public String[] vehicles;
-    public String note;
+    public String keyword = "";
+    public String[] tags = new String[0];
+    public String[] vehicles = new String[0];
+    public String note = "";
 
-    public String street;
-    public String number;
-    public String location;
+    public String street = "";
+    public String number = "";
+    public String location = "";
 
     @Override
     public boolean equals(Object o) {
@@ -28,5 +28,18 @@ public class OperationDto {
         result = 31 * result + Arrays.hashCode(tags);
         result = 31 * result + Arrays.hashCode(vehicles);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "OperationDto{" +
+                "keyword='" + keyword + '\'' +
+                ", tags=" + Arrays.toString(tags) +
+                ", vehicles=" + Arrays.toString(vehicles) +
+                ", note='" + note + '\'' +
+                ", street='" + street + '\'' +
+                ", number='" + number + '\'' +
+                ", location='" + location + '\'' +
+                '}';
     }
 }

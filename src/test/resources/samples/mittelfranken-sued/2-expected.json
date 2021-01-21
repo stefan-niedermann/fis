@@ -1,0 +1,17 @@
+{
+  "keyword": "THL UNWETTER",
+  "number": "7",
+  "street": "Musterstraße",
+  "location": "99999 Musterort - Mustergemeinde",
+  "tags": [
+    "T3518",
+    "Unwetter",
+    "Gebäude sichern"
+  ],
+  "vehicles": [
+    "5.3.2 RH Musterwehr 48/1",
+    "5.3.2 RH Faxversand an KEZ RH",
+    "5.3.2 RH FF Musterwehr"
+  ],
+  "note": "@ RH 3\nMetallverkleidung des Dachs droht sich durch den starken Wind zu lösen"
+}

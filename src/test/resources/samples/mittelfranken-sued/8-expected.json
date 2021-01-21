@@ -1,0 +1,19 @@
+{
+  "keyword": "B BMA",
+  "street": "Musterwehr",
+  "number": "5",
+  "location": "99999 Musterort - Mustergemeinde",
+  "tags": [
+    "B1710",
+    "Meldeanlage",
+    "Brandmeldeanlage"
+  ],
+  "vehicles": [
+    "5.3.2 RH FF Musterwehr",
+    "5.3.2 RH Musterwehr 42/1",
+    "5.3.2 RH Musterkreis Land 3/1 (KBM Mustergem. /Anderegemeinde)",
+    "5.3.2 RH Musterkreis Land 2/1 (KBI Bereich 1)",
+    "5.3.2 RH Mustergemeinde 40/1"
+  ],
+  "note": "12345678-12: Brandmelder über BMZ\nOP"
+}

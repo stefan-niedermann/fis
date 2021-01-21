@@ -1,0 +1,17 @@
+{
+  "keyword": "THL 1",
+  "number": "2",
+  "street": "5.3 B123 (880) Musterort <> LkrGrenze AN /Höhe Anderswo",
+  "location": "99999 5.3.2 RH B123 Lkr. Musterkreis",
+  "tags": [
+    "T2711",
+    "klein",
+    "Baum auf Straße"
+  ],
+  "vehicles": [
+    "5.3.2 RH FF Musterwehr",
+    "5.3.2 RH Musterwehr 48/1",
+    "5.3.2 RH Musterwehr 42/1"
+  ],
+  "note": "@ RH 99\nam Berg höhe Musterort"
+}

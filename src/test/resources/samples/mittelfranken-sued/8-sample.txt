@@ -1,0 +1,47 @@
+m FAX mm FAX -- = FAX ---L-- FAX FAX ------ FAX ------- *
+Absender : ILS MITTELFRANKEN SÜD
+Fax : +49 (1234) / 9876543
+Termin : ; .
+Einsatznummer: B 5.3 123456 123
+EEE
+V Sm im EINSATZORT A km
+Straße : Musterwehr
+Haus-Nr. : 5
+Ort : 99999 Musterort - Mustergemeinde Mustergemeinde
+Objekt : 5.3.2 RH FA Musterfirma Businessart Musterort
+Station :
+X=1234567.98
+Y=1234567.98
+PAR ZIELORT mn
+Straße : Haus-Nr. :
+Ort :
+Objekt : ;
+Station :
+ne PATIENT I]
+em mu EINSATZGRUND: = rk kam
+Schlagw.: #B1710#Meldeanlage#Brandmeldeanlage
+Stichwort: B BMA
+Sem FINSATZMITTEL Lan
+Name : 5.3.2 RH FF Musterwehr
+Alarmiert : 15.07.2020 00:50:18
+Aus : :
+Name : 5.3.2 RH Florian Musterwehr 42/1
+Alarmiert : 15.07.2020 00:50:19 .
+Aus r E
+Name : 5.3.2 RH Florian Musterkreis Land 3/1 (KBM Mustergem. /Anderegemeinde)
+Alarmiert : 15.07.2020 00:50:19 .
+Aus : ; ;
+Name : 5.3.2 RH Florian Musterkreis Land 2/1 (KBI Bereich 1)
+Alarmiert : 15.07.2020 00:50:18
+Aus :
+Name : 5.3.2 RH Florian Mustergemeinde 40/1
+Alarmiert : 15.07.2020 00:50:18 N
+Aus :
+NEE Sn m“ BEMERKUNG: = a a Late
+12345678-12: Brandmelder über BMZ
+OP
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes , insbesondere personenbezogene Daten, dürfen
+ausschließlich für einsatzbezogene Zwecke‘ verwendet werden. Der
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+diesen Informationen erhalten. .

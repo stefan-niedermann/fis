@@ -1,0 +1,43 @@
+a FAX m FAX mann FAX =------ FAX nn FAX =------ FAX rennen
+; Absender : ILS MITTELFRANKEN SÜD C
+Fax : +49 (1234) / 9876543 :
+Termin : | S
+Einsatznummer: B 5.3 123456 123 ,
+nn MITTEILER I . ;
+NE EINSATZORT a
+Straße : Musterstraße
+Haus-Nr.
+; Ort : 99999 Musterort - Mustergemeinde Mustergemeinde
+Objekt :
+A Station. :
+X=1234567.98
+* - Y=1234567.98
+km + ZIELORT WS I np I a LT
+Straße : Haus-Nr. :
+Ort : :
+Objekt ;
+Station :
+VE DATTENT a
+DE A EINSATZGRUND a ER
+Schlagw.: #B1014#im Freien#Abfall-, Müll-, Papiercontainer )
+Stichwort: B 1
+ET EEE a a EINSATZMITTEL a a
+Name : 5.3.2 RH FF Musterwehr
+Alarmiert : 24.10.2020 14:10:15
+Aus ; :
+Name : Florian Musterwehr 42/1
+Alarmiert ; 24.10.2020 14:10:15
+Aus :
+Name : Florian Musterkreis Land 3/1
+Alarmiert : 24.10.2020 14:10:15
+Aus :
+Name : Florian Musterkreis Land 2/71
+Alarmiert : 24.10.2020 14:10:15
+Aus :
+- Name : Florian Mustergemeinde 40/1 ;
+Alarmiert : 24.10.2020 14:10:16 / ;
+Aus : ;
+ne BEMERKUNG WIE a m u
+Container qualmt leicht - vmtl. heiße Asche (sichtbar)
+im Gelände ehem. Brennerei
+WTA  ALARMFAX- ENDE A

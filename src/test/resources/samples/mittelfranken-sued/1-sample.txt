@@ -4,7 +4,7 @@ Sraaunn FAX sunnun FAX annmn- FAX =r--7u FAX uumun FAX mrz7u0 FAX enmmnmm
 . Absender : ILS MITTELFRANKEN SÜD ; ;
 * Fax : +49 (9876) / 5432101
 ' Termin z ' )
-Einsatznummer: B 5.3 201024 630 ; ; ' ;.
+Einsatznummer: B 5.3 123456 123; ; ' ;.
 rk anumum  MITTEILER -4=nnnuheunenrer rennen
 anna akkamn an amr Eu rumnm EINSATZORT -+u-=nuuur en nenn Eee emnnn em nne
 ; Straße : Musterstraße ;
@@ -30,10 +30,10 @@ Aus : ; ; ; ;
 Name : Florian Musterwehr 24/1
 Alarmiert : 12.12.2012 14:10:15
 Aus : ;
-Name : Florian Roth Land 7/8 ; .
+Name : Florian Musterkreis Land 7/8 ; .
 ; Alarmiert : 12.12.2012 14:10:15
 Aus : ; .
-; Name : Florian Roth Länd 9/5 ; ;
+; Name : Florian Musterkreis Länd 9/5 ; ;
 Alarmiert : 12.12.2012 14:16:15
 Aus ;
 Name ;. Florian Mustergemeinde 14/5 ;

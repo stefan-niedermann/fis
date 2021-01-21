@@ -30,8 +30,7 @@ public class SocketController {
         final var listener = stompHeaderAccessor.getSessionId();
         logger.info("Registered new socket client: " + listener);
         socketRegistry.add(listener);
-        weatherDispatcher.pollWeather();
-        weatherDispatcher.sendCurrentWeatherInformation(listener);
+        weatherDispatcher.pollWeather(true);
     }
 
     @MessageMapping("/unregister")

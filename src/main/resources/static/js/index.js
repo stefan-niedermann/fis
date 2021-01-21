@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }, params.operation.duration);
                     fillOperationData(operation, (params.operation.highlight || '').toLowerCase());
                 }))
-                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/weather`, (data) => {
+                .then((stompClient) => stompSubscribe(stompClient, `/notification/weather`, (data) => {
                         const weather = JSON.parse(data.body);
                         console.info('⛅️ New weather:', weather);
                         if (!activeOperation) {

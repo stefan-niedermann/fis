@@ -1,4 +1,4 @@
-package it.niedermann.fis.socket;
+package it.niedermann.fis.websocket;
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;

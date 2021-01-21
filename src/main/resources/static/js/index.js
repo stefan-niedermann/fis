@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 stompClient.connect({}, () => resolve(stompClient))
             })
                 .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
-                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/operation`, (data) => {
+                .then((stompClient) => stompSubscribe(stompClient, `/notification/operation`, (data) => {
                     const operation = JSON.parse(data.body);
                     console.info('🚒️ New operation:', operation);
                     const mainElement = document.querySelector('body>main');

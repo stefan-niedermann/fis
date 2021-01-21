@@ -1,7 +1,6 @@
 package it.niedermann.fis.operation;
 
 import it.niedermann.fis.operation.parser.OperationFaxParser;
-import it.niedermann.fis.socket.SocketRegistry;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -10,8 +9,6 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -31,7 +28,6 @@ public class OperationDispatcher {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationDispatcher.class);
 
-    private final SocketRegistry socketRegistry;
     private final SimpMessagingTemplate template;
 
     private final ITesseract tesseract;
@@ -45,7 +41,6 @@ public class OperationDispatcher {
     private String ftpFileSuffix;
 
     public OperationDispatcher(
-            SocketRegistry socketRegistry,
             SimpMessagingTemplate template,
             @Value("${ftp.host}") String ftpUrl,
             @Value("${ftp.user}") String ftpUsername,
@@ -53,7 +48,6 @@ public class OperationDispatcher {
             @Value("#{new Long('${ftp.poll.interval}')}") Integer ftpPollInterval,
             @Value("${tesseract.tessdata}") String tessdataPath,
             @Value("${tesseract.lang}") String tessLang) throws IOException {
-        this.socketRegistry = socketRegistry;
         this.template = template;
 
         if (ObjectUtils.isEmpty(tessdataPath)) {
@@ -76,11 +70,6 @@ public class OperationDispatcher {
 
     @Scheduled(fixedDelayString = "${ftp.poll.interval}")
     public void pollOperations() {
-        final var listeners = socketRegistry.getListeners();
-        if (listeners.size() == 0) {
-            logger.debug("Skip operations poll because no listeners are registered.");
-            return;
-        }
         try {
             final var finalLastPdfName = lastPdfName;
             final var optionalFtpFile = poll(finalLastPdfName);
@@ -95,7 +84,7 @@ public class OperationDispatcher {
                     return;
                 }
 
-                downloadAndProcessFTPFile(ftpFile, listeners);
+                downloadAndProcessFTPFile(ftpFile);
             } else {
                 logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
             }
@@ -104,7 +93,7 @@ public class OperationDispatcher {
         }
     }
 
-    private void downloadAndProcessFTPFile(FTPFile ftpFile, Iterable<String> listeners) throws IOException {
+    private void downloadAndProcessFTPFile(FTPFile ftpFile) throws IOException {
         logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
         final var localFile = File.createTempFile("operation-", ".pdf");
@@ -117,7 +106,9 @@ public class OperationDispatcher {
 
                 final var ocrText = tesseract.doOCR(localFile);
                 final var dto = parser.parse(ocrText);
-                notifyListeners(listeners, template, dto);
+
+                logger.debug("Broadcasting operation: " + dto.keyword);
+                template.convertAndSend("/notification/operation", dto);
                 logger.info("🚒 → Successfully extracted text from PDF file.");
             } else {
                 logger.warn("🚒 → Could not download new FTP file!");
@@ -144,15 +135,5 @@ public class OperationDispatcher {
                 .limit(1)
                 .filter(file -> !Objects.equals(excludeFileName, file.getName()))
                 .findFirst();
-    }
-
-    private static void notifyListeners(Iterable<String> listeners, SimpMessagingTemplate template, OperationDto dto) {
-        for (var listener : listeners) {
-            logger.debug("Sending operation to \"" + listener + "\": " + dto.keyword);
-            final var headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
-            headerAccessor.setSessionId(listener);
-            headerAccessor.setLeaveMutable(true);
-            template.convertAndSendToUser(listener, "/notification/operation", dto, headerAccessor.getMessageHeaders());
-        }
     }
 }

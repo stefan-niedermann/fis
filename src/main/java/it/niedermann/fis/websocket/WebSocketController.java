@@ -1,4 +1,4 @@
-package it.niedermann.fis.socket;
+package it.niedermann.fis.websocket;
 
 import it.niedermann.fis.weather.WeatherDispatcher;
 import org.slf4j.Logger;
@@ -10,32 +10,20 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 
 @RestController
-public class SocketController {
+public class WebSocketController {
 
-    private final Logger logger = LoggerFactory.getLogger(SocketController.class);
+    private final Logger logger = LoggerFactory.getLogger(WebSocketController.class);
 
     private final WeatherDispatcher weatherDispatcher;
-    private final SocketRegistry socketRegistry;
 
-    public SocketController(
-            WeatherDispatcher weatherDispatcher,
-            SocketRegistry socketRegistry
-    ) {
+    public WebSocketController(WeatherDispatcher weatherDispatcher) {
         this.weatherDispatcher = weatherDispatcher;
-        this.socketRegistry = socketRegistry;
     }
 
     @MessageMapping("/register")
     public void start(StompHeaderAccessor stompHeaderAccessor) throws IOException {
         final var listener = stompHeaderAccessor.getSessionId();
         logger.info("Registered new socket client: " + listener);
-        socketRegistry.add(listener);
         weatherDispatcher.pollWeather(true);
-    }
-
-    @MessageMapping("/unregister")
-    public void stop(StompHeaderAccessor stompHeaderAccessor) {
-        logger.info("Unregistered socket client: " + stompHeaderAccessor.getSessionId());
-        socketRegistry.remove(stompHeaderAccessor.getSessionId());
     }
 }

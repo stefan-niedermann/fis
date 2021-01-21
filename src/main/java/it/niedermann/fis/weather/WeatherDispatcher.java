@@ -5,6 +5,8 @@ import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,23 +36,27 @@ public class WeatherDispatcher {
 
     @Scheduled(fixedDelayString = "${weather.poll.interval}")
     public void pollWeather() throws IOException {
-        pollWeather(false);
-    }
-
-    /**
-     * @param pushOnNoChange if {@code true}, this method will push the new information to users even though it did not change.
-     */
-    public void pollWeather(boolean pushOnNoChange) throws IOException {
-        logger.debug("PushOnNoChange: " + pushOnNoChange);
-
         final var newWeatherInformation = weatherProvider.fetchWeather();
 
-        if (pushOnNoChange || !Objects.equals(newWeatherInformation, lastWeatherInformation)) {
+        if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
+            logger.debug("Skip weather broadcast because it didn't change.");
+        } else {
             lastWeatherInformation = newWeatherInformation;
             template.convertAndSend("/notification/weather", lastWeatherInformation);
             logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.temperature + "°");
+        }
+    }
+
+    public void pushOnRegister(String listener) {
+        if (lastWeatherInformation == null) {
+            logger.debug("Skip sending weather to \"" + listener + "\" because it is not there yet.");
         } else {
-            logger.debug("Skip weather push because it didn't change.");
+            final SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+            headerAccessor.setSessionId(listener);
+            headerAccessor.setLeaveMutable(true);
+            template.convertAndSendToUser(listener, "/notification/weather", lastWeatherInformation,
+                    headerAccessor.getMessageHeaders());
+            logger.info("⛅ Sending weather information to \"" + listener + "\": " + lastWeatherInformation.temperature + "°");
         }
     }
 }

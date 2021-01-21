@@ -33,39 +33,38 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.documentElement.classList.add('no-highlight');
             }
 
-            new Promise((resolve) => {
-                let stompClient = Stomp.over(new SockJS('/socket'))
-                stompClient.connect({}, () => resolve(stompClient))
-            })
+            initStompClient('/socket')
                 .then((stompClient) => stompClientSendMessage(stompClient, '/register'))
-                .then((stompClient) => stompSubscribe(stompClient, `/notification/operation`, (data) => {
-                    const operation = JSON.parse(data.body);
-                    console.info('🚒️ New operation:', operation);
-                    const mainElement = document.querySelector('body>main');
-                    mainElement.classList.add('active-operation');
-                    setTimeout(() => {
-                        console.debug('Timeout over… unset active operation.');
-                        mainElement.classList.remove('active-operation');
-                        resetOperationData();
-                    }, params.operation.duration);
-                    fillOperationData(operation, (params.operation.highlight || '').toLowerCase());
-                }))
-                .then((stompClient) => stompSubscribe(stompClient, `/notification/weather`, (data) => {
-                        const weather = JSON.parse(data.body);
-                        console.info('⛅️ New weather:', weather);
-                        if (!activeOperation) {
-                            if (weather.isDay) {
-                                document.documentElement.classList.remove('dark-theme');
-                            } else {
-                                document.documentElement.classList.add('dark-theme');
-                            }
-                        }
-                        infoWeatherTemperature.innerText = `${(Math.round(weather.temperature * 100) / 100).toFixed((weather.temperature > -10 && weather.temperature < 10) ? 1 : 0)}°`;
-                        infoWeatherIcon.setAttribute('src', `./icons/${weather.icon}.svg`);
-                    })
-                );
+                .then((stompClient) => stompSubscribe(stompClient, `/user/notification/weather`, (data) => handleIncomingWeather(JSON.parse(data.body))))
+                .then((stompClient) => stompSubscribe(stompClient, `/notification/operation`, (data) => handleIncomingOperation(JSON.parse(data.body), params)))
+                .then((stompClient) => stompSubscribe(stompClient, `/notification/weather`, (data) => handleIncomingWeather(JSON.parse(data.body))));
         });
 });
+
+const handleIncomingWeather = (weather) => {
+    console.info('⛅️ New weather:', weather);
+    if (!activeOperation) {
+        if (weather.isDay) {
+            document.documentElement.classList.remove('dark-theme');
+        } else {
+            document.documentElement.classList.add('dark-theme');
+        }
+    }
+    infoWeatherTemperature.innerText = `${(Math.round(weather.temperature * 100) / 100).toFixed((weather.temperature > -10 && weather.temperature < 10) ? 1 : 0)}°`;
+    infoWeatherIcon.setAttribute('src', `./icons/${weather.icon}.svg`);
+}
+
+const handleIncomingOperation = (operation, params) => {
+    console.info('🚒️ New operation:', operation);
+    const mainElement = document.querySelector('body>main');
+    mainElement.classList.add('active-operation');
+    setTimeout(() => {
+        console.debug('Timeout over… unset active operation.');
+        mainElement.classList.remove('active-operation');
+        resetOperationData();
+    }, params.operation.duration);
+    fillOperationData(operation, (params.operation.highlight || '').toLowerCase());
+}
 
 const updateClock = () => {
     const date = new Date();
@@ -134,6 +133,11 @@ const getOperationKeyword = (keyword) => {
     }
     return '';
 };
+
+const initStompClient = (path) => new Promise((resolve) => {
+    const stompClient = Stomp.over(new SockJS(path))
+    stompClient.connect({}, () => resolve(stompClient))
+});
 
 const stompSubscribe = (stompClient, endpoint, callback) => {
     stompClient.subscribe(endpoint, callback)

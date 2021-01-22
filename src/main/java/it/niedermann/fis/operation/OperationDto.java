@@ -13,18 +13,19 @@ public class OperationDto {
     public String street = "";
     public String number = "";
     public String location = "";
+    public String object = "";
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         OperationDto that = (OperationDto) o;
-        return Objects.equals(keyword, that.keyword) && Arrays.equals(tags, that.tags) && Arrays.equals(vehicles, that.vehicles) && Objects.equals(note, that.note) && Objects.equals(street, that.street) && Objects.equals(number, that.number) && Objects.equals(location, that.location);
+        return Objects.equals(keyword, that.keyword) && Arrays.equals(tags, that.tags) && Arrays.equals(vehicles, that.vehicles) && Objects.equals(note, that.note) && Objects.equals(street, that.street) && Objects.equals(number, that.number) && Objects.equals(location, that.location) && Objects.equals(object, that.object);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(keyword, note, street, number, location);
+        int result = Objects.hash(keyword, note, street, number, location, object);
         result = 31 * result + Arrays.hashCode(tags);
         result = 31 * result + Arrays.hashCode(vehicles);
         return result;
@@ -40,6 +41,7 @@ public class OperationDto {
                 ", street='" + street + '\'' +
                 ", number='" + number + '\'' +
                 ", location='" + location + '\'' +
+                ", object='" + object + '\'' +
                 '}';
     }
 }

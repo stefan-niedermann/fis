@@ -29,7 +29,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     /**
      * A list of common OCR mistakes which should be purged from the input.
      */
-    private static final Collection<Character> UNDESIRED_CHARACTERS = List.of(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*');
+    private static final Collection<Character> UNDESIRED_CHARACTERS = List.of(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*', '|');
 
     @Override
     public OperationDto parse(String input) throws IllegalArgumentException {
@@ -49,10 +49,16 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         runSafe("street", () -> dto.street = findValue("Straße", lines));
         runSafe("number", () -> dto.number = findValue("Haus-Nr.", lines));
         runSafe("location", () -> dto.location = findLocation(lines));
+        runSafe("object", () -> dto.object = findObject(lines));
         runSafe("vehicles", () -> dto.vehicles = findVehicles(lines));
         runSafe("note", () -> dto.note = findNote(lines));
 
         return dto;
+    }
+
+    private static String findObject(String[] lines) {
+        var object = findValue("Objekt", lines);
+        return object.length() > 2 ? object : "";
     }
 
     /**
@@ -108,8 +114,8 @@ class MittelfrankenSuedParser implements OperationFaxParser {
             }
         }
         // When we didn't find anything by searching with findValue…
-        if(trimSpecialCharacters(value).isEmpty()) {
-            for(var line: lines) {
+        if (trimSpecialCharacters(value).isEmpty()) {
+            for (var line : lines) {
                 for (var knownKeyword : OP_KEYWORDS) {
                     if (line.toUpperCase(Locale.ROOT).contains(knownKeyword)) {
                         return knownKeyword;

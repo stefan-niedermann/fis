@@ -4,6 +4,7 @@ let infoWeatherIcon;
 let operation;
 let operationTopicKeyword;
 let operationTopicTags;
+let operationTopicNote;
 let operationLocation;
 let operationVehicleList;
 
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     operation = document.getElementById('operation');
     operationTopicKeyword = document.getElementById('operation-topic-keyword');
     operationTopicTags = document.getElementById('operation-topic-tags');
+    operationTopicNote = document.getElementById('operation-topic-note');
     operationLocation = document.getElementById('operation-location');
     operationVehicleList = document.getElementById('operation-vehicles-list');
 
@@ -61,7 +63,8 @@ const handleIncomingOperation = (operation, params) => {
     const mainElement = document.querySelector('body>main');
     mainElement.classList.add('active-operation');
     setTimeout(() => {
-        console.debug('Timeout over… unset active operation.');
+        // TODO reset this when a new operation arrived in the meantime.
+        console.debug('⏰ Timeout over… unset active operation.');
         mainElement.classList.remove('active-operation');
         resetOperationData();
     }, params.operation.duration);
@@ -79,6 +82,7 @@ const resetOperationData = () => {
     operation.removeAttribute('class');
     operationTopicKeyword.innerHTML = '';
     operationTopicTags.innerHTML = '';
+    operationTopicNote.innerHTML = '';
     operationLocation.innerHTML = '';
     operationVehicleList.innerHTML = '';
 }
@@ -87,7 +91,8 @@ const fillOperationData = (data, highlight) => {
     resetOperationData();
     operation.classList.add(getOperationTypeClass(data.keyword));
     operationTopicKeyword.innerHTML = getOperationKeyword(data.keyword);
-    operationLocation.innerHTML = `${data.street} ${data.number} ${data.location}`;
+    operationLocation.innerHTML = formatLocation(data.street, data.number, data.location, data.obj);
+    operationTopicNote.innerText = data.note;
     if (Array.isArray(data.tags)) {
         data.tags.forEach(tag => {
             const li = document.createElement('li');
@@ -109,6 +114,25 @@ const fillOperationData = (data, highlight) => {
             operationVehicleList.appendChild(li);
         });
     }
+}
+const formatLocation = (street, number, location, obj) => {
+    const streetWithNumber = number ? `${street} ${number}` : street;
+    if (streetWithNumber && location && obj) {
+        return `${obj}, ${streetWithNumber} ${location}`;
+    } else if (streetWithNumber && location && !obj) {
+        return `${streetWithNumber} ${location}`;
+    } else if (streetWithNumber && !location && obj) {
+        return `${obj} ${streetWithNumber}`;
+    } else if (!streetWithNumber && location && obj) {
+        return `${obj}, ${location}`;
+    } else if (streetWithNumber && !location && !obj) {
+        return streetWithNumber;
+    } else if (!streetWithNumber && location && !obj) {
+        return location;
+    } else if (!streetWithNumber && !location && obj) {
+        return obj;
+    }
+    return '';
 }
 
 const getOperationTypeClass = (keyword) => keywords.find(k => keyword.toLowerCase().startsWith(k)) || '';

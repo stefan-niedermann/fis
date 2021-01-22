@@ -168,3 +168,7 @@ main:not(.active-operation) > #operation {
     text-transform: uppercase;
     white-space: nowrap;
 }
+
+#operation #operation-topic #operation-topic-note {
+    display: none;
+}

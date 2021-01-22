@@ -3,7 +3,7 @@
   "number": "7",
   "street": "Musterstraße",
   "location": "99999 Musterort - Mustergemeinde",
-  "object": "",
+  "obj": "",
   "tags": [
     "T3518",
     "Unwetter",

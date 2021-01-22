@@ -49,7 +49,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         runSafe("street", () -> dto.street = findValue("Straße", lines));
         runSafe("number", () -> dto.number = findValue("Haus-Nr.", lines));
         runSafe("location", () -> dto.location = findLocation(lines));
-        runSafe("object", () -> dto.object = findObject(lines));
+        runSafe("object", () -> dto.obj = findObject(lines));
         runSafe("vehicles", () -> dto.vehicles = findVehicles(lines));
         runSafe("note", () -> dto.note = findNote(lines));
 

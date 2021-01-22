@@ -3,7 +3,7 @@
   "number": "2",
   "street": "5.3 B123 (880) Musterort <> LkrGrenze AN /Höhe Anderswo",
   "location": "99999 5.3.2 RH B123 Lkr. Musterkreis",
-  "object": "",
+  "obj": "",
   "tags": [
     "T2711",
     "klein",

@@ -9,4 +9,13 @@ public class ParameterDto {
         public long duration;
         public String highlight;
     }
+
+    @Override
+    public String toString() {
+        return "ParameterDto{" +
+                "language='" + language + '\'' +
+                ", operation.duration='" + operation.duration + '\'' +
+                ", operation.highlight=" + operation.highlight +
+                '}';
+    }
 }

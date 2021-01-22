@@ -19,4 +19,13 @@ public class WeatherDto {
     public int hashCode() {
         return Objects.hash(temperature, icon, isDay);
     }
+
+    @Override
+    public String toString() {
+        return "WeatherDto{" +
+                "temperature=" + temperature +
+                ", icon='" + icon + '\'' +
+                ", isDay=" + isDay +
+                '}';
+    }
 }

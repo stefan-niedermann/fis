@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import it.niedermann.fis.operation.OperationDto;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import org.apache.commons.io.IOUtils;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.util.StopWatch;
@@ -17,10 +18,16 @@ import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 public class MittelfrankenSuedParserTest {
 
+    private OperationFaxParser parser;
+
+    @BeforeEach
+    public void setup() {
+        this.parser = OperationFaxParser.create("mittelfranken-sued");
+    }
+
     @Test
     public void parseOperationFaxTest() throws IOException {
         final var samples = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
-        final var parser = OperationFaxParser.create("mittelfranken-sued");
         for (var sample : samples) {
             final var expected = getSampleExpected(sample);
             final var input = getSampleInput(sample);
@@ -38,7 +45,6 @@ public class MittelfrankenSuedParserTest {
 
     @Test
     public void parseNoOperationFaxTest() {
-        final var parser = OperationFaxParser.create("mittelfranken-sued");
         assertThrows(IllegalArgumentException.class, () -> parser.parse(null));
         assertThrows(IllegalArgumentException.class, () -> parser.parse(""));
         assertThrows(IllegalArgumentException.class, () -> parser.parse("This is any other fax but has nothing to do with an operation."));

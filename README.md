@@ -30,18 +30,16 @@ character recognition, parse the text to a machine-readable JSON file and displa
 
 ## Setup
 
-- Get an API key for [OpenWeatherMap](https://openweathermap.org/)
-- You will need at least a Java Runtime Environment 11 or higher
+- You will need at least a [Java Runtime Environment 11 or higher](https://java.com)
+- Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
 - Install `Tesseract`, on Ubuntu based systems, this is usually done with
   ```sh
   sudo apt install tesseract-ocr
   ```
-- The optical character software `Tesseract` expects the following environment variable to be set:
+- `Tesseract ≤ 4.0.x` expects the following environment variable to be set:
   ```sh
-  LC_ALL=C
+  export LC_ALL=C
   ```
-- Make sure that you pass the path to the `tessdata` folder as an argument. If it is not present, we'll assume, that it
-  is in the folder of the current user. You will need at least the trained data file for [your language](https://github.com/tesseract-ocr/tessdata_best).
 
 ## Run
 

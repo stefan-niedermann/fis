@@ -23,6 +23,8 @@ import java.util.Comparator;
 import java.util.Objects;
 import java.util.Optional;
 
+import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
+
 @Service
 public class OperationDispatcher {
 
@@ -51,7 +53,7 @@ public class OperationDispatcher {
         this.template = template;
 
         if (ObjectUtils.isEmpty(tessdataPath)) {
-            tessdataPath = System.getProperty("user.home") + "/tessdata";
+            tessdataPath = extractTessResources("tessdata").getAbsolutePath();
         }
         tesseract = new Tesseract();
         tesseract.setTessVariable("LC_ALL", "C");

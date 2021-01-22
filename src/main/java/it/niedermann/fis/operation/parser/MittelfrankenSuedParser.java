@@ -17,7 +17,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
      *
      * @see <a href="https://www.stmi.bayern.de/assets/stmi/sus/rettungswesen/id3_26e_03_voe_03_fachthema_abek_in_by_einsatzstichwoerter_anl_2-1-4_20170307.pdf">stmi.bayern.de</a>
      */
-    private static final Collection<String> OP_KEYWORDS = List.of("ABC GEFAHRSTOFFMELDEANLAGE", "INF ÖFFENTLICHKEITSARBEIT", "EINSATZLEITUNG FEUERWEHR", "THL HUBSCHRAUBERLANDUNG", "THL VU SCHIFF KOLLISION", "SON HUBSCHRAUBERLANDUNG", "SON HILFE / SONSTIGES", "INF APOTHEKENAUSKUNFT", "INF HOCHWASSERMELDUNG", "INF VERKEHRSSICHERUNG", "INF ZAHNARZTNOTDIENST", "MED. TASK FORCE (MTF)", "THL GROSSTIERRETTUNG", "THL P EINGESCHLOSSEN", "ABC THL BIO / CHEMIE", "RD HILFE / SONSTIGES", "SON THW BEREITSCHAFT", "INF KASSENÄRZTLICHER", "INF SICHERHEITSWACHE", "GERÄTESATZ WALDBRAND", "THL FIRST RESPONDER", "THL GEBÄUDEEINSTURZ", "THL P RETTUNG H / T", "SON MOTORRADSTREIFE", "BEREITSCHAFTSDIENST", "INF LUFTBEOBACHTUNG", "INF UNWETTERWARNUNG", "DEKON-EINSATZKRÄFTE", "THL P STRASSENBAHN", "THL VU SCHIFF LECK", "ABC B BIO / CHEMIE", "EINSATZLEITUNG THW", "THL BOMBENDROHUNG", "THL P VERSCHÜTTET", "THL VU FLUGZEUG 1", "THL VU FLUGZEUG 2", "RD INFEKT GR4 / E", "SON ÜBERÖRTLICHER", "INF WACHBESETZUNG", "EINSATZLEITER BWB", "B SCHIENENTUNNEL", "B STRASSENTUNNEL", "THL RETTUNGSKORB", "RD MANV 51 – 100", "EINSATZLEITER RD", "EINSATZLEITER WR", "SCHWERG. PATIENT", "KATS-SONDERPLÄNE", "B ELEKTROANLAGE", "THL BELEUCHTUNG", "RD MANV 10 – 15", "RD MANV 16 – 25", "RD MANV 26 – 50", "SON BELEUCHTUNG", "INF ABNAHME BMA", "INF BMA STÖRUNG", "INF EIGENUNFALL", "SEG VERPFLEGUNG", "WASSERFÖRDERUNG", "WASSERTRANSPORT", "THL BOMBENFUND", "THL TRAGEHILFE", "ABC KRAFTSTOFF", "RD ABSICHERUNG", "RD BERGRETTUNG", "RD EISUNFALL 1", "RD EISUNFALL 2", "RD EISUNFALL 3", "RD MANV AB 100", "RD TAUCHUNFALL", "RD ÜBERÖRTLICH", "RD WASSERNOT 0", "RD WASSERNOT 1", "RD WASSERNOT 2", "RD WASSERNOT 3", "RD WASSERNOT 4", "RD WASSERNOT 5", "SON EINGLEISEN", "SON TRAGEHILFE", "INF GIFTNOTRUF", "INF PROBEALARM", "INF SAN-DIENST", "ERSTVERSORGUNG", "RETTUNGSZUG RD", "SEG BEHANDLUNG", "THL ERKUNDUNG", "ABC EXPLOSION", "ABC ÖL WASSER", "INF BMA PROBE", "SEG BETREUUNG", "SEG TRANSPORT", "THL P AUFZUG", "THL P U-BAHN", "THL UNWETTER", "ABC THL ATOM", "RD BETREUUNG", "RD KTP / RTW", "SON PSNV (B)", "SON PSNV (E)", "GEFAHRGUTZUG", "HUNDESTAFFEL", "THL AMOK FW", "THL P STROM", "THL SCHIENE", "ABC ÖL LAND", "RD SONSTIGE", "INF AUSFALL", "B 2 PERSON", "B 3 PERSON", "THL WASSER", "THL VU ZUG", "ABC B ATOM", "RD AMOK RD", "THL P ZUG", "RD 2-KIND", "SEG CBRNE", "B SCHIFF", "UG SANEL", "EINSATZ", "SEG IUK", "SEG T+S", "SEG THW", "B BOOT", "B WALD", "RD ITH", "RD ITW", "RD KTP", "RD VEF", "MESSEN", "UG ÖEL", "WARNEN", "B BMA", "B ZUG", "THL 1", "THL 2", "THL 3", "THL 4", "THL 5", "ABC 1", "ABC 2", "ABC 3", "ABC B", "SANEL", "RD 1", "RD 2", "RD 3", "RD 4", "RD 5", "B 1", "B 2", "B 3", "B 4", "B 5", "B 6", "B 7", "B 8", "ÖEL", "FW");
+    private static final Collection<String> OP_KEYWORDS = List.of("ABC GEFAHRSTOFFMELDEANLAGE", "INF ÖFFENTLICHKEITSARBEIT", "EINSATZLEITUNG FEUERWEHR", "SON HILFE / SONSTIGES FW", "THL HUBSCHRAUBERLANDUNG", "THL VU SCHIFF KOLLISION", "SON HUBSCHRAUBERLANDUNG", "INF APOTHEKENAUSKUNFT", "INF HOCHWASSERMELDUNG", "INF VERKEHRSSICHERUNG", "INF ZAHNARZTNOTDIENST", "MED. TASK FORCE (MTF)", "THL GROSSTIERRETTUNG", "THL P EINGESCHLOSSEN", "ABC THL BIO / CHEMIE", "RD HILFE / SONSTIGES", "SON THW BEREITSCHAFT", "INF KASSENÄRZTLICHER", "INF SICHERHEITSWACHE", "GERÄTESATZ WALDBRAND", "THL FIRST RESPONDER", "THL GEBÄUDEEINSTURZ", "THL P RETTUNG H / T", "SON MOTORRADSTREIFE", "BEREITSCHAFTSDIENST", "INF LUFTBEOBACHTUNG", "INF UNWETTERWARNUNG", "DEKON-EINSATZKRÄFTE", "THL P STRASSENBAHN", "THL VU SCHIFF LECK", "ABC B BIO / CHEMIE", "EINSATZLEITUNG THW", "THL BOMBENDROHUNG", "THL P VERSCHÜTTET", "THL VU FLUGZEUG 1", "THL VU FLUGZEUG 2", "RD INFEKT GR4 / E", "SON ÜBERÖRTLICHER", "INF WACHBESETZUNG", "EINSATZLEITER BWB", "B SCHIENENTUNNEL", "B STRASSENTUNNEL", "THL RETTUNGSKORB", "RD MANV 51 – 100", "EINSATZLEITER RD", "EINSATZLEITER WR", "SCHWERG. PATIENT", "KATS-SONDERPLÄNE", "B ELEKTROANLAGE", "THL BELEUCHTUNG", "RD MANV 10 – 15", "RD MANV 16 – 25", "RD MANV 26 – 50", "SON BELEUCHTUNG", "INF ABNAHME BMA", "INF BMA STÖRUNG", "INF EIGENUNFALL", "SEG VERPFLEGUNG", "WASSERFÖRDERUNG", "WASSERTRANSPORT", "THL BOMBENFUND", "THL TRAGEHILFE", "ABC KRAFTSTOFF", "RD ABSICHERUNG", "RD BERGRETTUNG", "RD EISUNFALL 1", "RD EISUNFALL 2", "RD EISUNFALL 3", "RD MANV AB 100", "RD TAUCHUNFALL", "RD ÜBERÖRTLICH", "RD WASSERNOT 0", "RD WASSERNOT 1", "RD WASSERNOT 2", "RD WASSERNOT 3", "RD WASSERNOT 4", "RD WASSERNOT 5", "SON EINGLEISEN", "SON TRAGEHILFE", "INF GIFTNOTRUF", "INF PROBEALARM", "INF SAN-DIENST", "ERSTVERSORGUNG", "RETTUNGSZUG RD", "SEG BEHANDLUNG", "THL ERKUNDUNG", "ABC EXPLOSION", "ABC ÖL WASSER", "INF BMA PROBE", "SEG BETREUUNG", "SEG TRANSPORT", "THL P AUFZUG", "THL P U-BAHN", "THL UNWETTER", "ABC THL ATOM", "RD BETREUUNG", "RD KTP / RTW", "SON PSNV (B)", "SON PSNV (E)", "GEFAHRGUTZUG", "HUNDESTAFFEL", "THL AMOK FW", "THL P STROM", "THL SCHIENE", "ABC ÖL LAND", "RD SONSTIGE", "INF AUSFALL", "B 2 PERSON", "B 3 PERSON", "THL WASSER", "THL VU ZUG", "ABC B ATOM", "RD AMOK RD", "THL P ZUG", "RD 2-KIND", "SEG CBRNE", "B SCHIFF", "UG SANEL", "EINSATZ", "SEG IUK", "SEG T+S", "SEG THW", "B BOOT", "B WALD", "RD ITH", "RD ITW", "RD KTP", "RD VEF", "MESSEN", "UG ÖEL", "WARNEN", "B BMA", "B ZUG", "THL 1", "THL 2", "THL 3", "THL 4", "THL 5", "ABC 1", "ABC 2", "ABC 3", "ABC B", "SANEL", "RD 1", "RD 2", "RD 3", "RD 4", "RD 5", "B 1", "B 2", "B 3", "B 4", "B 5", "B 6", "B 7", "B 8", "ÖEL");
     /**
      * A list of possible terminating string literals, uppercase and sorted by most probable case.
      */
@@ -46,7 +46,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
 
         runSafe("keyword", () -> dto.keyword = findKeyword(lines));
         runSafe("tags", () -> dto.tags = findTags(lines));
-        runSafe("street", () -> dto.street = findStreet(lines));
+        runSafe("street", () -> dto.street = findValue("Straße", lines));
         runSafe("number", () -> dto.number = findValue("Haus-Nr.", lines));
         runSafe("location", () -> dto.location = findLocation(lines));
         runSafe("vehicles", () -> dto.vehicles = findVehicles(lines));
@@ -81,8 +81,9 @@ class MittelfrankenSuedParser implements OperationFaxParser {
 
     private static String findNote(String[] lines) {
         final var notes = new LinkedList<String>();
+        final var term = "BEMERKUNG";
         int cursor = 0;
-        while (cursor < lines.length && !lines[cursor].toUpperCase(Locale.ROOT).contains("BEMERKUNG")) {
+        while (cursor < lines.length && !lines[cursor].toUpperCase(Locale.ROOT).contains(term)) {
             cursor++;
         }
         while (cursor + 1 < lines.length && !lineContainsEnd(lines[cursor + 1])) {
@@ -100,9 +101,20 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     private static String findKeyword(String[] lines) {
         final var value = findValue("Stichwort", lines);
         // In case the found value contains any more unwanted characters
+        final var upperValue = value.toUpperCase(Locale.ROOT);
         for (var knownKeyword : OP_KEYWORDS) {
-            if (value.contains(knownKeyword)) {
+            if (upperValue.contains(knownKeyword)) {
                 return knownKeyword;
+            }
+        }
+        // When we didn't find anything by searching with findValue…
+        if(trimSpecialCharacters(value).isEmpty()) {
+            for(var line: lines) {
+                for (var knownKeyword : OP_KEYWORDS) {
+                    if (line.toUpperCase(Locale.ROOT).contains(knownKeyword)) {
+                        return knownKeyword;
+                    }
+                }
             }
         }
         return value;
@@ -115,28 +127,17 @@ class MittelfrankenSuedParser implements OperationFaxParser {
                 .toArray(String[]::new);
     }
 
-    private static String findStreet(String[] lines) {
-        var street = findValue("Straße", lines);
-        if (street.isEmpty()) {
-            street = findValue("straße", lines);
-        }
-        return street;
-    }
-
     private static String findLocation(String[] lines) {
-        var location = findValue("ort", lines);
-        if (location.isEmpty()) {
-            location = findValue("Ort", lines);
-        }
+        var location = findValue("Ort", lines);
         return String.join(" ", new LinkedHashSet<>(Arrays.asList(location.split(" "))));
     }
 
     private static String[] findVehicles(String[] lines) {
-        final var term = "Name";
+        final var term = "NAME";
         final var hits = new LinkedList<String>();
         for (var line : lines) {
             final var cleanedLine = trimSpecialCharacters(line);
-            if (cleanedLine.startsWith(term)) {
+            if (cleanedLine.toUpperCase(Locale.ROOT).startsWith(term)) {
                 final var value = cleanedLine.trim().substring(term.length());
                 hits.add(value);
             }
@@ -153,10 +154,11 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     }
 
     private static String findValue(String term, String[] lines) {
+        final var upperTerm = term.toUpperCase(Locale.ROOT);
         for (var line : lines) {
             final var cleanedLine = trimSpecialCharacters(line);
-            if (cleanedLine.startsWith(term)) {
-                final var value = cleanedLine.trim().substring(term.length());
+            if (cleanedLine.toUpperCase(Locale.ROOT).startsWith(upperTerm)) {
+                final var value = cleanedLine.substring(term.length());
                 return trimSpecialCharacters(value);
             }
         }

@@ -14,7 +14,7 @@ export class OperationService {
   constructor(
     private webSocket: WebSocketService
   ) {
-    this.webSocket.receiveCurrentOperation();
+    this.operation$ = this.webSocket.receiveCurrentOperation();
   }
 
   public getActiveOperation(): Observable<Operation> {

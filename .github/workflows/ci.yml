@@ -73,8 +73,8 @@ jobs:
         run: bash npm ci
       - name: Build frontend
         run: bash npm run build
-      - name: Upload JAR
-      uses: actions/upload-artifact@v2
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
         with:
           name: frontend
           path: src/main/resources/dist/frontend

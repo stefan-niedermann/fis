@@ -12,8 +12,20 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-  test:
-    name: Unit tests
+  test-ui:
+    name: Frontend Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          bash cd src/main/resources/frontend/
+          npm ci
+          npm run test
+
+  test-backend:
+    name: Backend Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -48,8 +60,26 @@ jobs:
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
 
+  build-ui:
+    name: Build UI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Run tests
+        run: |
+          bash cd src/main/resources/frontend/
+          npm ci
+          npm run build
+       - name: Upload JAR
+         uses: actions/upload-artifact@v2
+         with:
+           name: frontend
+           path: src/main/resources/dist/frontend
+
   jar:
     name: Build JAR
+    needs: build-ui
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -58,10 +88,15 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
+      -name: Unstash UI
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend
+          path: src/main/resources/static
       - name: Build JAR
         run: bash ./gradlew assemble
       - name: Upload JAR
         uses: actions/upload-artifact@v2
         with:
-          name: artifact
+          name: jar
           path: build/libs/fis*.jar

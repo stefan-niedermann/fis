@@ -7,6 +7,9 @@ import {Operation} from "../domain/operation";
 export class OperationLocationPipe implements PipeTransform {
 
   transform(operation: Operation, ...args: unknown[]): unknown {
+    if(!operation) {
+      return '';
+    }
     const streetWithNumber = operation.number ? `${operation.street} ${operation.number}` : operation.street;
     if (streetWithNumber && operation.location && operation.obj) {
       return `${operation.obj}, ${streetWithNumber} ${operation.location}`;

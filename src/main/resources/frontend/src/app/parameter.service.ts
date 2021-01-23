@@ -20,10 +20,7 @@ export class ParameterService {
   public getParameter(): Observable<Parameter> {
     if (!this.parameter) {
       return this.http.get<Parameter>(`${environment.hostUrl}/parameter`).pipe(take(1))
-        .pipe(
-          tap(parameter => console.info('⚙️ Parameter:', parameter)),
-          tap(parameter => this.parameter = parameter)
-        );
+        .pipe(tap(parameter => this.parameter = parameter));
     }
     return of(this.parameter);
   }

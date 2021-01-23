@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
-import {Observable, Subject, timer} from "rxjs";
+import {BehaviorSubject, Observable, Subject, timer} from "rxjs";
 import {Weather} from './domain/weather';
 import {environment} from "../environments/environment";
 import {Operation} from "./domain/operation";
@@ -14,7 +14,7 @@ import {ParameterService} from "./parameter.service";
 export class WebSocketService {
 
   private weather$: Subject<Weather> = new Subject<Weather>();
-  private operation$: Subject<Operation> = new Subject<Operation>();
+  private operation$: BehaviorSubject<Operation> = new BehaviorSubject<Operation>(null);
 
   constructor(
     private parameterService: ParameterService

@@ -1,23 +1,21 @@
-<ng-container *ngIf="operation$ | async">
-  <aside id="operation-topic">
-    <div id="operation-topic-keyword">{{(operation$ | async).keyword}}</div>
-    <ul id="operation-topic-tags">
-      <li *ngFor="let tag of (operation$ | async).tags">
-        {{tag}}
+<aside id="operation-topic">
+  <div id="operation-topic-keyword">{{(operation$ | async)?.keyword}}</div>
+  <ul id="operation-topic-tags">
+    <li *ngFor="let tag of (operation$ | async)?.tags">
+      {{tag}}
+    </li>
+  </ul>
+  <div id="operation-topic-note">{{(operation$ | async)?.note}}</div>
+</aside>
+<div id="operation-inner">
+  <section id="operation-location">{{(operation$ | async) | operationLocation}}</section>
+  <section id="operation-vehicles" [class.highlight]="highlight$ | async">
+    <ul id="operation-vehicles-list">
+      <li *ngFor="let vehicle of (operation$ | async)?.vehicles">
+        <ng-container
+          *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) === -1">{{vehicle}}</ng-container>
+        <strong *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) !== -1">{{vehicle}}</strong>
       </li>
     </ul>
-    <div id="operation-topic-note">{{(operation$ | async).note}}</div>
-  </aside>
-  <div id="operation-inner">
-    <section id="operation-location">{{(operation$ | async) | operationLocation}}</section>
-    <section id="operation-vehicles" [class.highlight]="highlight$ | async">
-      <ul id="operation-vehicles-list">
-        <li *ngFor="let vehicle of (operation$ | async).vehicles">
-          <ng-container
-            *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) === -1">{{vehicle}}</ng-container>
-          <strong *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) !== -1">{{vehicle}}</strong>
-        </li>
-      </ul>
-    </section>
-  </div>
-</ng-container>
+  </section>
+</div>

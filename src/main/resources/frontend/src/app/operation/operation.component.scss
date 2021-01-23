@@ -13,11 +13,14 @@
   --vehicles-fg-color: #333;
   --vehicles-highlight-fg-color: var(--main-fg-color);
 
-  display: flex;
   height: 100vh;
   hyphens: auto;
   background-color: var(--main-bg-color);
   color: var(--main-fg-color);
+}
+
+:host:not([hidden]) {
+  display: flex;
 }
 
 :host.dark-theme {

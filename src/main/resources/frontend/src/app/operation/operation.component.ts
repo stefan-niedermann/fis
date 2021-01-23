@@ -25,14 +25,14 @@ export class OperationComponent implements OnInit, OnDestroy {
     private operationService: OperationService,
     private parameterService: ParameterService
   ) {
-  }
-
-  ngOnInit(): void {
     this.operation$ = this.operationService.getActiveOperation();
     this.highlightTerm$ = this.parameterService.getParameter()
       .pipe(map(parameter => parameter.operation.highlight));
     this.highlight$ = this.highlightTerm$
       .pipe(map(term => !!term));
+  }
+
+  ngOnInit(): void {
     this.darkThemeSubscription = this.infoService.isDarkTheme()
       .subscribe(isDarkTheme => {
         this.darkThemeClass = isDarkTheme;

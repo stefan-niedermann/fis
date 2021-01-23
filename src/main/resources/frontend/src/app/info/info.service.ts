@@ -17,6 +17,15 @@ export class InfoService {
   ) {
   }
 
+  public isDarkTheme(): Observable<boolean> {
+    return this.getCurrentWeather()
+      .pipe(map(weather => {
+        return weather
+          ? !weather.isDay
+          : false
+      }));
+  }
+
   public getCurrentWeather(): Observable<Weather> {
     return merge(
       this.pollWeatherFromServer(),
@@ -28,12 +37,7 @@ export class InfoService {
     return this.http.get<Weather>(`${environment.hostUrl}/weather`);
   }
 
-  public getCurrentTime(): Observable<string> {
-    return timer(0, 5000).pipe(map(_ => {
-      const date = new Date();
-      const hours = date.getHours();
-      const minutes = date.getMinutes();
-      return `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes} Uhr`;
-    }))
+  public getCurrentTime(): Observable<Date> {
+    return timer(0, 5000).pipe(map(_ => new Date()))
   }
 }

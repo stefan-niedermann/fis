@@ -8,9 +8,9 @@
   <div id="operation-topic-note">{{(operation$ | async).note}}</div>
 </aside>
 <div id="operation-inner">
-  <section id="operation-location">{{(operation$ | async).location}}</section>
+  <section id="operation-location">{{(operation$ | async) | operationLocation}}</section>
   <section id="operation-vehicles">
-    <ul id="operation-vehicles-list">
+    <ul id="operation-vehicles-list" [class.highlight]="highlight$ | async" [class.no-highlight]="!(highlight$ | async)">
       <li *ngFor="let vehicle of (operation$ | async).vehicles">
         {{vehicle}}
       </li>

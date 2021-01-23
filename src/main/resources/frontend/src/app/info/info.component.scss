@@ -1,8 +1,17 @@
-.wrapper {
+:host {
+  --main-bg-color: white;
+  --main-fg-color: black;
+  background-color: var(--main-bg-color);
+  color: var(--main-fg-color);
   display: flex;
   justify-content: space-around;
   height: 100vh;
   hyphens: auto;
+}
+
+:host.dark-theme {
+  --main-bg-color: black;
+  --main-fg-color: white;
 }
 
 #info-inner {

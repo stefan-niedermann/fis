@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, HostBinding, OnDestroy, OnInit} from '@angular/core';
 import {InfoService} from "./info.service";
 import {Observable} from 'rxjs';
 import {map} from "rxjs/operators";
@@ -9,31 +9,38 @@ import {Weather} from "../domain/weather";
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss']
 })
-export class InfoComponent implements OnInit {
+export class InfoComponent implements OnInit, OnDestroy {
 
   private weather$: Observable<Weather>;
   iconUrl$: Observable<string>;
-  temperature$: Observable<string>;
-  time$: Observable<string>;
+  temperature$: Observable<number>;
+  time$: Observable<Date>;
+
+  @HostBinding('class.dark-theme') darkThemeClass: boolean = false;
+  private darkThemeSubscription;
 
   constructor(
-    private weatherService: InfoService
+    private infoService: InfoService
   ) {
+    this.darkThemeSubscription = this.infoService.isDarkTheme()
+      .subscribe(isDarkTheme => {
+        this.darkThemeClass = isDarkTheme;
+      });
   }
 
   ngOnInit(): void {
-    this.weather$ = this.weatherService.getCurrentWeather();
+    this.weather$ = this.infoService.getCurrentWeather();
     this.temperature$ = this.weather$.pipe(map(weather =>
-      weather
-        ? `${(Math.round(weather.temperature * 100) / 100).toFixed((weather.temperature > -10 && weather.temperature < 10) ? 1 : 0)}°`
-        : ''
+      weather ? weather.temperature : null
     ));
     this.iconUrl$ = this.weather$.pipe(map(weather =>
-      weather
-        ? `assets/weather-icons/${weather.icon}.svg`
-        : ''
+      weather ? weather.icon : null
     ));
-    this.time$ = this.weatherService.getCurrentTime();
+    this.time$ = this.infoService.getCurrentTime();
+  }
+
+  ngOnDestroy(): void {
+    this.darkThemeSubscription.unsubscribe();
   }
 
 }

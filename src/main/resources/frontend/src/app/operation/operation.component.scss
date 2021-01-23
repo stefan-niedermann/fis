@@ -1,7 +1,30 @@
 :host {
+  --main-bg-color: white;
+  --main-fg-color: black;
+  --operation-default-bg-color: #600;
+  --operation-default-fg-color: white;
+  --operation-b-bg-color: #600;
+  --operation-b-fg-color: white;
+  --operation-thl-bg-color: #006;
+  --operation-thl-fg-color: white;
+  --operation-abc-bg-color: #060;
+  --operation-abc-fg-color: white;
+  --vehicles-bg-color: #ddd;
+  --vehicles-fg-color: #333;
+  --vehicles-highlight-fg-color: var(--main-fg-color);
+
   display: flex;
   height: 100vh;
   hyphens: auto;
+  background-color: var(--main-bg-color);
+  color: var(--main-fg-color);
+}
+
+:host.dark-theme {
+  --main-bg-color: black;
+  --main-fg-color: white;
+  --vehicles-bg-color: #222;
+  --vehicles-fg-color: #ccc;
 }
 
 ul {
@@ -53,6 +76,10 @@ ul {
   flex: 0 1 0;
   background-color: var(--vehicles-bg-color);
   color: var(--vehicles-fg-color);
+}
+
+#operation-vehicles.no-highlight {
+  --vehicles-fg-color: var(--main-fg-color);
 }
 
 #operation-vehicles ul {

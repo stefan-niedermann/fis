@@ -2,7 +2,6 @@ import {Component} from '@angular/core';
 import {OperationService} from "./operation/operation.service";
 import {Observable} from "rxjs";
 import {InfoService} from "./info/info.service";
-import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -11,7 +10,6 @@ import {map} from "rxjs/operators";
 })
 export class AppComponent {
 
-  darkTheme$: Observable<boolean>;
   activeOperation$: Observable<boolean>;
 
   constructor(
@@ -19,11 +17,5 @@ export class AppComponent {
     private operationService: OperationService
   ) {
     this.activeOperation$ = this.operationService.isActiveOperation();
-    this.darkTheme$ = this.infoService.getCurrentWeather()
-      .pipe(map(weather => {
-        return weather
-          ? !weather.isDay
-          : false
-      }));
   }
 }

@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @Service
 public class WeatherDispatcher {
@@ -35,13 +36,13 @@ public class WeatherDispatcher {
     public void pollWeather() throws IOException {
         final var newWeatherInformation = weatherProvider.fetchWeather();
 
-//        if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
-//            logger.debug("Skip weather broadcast because it didn't change.");
-//        } else {
+        if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
+            logger.debug("Skip weather broadcast because it didn't change.");
+        } else {
             lastWeatherInformation = newWeatherInformation;
             template.convertAndSend("/notification/weather", lastWeatherInformation);
             logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.temperature + "°");
-//        }
+        }
     }
 
     /**

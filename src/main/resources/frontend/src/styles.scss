@@ -1,31 +1,6 @@
 html {
-  --main-bg-color: white;
-  --main-fg-color: black;
-  --operation-default-bg-color: #600;
-  --operation-default-fg-color: white;
-  --operation-b-bg-color: #600;
-  --operation-b-fg-color: white;
-  --operation-thl-bg-color: #006;
-  --operation-thl-fg-color: white;
-  --operation-abc-bg-color: #060;
-  --operation-abc-fg-color: white;
-  --vehicles-bg-color: #eee;
-  --vehicles-fg-color: #333;
-  --vehicles-highlight-fg-color: var(--main-fg-color);
-
   /* Avoid ugly scrollbars, because we can't scroll on an info screen anyway */
   overflow: hidden;
-}
-
-html.dark-theme {
-  --main-bg-color: black;
-  --main-fg-color: white;
-  --vehicles-bg-color: #222;
-  --vehicles-fg-color: #ccc;
-}
-
-html.no-highlight {
-  --vehicles-fg-color: var(--main-fg-color);
 }
 
 body {

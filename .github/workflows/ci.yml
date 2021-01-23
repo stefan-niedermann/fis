@@ -67,12 +67,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Change directory to frontend
+      - name: Install dependencies
         working-directory: src/main/resources/frontend
-        run: bash npm ci
+        run: npm ci
       - name: Build frontend
         working-directory: src/main/resources/frontend
-        run: bash npm run build
+        run: npm run build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:

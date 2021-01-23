@@ -18,11 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run tests
-        run: |
-          bash cd src/main/resources/frontend/
-          npm ci
-          npm run test
+      - name: Change directory to frontend
+        run: bash cd src/main/resources/frontend/
+      - name: Run npm ci
+        run: bash npm ci
+      - name: Execute frontend Unit tests
+        run: bash npm run test
 
   test-backend:
     name: Backend Unit tests
@@ -66,16 +67,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Run tests
-        run: |
-          bash cd src/main/resources/frontend/
-          npm ci
-          npm run build
-       - name: Upload JAR
-         uses: actions/upload-artifact@v2
-         with:
-           name: frontend
-           path: src/main/resources/dist/frontend
+      - name: Change directory to frontend
+        run: bash cd src/main/resources/frontend/
+      - name: Run npm ci
+        run: bash npm ci
+      - name: Build frontend
+        run: bash npm run build
+      - name: Upload JAR
+      uses: actions/upload-artifact@v2
+        with:
+          name: frontend
+          path: src/main/resources/dist/frontend
 
   jar:
     name: Build JAR

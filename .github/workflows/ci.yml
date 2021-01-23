@@ -18,12 +18,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Change directory to frontend
-        run: bash cd src/main/resources/frontend/
-      - name: Run npm ci
-        run: bash npm ci
-      - name: Execute frontend Unit tests
-        run: bash npm run test
+      - name: Install dependencies
+        working-directory: src/main/resources/frontend
+        run: npm ci
+      - name: Run frontend Unit tests
+        working-directory: src/main/resources/frontend
+        run: npm run test
 
   test-backend:
     name: Backend Unit tests
@@ -37,29 +37,6 @@ jobs:
           java-version: 11
       - name: Unit tests
         run: bash ./gradlew test
-
-  codeql:
-    name: CodeQL security scan
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        language: [ 'java', 'javascript' ]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Initialize CodeQL
-        uses: github/codeql-action/init@v1
-        with:
-          languages: ${{ matrix.language }}
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v1
-      - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v1
 
   build-ui:
     name: Build UI
@@ -77,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: frontend
-          path: dist/frontend
+          path: src/main/resources/dist/frontend
 
   jar:
     name: Build JAR
@@ -102,3 +79,26 @@ jobs:
         with:
           name: jar
           path: build/libs/fis*.jar
+
+  codeql:
+    name: CodeQL security scan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        language: [ 'java', 'javascript' ]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v1
+        with:
+          languages: ${{ matrix.language }}
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v1
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v1

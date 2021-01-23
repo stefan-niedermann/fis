@@ -35,6 +35,7 @@ export class WebSocketService {
             const operation = JSON.parse(message.body);
             console.info('🚒️ New operation:', operation);
             this.operation$.next(operation);
+            // TODO reset timer when a new operation arrives
             timer(parameter.operation.duration).pipe(
               take(1)
             ).subscribe(_ => {

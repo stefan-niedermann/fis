@@ -15,6 +15,7 @@ export class OperationComponent implements OnInit, OnDestroy {
 
   operation$: Observable<Operation>;
   highlight$: Observable<boolean>;
+  highlightTerm$: Observable<string>;
 
   @HostBinding('class.dark-theme') darkThemeClass: boolean = false;
   private darkThemeSubscription;
@@ -28,8 +29,10 @@ export class OperationComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.operation$ = this.operationService.getActiveOperation();
-    this.highlight$ = this.parameterService.getParameter()
-      .pipe(map(parameter => !!parameter.operation.highlight));
+    this.highlightTerm$ = this.parameterService.getParameter()
+      .pipe(map(parameter => parameter.operation.highlight));
+    this.highlight$ = this.highlightTerm$
+      .pipe(map(term => !!term));
     this.darkThemeSubscription = this.infoService.isDarkTheme()
       .subscribe(isDarkTheme => {
         this.darkThemeClass = isDarkTheme;

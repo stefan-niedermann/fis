@@ -63,6 +63,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: Remove frontend source code
+        working-directory: src/main/resources
+        run: bash rm -rf frontend
       - name: Setup Java
         uses: actions/setup-java@v1
         with:

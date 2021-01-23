@@ -1,0 +1,34 @@
+.wrapper {
+  display: flex;
+  justify-content: space-around;
+  height: 100vh;
+  hyphens: auto;
+}
+
+#info-inner {
+  display: flex;
+  flex: 0 0 50%;
+  flex-direction: column;
+  justify-content: space-around;
+  margin-top: 18vh;
+  margin-bottom: 22vh;
+  text-align: center;
+}
+
+#info-weather-icon {
+  width: 30vw;
+  flex: 0 0 30%;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-left: 5vw;
+}
+
+#info-clock {
+  font-size: 8vw;
+}
+
+
+#info-weather-temperature {
+  font-size: 20vw;
+}

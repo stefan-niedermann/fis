@@ -1,19 +1,19 @@
-  <aside id="operation-topic">
-    <div id="operation-topic-keyword">{{(operation$ | async).keyword}}</div>
-    <ul id="operation-topic-tags">
-      <li *ngFor="let tag of (operation$ | async).tags">
-        {{tag}}
+<aside id="operation-topic">
+  <div id="operation-topic-keyword">{{(operation$ | async).keyword}}</div>
+  <ul id="operation-topic-tags">
+    <li *ngFor="let tag of (operation$ | async).tags">
+      {{tag}}
+    </li>
+  </ul>
+  <div id="operation-topic-note">{{(operation$ | async).note}}</div>
+</aside>
+<div id="operation-inner">
+  <section id="operation-location">{{(operation$ | async).location}}</section>
+  <section id="operation-vehicles">
+    <ul id="operation-vehicles-list">
+      <li *ngFor="let vehicle of (operation$ | async).vehicles">
+        {{vehicle}}
       </li>
     </ul>
-    <div id="operation-topic-note">{{(operation$ | async).note}}</div>
-  </aside>
-  <div id="operation-inner">
-    <section id="operation-location">{{(operation$ | async).location}}</section>
-    <section id="operation-vehicles">
-      <ul id="operation-vehicles-list">
-        <li *ngFor="let vehicle of (operation$ | async).vehicles">
-          {{vehicle}}
-        </li>
-      </ul>
-    </section>
-  </div>
+  </section>
+</div>

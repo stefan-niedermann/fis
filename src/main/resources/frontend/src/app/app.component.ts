@@ -1,5 +1,8 @@
 import {Component} from '@angular/core';
-import {AppService} from './app.service';
+import {OperationService} from "./operation/operation.service";
+import {Observable} from "rxjs";
+import {InfoService} from "./info/info.service";
+import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-root',
@@ -7,9 +10,20 @@ import {AppService} from './app.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'frontend';
 
-  constructor(private appService: AppService) {
-    this.appService.connect();
+  darkTheme$: Observable<boolean>;
+  activeOperation$: Observable<boolean>;
+
+  constructor(
+    private infoService: InfoService,
+    private operationService: OperationService
+  ) {
+    this.activeOperation$ = this.operationService.isActiveOperation();
+    this.darkTheme$ = this.infoService.getCurrentWeather()
+      .pipe(map(weather => {
+        return weather
+          ? !weather.isDay
+          : false
+      }));
   }
 }

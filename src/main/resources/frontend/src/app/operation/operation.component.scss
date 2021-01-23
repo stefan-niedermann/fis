@@ -1,0 +1,84 @@
+:host {
+  display: flex;
+  height: 100vh;
+  hyphens: auto;
+}
+
+ul {
+  margin-left: 1rem;
+}
+
+#operation-topic,
+#operation-location,
+#operation-vehicles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#operation-topic {
+  flex: 0 1 25%;
+  background-color: var(--operation-default-bg-color);
+  color: var(--operation-default-fg-color);
+  font-size: 3vw;
+}
+
+#operation.b #operation-topic {
+  background-color: var(--operation-b-bg-color);
+  color: var(--operation-b-fg-color);
+}
+
+#operation.thl #operation-topic {
+  background-color: var(--operation-thl-bg-color);
+  color: var(--operation-thl-fg-color);
+}
+
+#operation-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 1 100%;
+}
+
+#operation-location {
+  font-size: 6vw;
+  flex: 1 1 100%;
+  text-align: center;
+}
+
+#operation-vehicles {
+  font-size: 3vw;
+  flex: 0 1 0;
+  background-color: var(--vehicles-bg-color);
+  color: var(--vehicles-fg-color);
+}
+
+#operation-vehicles ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+}
+
+#operation-vehicles strong {
+  color: var(--vehicles-highlight-fg-color);
+}
+
+#operation-inner li {
+  flex: 0 0 auto;
+  margin-left: 5vw;
+}
+
+#operation-topic #operation-topic-keyword {
+  font-size: 11vw;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#operation-topic #operation-topic-note {
+  display: none;
+}

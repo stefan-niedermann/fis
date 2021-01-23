@@ -51,7 +51,7 @@ java -jar fis.jar
 
 Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 
-### Mandatory arguments
+#### Mandatory arguments
 
 ```
 --ftp.user=<secret>
@@ -59,7 +59,7 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 --weather.key=<secret> // OpenWeatherMap API key
 ```
 
-### Optional arguments
+#### Optional arguments
 
 ```
 --ftp.host
@@ -75,6 +75,10 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 --operation.duration
 --operation.highlight
 ```
+
+### Starting the frontend
+
+The frontend is a default angular application. The working directory is in `src/main/resources/frontend`.
 
 ## License
 

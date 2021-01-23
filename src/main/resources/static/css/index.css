@@ -57,39 +57,6 @@ main:not(.active-operation) > #operation {
 /* Info */
 /* ---- */
 
-#info .wrapper {
-    justify-content: space-around;
-}
-
-
-#info #info-inner {
-    display: flex;
-    flex: 0 0 50%;
-    flex-direction: column;
-    justify-content: space-around;
-    margin-top: 18vh;
-    margin-bottom: 22vh;
-    text-align: center;
-}
-
-#info #info-weather-icon {
-    width: 30vw;
-    flex: 0 0 30%;
-    text-indent: 100%;
-    white-space: nowrap;
-    overflow: hidden;
-    margin-left: 5vw;
-}
-
-#info #info-clock {
-    font-size: 8vw;
-}
-
-
-#info #info-weather-temperature {
-    font-size: 20vw;
-}
-
 /* --------- */
 /* Operation */
 /* --------- */

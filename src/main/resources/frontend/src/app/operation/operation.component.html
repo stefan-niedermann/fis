@@ -9,8 +9,8 @@
 </aside>
 <div id="operation-inner">
   <section id="operation-location">{{(operation$ | async) | operationLocation}}</section>
-  <section id="operation-vehicles">
-    <ul id="operation-vehicles-list" [class.no-highlight]="!(highlight$ | async)">
+  <section id="operation-vehicles" [class.highlight]="highlight$ | async">
+    <ul id="operation-vehicles-list">
       <li *ngFor="let vehicle of (operation$ | async).vehicles">
         <ng-container *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) === -1">{{vehicle}}</ng-container>
         <strong *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) !== -1">{{vehicle}}</strong>

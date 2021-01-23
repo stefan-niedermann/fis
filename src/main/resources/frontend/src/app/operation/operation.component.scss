@@ -78,15 +78,15 @@ ul {
   color: var(--vehicles-fg-color);
 }
 
-#operation-vehicles ul.no-highlight {
-  --vehicles-fg-color: var(--main-fg-color);
-}
-
 #operation-vehicles ul {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   padding: 0;
+}
+
+#operation-vehicles:not(.highlight) {
+  --vehicles-fg-color: var(--main-fg-color);
 }
 
 #operation-vehicles strong {

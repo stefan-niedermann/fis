@@ -1,5 +1,5 @@
-<aside id="operation-topic">
-  <div id="operation-topic-keyword">{{(operation$ | async)?.keyword}}</div>
+<aside id="operation-topic" [ngClass]="operationClass$ | async">
+  <div id="operation-topic-keyword">{{(operationKeyword$ | async) | operationKeyword}}</div>
   <ul id="operation-topic-tags">
     <li *ngFor="let tag of (operation$ | async)?.tags">
       {{tag}}

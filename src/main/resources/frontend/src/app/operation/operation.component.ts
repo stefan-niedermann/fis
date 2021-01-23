@@ -12,8 +12,11 @@ import {InfoService} from "../info/info.service";
   styleUrls: ['./operation.component.scss']
 })
 export class OperationComponent implements OnInit, OnDestroy {
+  private readonly keywords = ['DEKON', 'THL', 'ABC', 'INF', 'SON', 'RD', 'B'];
 
   operation$: Observable<Operation>;
+  operationKeyword$: Observable<string>;
+  operationClass$: Observable<string>;
   highlight$: Observable<boolean>;
   highlightTerm$: Observable<string>;
 
@@ -26,6 +29,13 @@ export class OperationComponent implements OnInit, OnDestroy {
     private parameterService: ParameterService
   ) {
     this.operation$ = this.operationService.getActiveOperation();
+    this.operationKeyword$ = this.operation$
+      .pipe(map(operation => operation ? operation.keyword : ''))
+    this.operationClass$ = this.operationKeyword$
+      .pipe(
+        map(keyword => this.keywords.find(k => keyword.toUpperCase().startsWith(k)) || ''),
+        map(keyword => keyword.toLowerCase())
+      )
     this.highlightTerm$ = this.parameterService.getParameter()
       .pipe(map(parameter => parameter.operation.highlight));
     this.highlight$ = this.highlightTerm$

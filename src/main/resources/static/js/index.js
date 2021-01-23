@@ -135,7 +135,7 @@ const handleIncomingOperation = (operation, params) => {
 //     return '';
 // }
 
-const getOperationTypeClass = (keyword) => keywords.find(k => keyword.toLowerCase().startsWith(k)) || '';
+// const getOperationTypeClass = (keyword) => keywords.find(k => keyword.toLowerCase().startsWith(k)) || '';
 const getOperationKeyword = (keyword) => {
     const keywordLowerCase = keyword.toLowerCase();
     if (keywordLowerCase.startsWith('b') || keywordLowerCase.startsWith('thl')) {

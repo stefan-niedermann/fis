@@ -1,14 +1,6 @@
 :host {
   --main-bg-color: white;
   --main-fg-color: black;
-  --operation-default-bg-color: #600;
-  --operation-default-fg-color: white;
-  --operation-b-bg-color: #600;
-  --operation-b-fg-color: white;
-  --operation-thl-bg-color: #006;
-  --operation-thl-fg-color: white;
-  --operation-abc-bg-color: #060;
-  --operation-abc-fg-color: white;
   --vehicles-bg-color: #ddd;
   --vehicles-fg-color: #333;
   --vehicles-highlight-fg-color: var(--main-fg-color);
@@ -45,20 +37,34 @@ ul {
 }
 
 #operation-topic {
+  --operation-default-bg-color: #600;
+  --operation-default-fg-color: white;
+  --operation-b-bg-color: #600;
+  --operation-b-fg-color: white;
+  --operation-thl-bg-color: #006;
+  --operation-thl-fg-color: white;
+  --operation-abc-bg-color: #060;
+  --operation-abc-fg-color: white;
+
   flex: 0 1 25%;
   background-color: var(--operation-default-bg-color);
   color: var(--operation-default-fg-color);
   font-size: 3vw;
-}
 
-#operation.b #operation-topic {
-  background-color: var(--operation-b-bg-color);
-  color: var(--operation-b-fg-color);
-}
+  &.b {
+    background-color: var(--operation-b-bg-color);
+    color: var(--operation-b-fg-color);
+  }
 
-#operation.thl #operation-topic {
-  background-color: var(--operation-thl-bg-color);
-  color: var(--operation-thl-fg-color);
+  &.thl {
+    background-color: var(--operation-thl-bg-color);
+    color: var(--operation-thl-fg-color);
+  }
+
+  &.abc {
+    background-color: var(--operation-thl-bg-color);
+    color: var(--operation-thl-fg-color);
+  }
 }
 
 #operation-inner {

@@ -9,6 +9,7 @@ import {OperationLocationPipe} from './operation/operation-location.pipe';
 import {TemperaturePipe} from './info/temperature.pipe';
 import {IconUrlPipe} from './info/icon-url.pipe';
 import {ClockPipe} from './info/clock.pipe';
+import {OperationKeywordPipe} from './operation/operation-keyword.pipe';
 
 @NgModule({
   declarations: [
@@ -18,7 +19,8 @@ import {ClockPipe} from './info/clock.pipe';
     OperationLocationPipe,
     TemperaturePipe,
     IconUrlPipe,
-    ClockPipe
+    ClockPipe,
+    OperationKeywordPipe
   ],
   imports: [
     BrowserModule,

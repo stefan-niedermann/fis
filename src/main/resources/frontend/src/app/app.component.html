@@ -1,2 +1,2 @@
-<app-info [hidden]="!!(activeOperation$ | async)"></app-info>
-<app-operation [hidden]="!(activeOperation$ | async)"></app-operation>
+<app-info *ngIf="!(activeOperation$ | async)"></app-info>
+<app-operation *ngIf="activeOperation$ | async"></app-operation>

@@ -1,4 +1,4 @@
-<ng-template *ngIf="operation$ | async">
+<ng-container *ngIf="operation$ | async">
   <aside id="operation-topic">
     <div id="operation-topic-keyword">{{(operation$ | async).keyword}}</div>
     <ul id="operation-topic-tags">
@@ -20,4 +20,4 @@
       </ul>
     </section>
   </div>
-</ng-template>
+</ng-container>

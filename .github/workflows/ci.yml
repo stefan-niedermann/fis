@@ -67,8 +67,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Change directory to frontend
-        run: bash cd src/main/resources/frontend/
 
       - name: t1
         run: bash ls -all

@@ -15,8 +15,7 @@ export class WebSocketService {
   private operation$: Subject<Operation> = new Subject<Operation>();
 
   constructor() {
-    const socket = new SockJS(`${environment.hostUrl}/socket`);
-    const ws = Stomp.over(socket);
+    const ws = Stomp.over(new SockJS(`${environment.hostUrl}/socket`));
     ws.connect({}, () => {
       ws.send(`${environment.hostUrl}/register`, {}, {});
       ws.subscribe(`${environment.hostUrl}/notification/weather`, message => {

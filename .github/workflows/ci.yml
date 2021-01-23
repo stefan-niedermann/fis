@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: frontend
-          path: src/main/resources/dist/frontend
+          path: src/main/resources/frontend/dist
 
   jar:
     name: Build JAR

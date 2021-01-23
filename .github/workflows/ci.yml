@@ -67,29 +67,17 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-
-      - name: t1
-        run: bash ls -all
-      - name: t2
-        run: bash cd src
-      - name: t3
-        run: bash ls -all
-      - name: t4
-        run: bash cd main
-      - name: t5
-        run: bash ls -all
-      - name: t6
-        run: bash cd resources
-
-      - name: Run npm ci
+      - name: Change directory to frontend
+        working-directory: src/main/resources/frontend
         run: bash npm ci
       - name: Build frontend
+        working-directory: src/main/resources/frontend
         run: bash npm run build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: frontend
-          path: src/main/resources/dist/frontend
+          path: dist/frontend
 
   jar:
     name: Build JAR

@@ -2,19 +2,14 @@
   --main-bg-color: white;
   --main-fg-color: black;
 
-  height: 100vh;
   hyphens: auto;
   background-color: var(--main-bg-color);
   color: var(--main-fg-color);
-}
 
-:host:not([hidden]) {
-  display: flex;
-}
-
-:host.dark-theme {
-  --main-bg-color: black;
-  --main-fg-color: white;
+  &.dark-theme {
+    --main-bg-color: black;
+    --main-fg-color: white;
+  }
 }
 
 ul {
@@ -43,7 +38,7 @@ app-operation-vehicles {
   flex: 0 1 0;
 }
 
-#operation-inner {
+div {
   display: flex;
   flex-direction: column;
   justify-content: space-between;

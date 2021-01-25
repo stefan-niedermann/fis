@@ -1,23 +1,19 @@
 :host {
   --main-bg-color: white;
   --main-fg-color: black;
+
   background-color: var(--main-bg-color);
   color: var(--main-fg-color);
   justify-content: space-around;
-  height: 100vh;
   hyphens: auto;
+
+  &.dark-theme {
+    --main-bg-color: black;
+    --main-fg-color: white;
+  }
 }
 
-:host:not([hidden]) {
-  display: flex;
-}
-
-:host.dark-theme {
-  --main-bg-color: black;
-  --main-fg-color: white;
-}
-
-#info-inner {
+div {
   display: flex;
   flex: 0 0 50%;
   flex-direction: column;
@@ -27,7 +23,7 @@
   text-align: center;
 }
 
-#info-weather-icon {
+img {
   width: 30vw;
   flex: 0 0 30%;
   text-indent: 100%;
@@ -36,11 +32,10 @@
   margin-left: 5vw;
 }
 
-#info-clock {
+#clock {
   font-size: 8vw;
 }
 
-
-#info-weather-temperature {
+#temperature {
   font-size: 20vw;
 }

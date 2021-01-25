@@ -1,35 +1,36 @@
 :host {
+  --main-fg-color: black;
   --vehicles-bg-color: #ddd;
   --vehicles-fg-color: #333;
   --vehicles-highlight-fg-color: var(--main-fg-color);
-
 
   font-size: 3vw;
   background-color: var(--vehicles-bg-color);
   color: var(--vehicles-fg-color);
 
-  ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 0;
-  }
-
-  li {
-    flex: 0 0 auto;
-    margin-left: 5vw;
-  }
-
   &:not(.highlight) {
     --vehicles-fg-color: var(--main-fg-color);
   }
 
-  strong {
-    color: var(--vehicles-highlight-fg-color);
+  &.dark-theme {
+    --main-fg-color: white;
+    --vehicles-bg-color: #222;
+    --vehicles-fg-color: #ccc;
   }
 }
 
-:host.dark-theme {
-  --vehicles-bg-color: #222;
-  --vehicles-fg-color: #ccc;
+ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+}
+
+li {
+  flex: 0 0 auto;
+  margin-left: 5vw;
+}
+
+strong {
+  color: var(--vehicles-highlight-fg-color);
 }

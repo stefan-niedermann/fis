@@ -31,6 +31,18 @@ app-operation-vehicles {
   padding: 1rem;
 }
 
+app-operation-topic {
+  flex: 0 1 25%;
+}
+
+app-operation-location {
+  flex: 1 1 100%;
+}
+
+app-operation-vehicles {
+  flex: 0 1 0;
+}
+
 #operation-inner {
   display: flex;
   flex-direction: column;

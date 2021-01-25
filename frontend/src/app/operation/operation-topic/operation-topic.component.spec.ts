@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OperationTopicComponent} from './operation-topic.component';
-import {OperationKeywordPipe} from "../operation-keyword.pipe";
+import {OperationKeywordPipe} from "./operation-keyword.pipe";
 
 describe('OperationTopicComponent', () => {
   let component: OperationTopicComponent;

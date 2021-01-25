@@ -1,5 +1,5 @@
 import {Pipe, PipeTransform} from '@angular/core';
-import {Operation} from "../domain/operation";
+import {Operation} from "../../domain/operation";
 
 @Pipe({
   name: 'operationLocation'

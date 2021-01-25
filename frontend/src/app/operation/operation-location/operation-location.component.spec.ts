@@ -1,7 +1,7 @@
 import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OperationLocationComponent} from './operation-location.component';
-import {OperationLocationPipe} from "../operation-location.pipe";
+import {OperationLocationPipe} from "./operation-location.pipe";
 
 describe('OperationLocationComponent', () => {
   let component: OperationLocationComponent;

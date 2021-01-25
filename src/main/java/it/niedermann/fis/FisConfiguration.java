@@ -1,8 +1,13 @@
 package it.niedermann.fis;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.validation.annotation.Validated;
+
+import javax.validation.constraints.Min;
 
 @ConfigurationProperties("fis")
+@Validated
 public class FisConfiguration {
 
     private TesseractConfiguration tesseract = new TesseractConfiguration();
@@ -44,6 +49,7 @@ public class FisConfiguration {
 
     public static class TesseractConfiguration {
         private String tessdata;
+        @Length(min = 3, max = 3)
         private String lang;
 
         public String getTessdata() {
@@ -64,10 +70,13 @@ public class FisConfiguration {
     }
 
     public static class WeatherConfiguration {
+        @Length(min = 32, max = 32)
         private String key;
+        @Length(min = 2, max = 2)
         private String lang;
         private String units;
         private String location;
+        @Min(1000)
         private long pollInterval;
 
         public String getKey() {
@@ -117,6 +126,7 @@ public class FisConfiguration {
         private String password;
         private String path;
         private String fileSuffix;
+        @Min(1000)
         private long pollInterval;
 
         public String getHost() {

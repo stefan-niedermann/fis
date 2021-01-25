@@ -1,59 +1,34 @@
 import {Injectable} from '@angular/core';
 import * as Stomp from 'stompjs';
+import {Client} from 'stompjs';
 import * as SockJS from 'sockjs-client';
-import {BehaviorSubject, Observable, Subject, timer} from "rxjs";
-import {Weather} from './domain/weather';
+import {Observable, Subject} from "rxjs";
 import {environment} from "../environments/environment";
-import {Operation} from "./domain/operation";
-import {take} from "rxjs/operators";
-import {ParameterService} from "./parameter.service";
+import {switchMap} from "rxjs/operators";
 
 @Injectable({
   providedIn: 'root'
 })
 export class WebSocketService {
 
-  private weather$: Subject<Weather> = new Subject<Weather>();
-  private operation$: BehaviorSubject<Operation> = new BehaviorSubject<Operation>(null);
+  private readonly ws$: Subject<Client>;
 
-  constructor(
-    private parameterService: ParameterService
-  ) {
-    this.parameterService
-      .getParameter()
-      .pipe(take(1))
-      .subscribe(parameter => {
-        const ws = Stomp.over(new SockJS(`${environment.hostUrl}/socket`));
-        ws.connect({}, () => {
-          ws.send(`${environment.hostUrl}/register`, {}, {});
-          ws.subscribe('/notification/weather', message => {
-            const weather = JSON.parse(message.body);
-            console.info('⛅️ New weather:', weather);
-            this.weather$.next(weather)
-          });
-          ws.subscribe('/notification/operation', message => {
-            const operation = JSON.parse(message.body);
-            console.info('🚒️ New operation:', operation);
-            this.operation$.next(operation);
-            // TODO reset timer when a new operation arrives
-            timer(parameter.operation.duration).pipe(
-              take(1)
-            ).subscribe(_ => {
-              console.debug('⏰ Timeout over… unset active operation.');
-              this.operation$.next(null);
-            })
-          });
-        }, error => {
-          console.error(error);
-        });
-      });
+  constructor() {
+    this.ws$ = new Subject<Client>();
+    const client = Stomp.over(new SockJS(`${environment.hostUrl}/socket`));
+    client.connect({}, () => {
+      client.send(`${environment.hostUrl}/register`);
+      this.ws$.next(client);
+    }, error => console.error(error));
   }
 
-  public receiveCurrentWeather(): Observable<Weather> {
-    return this.weather$.asObservable();
-  }
-
-  public receiveCurrentOperation(): Observable<Operation> {
-    return this.operation$.asObservable();
+  public subscribeToRoute<T>(route: string): Observable<T> {
+    return this.ws$.pipe(
+      switchMap(ws => {
+        const tmp$: Subject<T> = new Subject<T>();
+        ws.subscribe(route, message => tmp$.next(JSON.parse(message.body)));
+        return tmp$;
+      })
+    )
   }
 }

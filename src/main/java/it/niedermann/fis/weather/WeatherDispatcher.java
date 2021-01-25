@@ -49,8 +49,9 @@ public class WeatherDispatcher {
      * @return the last cached weather information if available, a freshly fetched info otherwise.
      */
     public WeatherDto getCurrentWeather() throws IOException {
-        return lastWeatherInformation == null
-                ? weatherProvider.fetchWeather()
-                : lastWeatherInformation;
+        if(lastWeatherInformation == null) {
+            this.lastWeatherInformation = weatherProvider.fetchWeather();
+        }
+        return lastWeatherInformation;
     }
 }

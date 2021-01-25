@@ -1,9 +1,9 @@
 import {Injectable} from '@angular/core';
 import {WebSocketService} from "../web-socket.service";
-import {merge, Observable, timer} from "rxjs";
+import {BehaviorSubject, merge, Observable, Subject, timer} from "rxjs";
 import {HttpClient} from "@angular/common/http";
 import {Weather} from "src/app/domain/weather";
-import {map} from "rxjs/operators";
+import {map, share, tap} from "rxjs/operators";
 import {environment} from "../../environments/environment";
 
 @Injectable({
@@ -11,14 +11,27 @@ import {environment} from "../../environments/environment";
 })
 export class InfoService {
 
+  private readonly currentWeather$: Subject<Weather> = new BehaviorSubject<Weather>(null);
+
   constructor(
     private http: HttpClient,
     private webSocketService: WebSocketService
   ) {
+    merge(
+      this.pollWeatherFromServer()
+        .pipe(tap((weather) => console.info('⛅️ New weather (polled):', `${weather.temperature}°`))),
+      this.webSocketService.subscribeToRoute<Weather>('/notification/weather')
+        .pipe(tap((weather) => console.info('⛅️ New weather (pushed):', `${weather.temperature}°`)))
+    )
+      .pipe(share())
+      .subscribe(weather => {
+        this.currentWeather$.next(weather);
+      });
   }
 
   public isDarkTheme(): Observable<boolean> {
-    return this.getCurrentWeather()
+    return this.currentWeather$
+      .asObservable()
       .pipe(map(weather => {
         return weather
           ? !weather.isDay
@@ -27,10 +40,7 @@ export class InfoService {
   }
 
   public getCurrentWeather(): Observable<Weather> {
-    return merge(
-      this.pollWeatherFromServer(),
-      this.webSocketService.receiveCurrentWeather()
-    );
+    return this.currentWeather$.asObservable();
   }
 
   private pollWeatherFromServer(): Observable<Weather> {

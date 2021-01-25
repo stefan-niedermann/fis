@@ -76,9 +76,9 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 --operation.highlight
 ```
 
-### Starting the frontend
+## Maintainer
 
-The frontend is an Angular application. The working directory is in the `frontend` subfolder. For more information see its [README.md](./frontend/README.md).
+[![Niedermann IT logo](https://www.niedermann.it/resources/niedermann-it-dienstleistungen.svg)](https://www.niedermann.it)
 
 ## License
 

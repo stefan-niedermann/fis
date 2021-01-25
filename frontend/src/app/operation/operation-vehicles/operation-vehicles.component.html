@@ -1,0 +1,7 @@
+<ul>
+  <li *ngFor="let vehicle of vehicles">
+    <ng-container
+      *ngIf="vehicle.toLowerCase().indexOf(highlightTerm) === -1">{{vehicle}}</ng-container>
+    <strong *ngIf="vehicle.toLowerCase().indexOf(highlightTerm) !== -1">{{vehicle}}</strong>
+  </li>
+</ul>

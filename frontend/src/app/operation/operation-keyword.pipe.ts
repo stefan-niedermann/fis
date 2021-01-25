@@ -6,6 +6,9 @@ import {Pipe, PipeTransform} from '@angular/core';
 export class OperationKeywordPipe implements PipeTransform {
 
   transform(keyword: string, ...args: unknown[]): unknown {
+    if(!keyword) {
+      return '';
+    }
     const upperKeyword = keyword.toUpperCase();
     if (upperKeyword.startsWith('B') || upperKeyword.startsWith('THL')) {
       const splitted = upperKeyword.split(" ");

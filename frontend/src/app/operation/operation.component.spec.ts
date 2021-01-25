@@ -2,8 +2,6 @@ import {ComponentFixture, TestBed} from '@angular/core/testing';
 
 import {OperationComponent} from './operation.component';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
-import {OperationLocationPipe} from "./operation-location.pipe";
-import {OperationKeywordPipe} from "./operation-keyword.pipe";
 
 describe('OperationComponent', () => {
   let component: OperationComponent;
@@ -16,11 +14,9 @@ describe('OperationComponent', () => {
       ],
       declarations: [
         OperationComponent,
-        OperationLocationPipe,
-        OperationKeywordPipe
       ]
     })
-    .compileComponents();
+      .compileComponents();
   });
 
   beforeEach(() => {

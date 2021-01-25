@@ -1,23 +1,8 @@
 <ng-container *ngIf="operation$ | async">
-  <aside id="operation-topic" [ngClass]="operationClass$ | async">
-    <div id="operation-topic-keyword">{{(operationKeyword$ | async) | operationKeyword}}</div>
-    <ul id="operation-topic-tags">
-      <li *ngFor="let tag of (operation$ | async).tags">
-        {{tag}}
-      </li>
-    </ul>
-    <div id="operation-topic-note">{{(operation$ | async).note}}</div>
-  </aside>
+  <app-operation-topic [ngClass]="operationClass$ | async" [operation]="operation$ | async"></app-operation-topic>
   <div id="operation-inner">
-    <section id="operation-location">{{(operation$ | async) | operationLocation}}</section>
-    <section id="operation-vehicles" [class.highlight]="highlight$ | async">
-      <ul id="operation-vehicles-list">
-        <li *ngFor="let vehicle of (operation$ | async).vehicles">
-          <ng-container
-            *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) === -1">{{vehicle}}</ng-container>
-          <strong *ngIf="vehicle.toLowerCase().indexOf((highlightTerm$ | async)) !== -1">{{vehicle}}</strong>
-        </li>
-      </ul>
-    </section>
+    <app-operation-location [operation]="(operation$ | async)"></app-operation-location>
+    <app-operation-vehicles [class.highlight]="highlight$ | async" [vehicles]="(operation$ | async).vehicles"
+                            [highlightTerm]="highlightTerm$ | async"></app-operation-vehicles>
   </div>
 </ng-container>

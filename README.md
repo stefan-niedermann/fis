@@ -54,26 +54,26 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 #### Mandatory arguments
 
 ```
---ftp.user=<secret>
---ftp.password=<secret>
---weather.key=<secret> // OpenWeatherMap API key
+--fis.ftp.username=<secret>
+--fis.ftp.password=<secret>
+--fis.weather.key=<secret> // OpenWeatherMap API key
 ```
 
 #### Optional arguments
 
 ```
---ftp.host
---ftp.path
---ftp.file.suffix
---ftp.poll.interval
---tesseract.tessdata
---tesseract.lang
---weather.lang
---weather.units
---weather.location
---weather.poll.interval
---operation.duration
---operation.highlight
+--fis.ftp.host
+--fis.ftp.path
+--fis.ftp.file.suffix
+--fis.ftp.poll.interval
+--fis.tesseract.tessdata
+--fis.tesseract.lang
+--fis.weather.lang
+--fis.weather.units
+--fis.weather.location
+--fis.weather.poll.interval
+--fis.operation.duration
+--fis.operation.highlight
 ```
 
 ## Maintainer

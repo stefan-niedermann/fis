@@ -1,5 +1,6 @@
 package it.niedermann.fis.operation;
 
+import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
@@ -8,7 +9,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,41 +36,37 @@ public class OperationDispatcher {
     private final FTPClient ftpClient;
     private final OperationFaxParser parser;
 
+    private final String ftpPath;
+    private final String ftpFileSuffix;
+
     private String lastPdfName = "";
-    @Value("${ftp.path}")
-    private String ftpPath;
-    @Value("${ftp.file.suffix}")
-    private String ftpFileSuffix;
 
     public OperationDispatcher(
             SimpMessagingTemplate template,
-            @Value("${ftp.host}") String ftpUrl,
-            @Value("${ftp.user}") String ftpUsername,
-            @Value("${ftp.password}") String ftpPassword,
-            @Value("#{new Long('${ftp.poll.interval}')}") Integer ftpPollInterval,
-            @Value("${tesseract.tessdata}") String tessdataPath,
-            @Value("${tesseract.lang}") String tessLang) throws IOException {
+            FisConfiguration config) throws IOException {
         this.template = template;
+        this.ftpPath = config.getFtp().getPath();
+        this.ftpFileSuffix = config.getFtp().getFileSuffix();
 
-        if (ObjectUtils.isEmpty(tessdataPath)) {
-            tessdataPath = extractTessResources("tessdata").getAbsolutePath();
+        if (ObjectUtils.isEmpty(config.getTesseract().getTessdata())) {
+            config.getTesseract().setTessdata(extractTessResources("tessdata").getAbsolutePath());
         }
         tesseract = new Tesseract();
         tesseract.setTessVariable("LC_ALL", "C");
-        tesseract.setDatapath(tessdataPath);
-        tesseract.setLanguage(tessLang);
+        tesseract.setDatapath(config.getTesseract().getTessdata());
+        tesseract.setLanguage(config.getTesseract().getLang());
 
         ftpClient = new FTPClient();
-        ftpClient.connect(ftpUrl);
-        if (!ftpClient.login(ftpUsername, ftpPassword)) {
-            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + ftpUrl + ". Please check FTP credentials.");
+        ftpClient.connect(config.getFtp().getHost());
+        if (!ftpClient.login(config.getFtp().getUsername(), config.getFtp().getPassword())) {
+            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.getFtp().getHost() + ". Please check FTP credentials.");
         }
-        logger.info("🚒 Connected to FTP server " + ftpUrl + ", palling each " + ftpPollInterval / 1000 + " seconds.");
+        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", palling each " + config.getFtp().getPollInterval() / 1000 + " seconds.");
 
         parser = OperationFaxParser.create("mittelfranken-sued");
     }
 
-    @Scheduled(fixedDelayString = "${ftp.poll.interval}")
+    @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
     public void pollOperations() {
         try {
             final var finalLastPdfName = lastPdfName;

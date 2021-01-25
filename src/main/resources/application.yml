@@ -1,0 +1,15 @@
+fis:
+  ftp:
+    host: fritz.box
+    path: /FRITZ/faxbox
+    fileSuffix: .pdf
+    pollInterval: 10000
+  tesseract:
+    lang: deu
+  weather:
+    lang: de
+    units: metric
+    location: 2921044
+    pollInterval: 60000
+  operation:
+    duration: 1800000

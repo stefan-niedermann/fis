@@ -64,14 +64,14 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 ```
 --fis.ftp.host
 --fis.ftp.path
---fis.ftp.file.suffix
---fis.ftp.poll.interval
+--fis.ftp.fileSuffix
+--fis.ftp.pollInterval
 --fis.tesseract.tessdata
 --fis.tesseract.lang
 --fis.weather.lang
 --fis.weather.units
 --fis.weather.location
---fis.weather.poll.interval
+--fis.weather.pollInterval
 --fis.operation.duration
 --fis.operation.highlight
 ```

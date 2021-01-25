@@ -19,10 +19,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependencies
-        working-directory: src/main/resources/frontend
+        working-directory: frontend
         run: npm ci
       - name: Run frontend Unit tests
-        working-directory: src/main/resources/frontend
+        working-directory: frontend
         run: npm run test
 
   test-backend:
@@ -45,16 +45,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependencies
-        working-directory: src/main/resources/frontend
+        working-directory: frontend
         run: npm ci
       - name: Build frontend
-        working-directory: src/main/resources/frontend
+        working-directory: frontend
         run: npm run build
       - name: Upload build artifacts
         uses: actions/upload-artifact@v2
         with:
           name: frontend
-          path: src/main/resources/frontend/dist
+          path: frontend/dist
 
   jar:
     name: Build JAR

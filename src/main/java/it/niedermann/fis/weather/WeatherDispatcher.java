@@ -1,10 +1,10 @@
 package it.niedermann.fis.weather;
 
+import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -23,16 +23,16 @@ public class WeatherDispatcher {
 
     public WeatherDispatcher(
             SimpMessagingTemplate template,
-            @Value("${weather.lang}") String lang,
-            @Value("${weather.location}") String location,
-            @Value("${weather.units}") String units,
-            @Value("${weather.key}") String key
+            FisConfiguration config
     ) {
         this.template = template;
-        this.weatherProvider = new OpenWeatherMapProvider(lang, location, units, key);
+        this.weatherProvider = new OpenWeatherMapProvider(config.getWeather().getLang(),
+                config.getWeather().getLocation(),
+                config.getWeather().getUnits(),
+                config.getWeather().getKey());
     }
 
-    @Scheduled(fixedDelayString = "${weather.poll.interval}")
+    @Scheduled(fixedDelayString = "${fis.weather.pollInterval}")
     public void pollWeather() throws IOException {
         final var newWeatherInformation = weatherProvider.fetchWeather();
 
@@ -49,7 +49,7 @@ public class WeatherDispatcher {
      * @return the last cached weather information if available, a freshly fetched info otherwise.
      */
     public WeatherDto getCurrentWeather() throws IOException {
-        if(lastWeatherInformation == null) {
+        if (lastWeatherInformation == null) {
             this.lastWeatherInformation = weatherProvider.fetchWeather();
         }
         return lastWeatherInformation;

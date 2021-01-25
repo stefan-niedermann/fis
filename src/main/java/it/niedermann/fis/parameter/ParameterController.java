@@ -1,6 +1,6 @@
 package it.niedermann.fis.parameter;
 
-import org.springframework.beans.factory.annotation.Value;
+import it.niedermann.fis.FisConfiguration;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,14 +12,10 @@ public class ParameterController {
 
     private final ParameterDto dto = new ParameterDto();
 
-    public ParameterController(
-            @Value("${weather.lang}") String language,
-            @Value("${operation.highlight}") String operationHighlight,
-            @Value("#{new Long('${operation.duration}')}") Long operationDuration
-    ) {
-        dto.language = language;
-        dto.operation.duration = operationDuration;
-        dto.operation.highlight = operationHighlight;
+    public ParameterController(FisConfiguration config) {
+        dto.language = config.getWeather().getLang();
+        dto.operation.duration = config.getOperation().getDuration();
+        dto.operation.highlight = config.getOperation().getHighlight();
     }
 
     @GetMapping("/parameter")

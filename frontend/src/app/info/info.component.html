@@ -1,0 +1,5 @@
+<img id="info-weather-icon" alt="Weather icon" [attr.src]="(iconUrl$ | async) | iconUrl"/>
+<div id="info-inner">
+  <section id="info-weather-temperature">{{(temperature$ | async) | temperature}}</section>
+  <section id="info-clock">{{(time$ | async) | clock}}</section>
+</div>

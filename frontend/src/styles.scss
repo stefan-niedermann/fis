@@ -1,0 +1,11 @@
+html {
+  /* Avoid ugly scrollbars, because we can't scroll on an info screen anyway */
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+  color: var(--main-fg-color);
+  background: var(--main-bg-color);
+  font-family: sans-serif;
+}

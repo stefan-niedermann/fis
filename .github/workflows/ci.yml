@@ -12,8 +12,21 @@ jobs:
       - name: Validate Gradle Wrapper
         uses: gradle/wrapper-validation-action@v1
 
-  test:
-    name: Unit tests
+  test-ui:
+    name: Frontend Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend Unit tests
+        working-directory: frontend
+        run: npm run test
+
+  test-backend:
+    name: Backend Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,6 +37,51 @@ jobs:
           java-version: 11
       - name: Unit tests
         run: bash ./gradlew test
+
+  build-ui:
+    name: Build UI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend
+          path: frontend/dist
+
+  jar:
+    name: Build JAR
+    needs: build-ui
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Remove frontend source code
+        working-directory: src/main/resources
+        run: rm -rf frontend
+      - name: Setup Java
+        uses: actions/setup-java@v1
+        with:
+          java-version: 11
+      - name: Unstash frontend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend
+          path: src/main/resources/static
+      - name: Build JAR
+        run: bash ./gradlew assemble
+      - name: Upload JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: jar
+          path: build/libs/fis*.jar
 
   codeql:
     name: CodeQL security scan
@@ -47,21 +105,3 @@ jobs:
         uses: github/codeql-action/autobuild@v1
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v1
-
-  jar:
-    name: Build JAR
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Java
-        uses: actions/setup-java@v1
-        with:
-          java-version: 11
-      - name: Build JAR
-        run: bash ./gradlew assemble
-      - name: Upload JAR
-        uses: actions/upload-artifact@v2
-        with:
-          name: artifact
-          path: build/libs/fis*.jar

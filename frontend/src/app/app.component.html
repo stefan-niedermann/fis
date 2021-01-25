@@ -1,0 +1,2 @@
+<app-info *ngIf="!(activeOperation$ | async)"></app-info>
+<app-operation *ngIf="activeOperation$ | async"></app-operation>

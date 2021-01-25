@@ -1,0 +1,120 @@
+:host {
+  --main-bg-color: white;
+  --main-fg-color: black;
+  --vehicles-bg-color: #ddd;
+  --vehicles-fg-color: #333;
+  --vehicles-highlight-fg-color: var(--main-fg-color);
+
+  height: 100vh;
+  hyphens: auto;
+  background-color: var(--main-bg-color);
+  color: var(--main-fg-color);
+}
+
+:host:not([hidden]) {
+  display: flex;
+}
+
+:host.dark-theme {
+  --main-bg-color: black;
+  --main-fg-color: white;
+  --vehicles-bg-color: #222;
+  --vehicles-fg-color: #ccc;
+}
+
+ul {
+  margin-left: 1rem;
+}
+
+#operation-topic,
+#operation-location,
+#operation-vehicles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+#operation-topic {
+  --operation-default-bg-color: #600;
+  --operation-default-fg-color: white;
+  --operation-b-bg-color: #600;
+  --operation-b-fg-color: white;
+  --operation-thl-bg-color: #006;
+  --operation-thl-fg-color: white;
+  --operation-abc-bg-color: #060;
+  --operation-abc-fg-color: white;
+
+  flex: 0 1 25%;
+  background-color: var(--operation-default-bg-color);
+  color: var(--operation-default-fg-color);
+  font-size: 3vw;
+
+  &.b {
+    background-color: var(--operation-b-bg-color);
+    color: var(--operation-b-fg-color);
+  }
+
+  &.thl {
+    background-color: var(--operation-thl-bg-color);
+    color: var(--operation-thl-fg-color);
+  }
+
+  &.abc {
+    background-color: var(--operation-thl-bg-color);
+    color: var(--operation-thl-fg-color);
+  }
+}
+
+#operation-inner {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 0 1 100%;
+}
+
+#operation-location {
+  font-size: 6vw;
+  flex: 1 1 100%;
+  text-align: center;
+}
+
+#operation-vehicles {
+  font-size: 3vw;
+  flex: 0 1 0;
+  background-color: var(--vehicles-bg-color);
+  color: var(--vehicles-fg-color);
+}
+
+#operation-vehicles ul {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 0;
+}
+
+#operation-vehicles:not(.highlight) {
+  --vehicles-fg-color: var(--main-fg-color);
+}
+
+#operation-vehicles strong {
+  color: var(--vehicles-highlight-fg-color);
+}
+
+#operation-inner li {
+  flex: 0 0 auto;
+  margin-left: 5vw;
+}
+
+#operation-topic #operation-topic-keyword {
+  font-size: 11vw;
+  font-weight: bold;
+  text-align: center;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+#operation-topic #operation-topic-note {
+  display: none;
+}

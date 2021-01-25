@@ -5,6 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @ConfigurationProperties("fis")
 @Validated
@@ -50,6 +52,7 @@ public class FisConfiguration {
     public static class TesseractConfiguration {
         private String tessdata;
         @Length(min = 3, max = 3)
+        @NotBlank
         private String lang;
 
         public String getTessdata() {
@@ -71,10 +74,14 @@ public class FisConfiguration {
 
     public static class WeatherConfiguration {
         @Length(min = 32, max = 32)
+        @NotBlank
         private String key;
         @Length(min = 2, max = 2)
+        @NotBlank
         private String lang;
+        @NotBlank
         private String units;
+        @NotBlank
         private String location;
         @Min(1000)
         private long pollInterval;
@@ -122,9 +129,12 @@ public class FisConfiguration {
 
     public static class FtpConfiguration {
         private String host;
+        @NotBlank
         private String username;
+        @NotBlank
         private String password;
         private String path;
+        @NotNull
         private String fileSuffix;
         @Min(1000)
         private long pollInterval;

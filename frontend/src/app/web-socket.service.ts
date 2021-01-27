@@ -22,7 +22,7 @@ export class WebSocketService {
     }, error => console.error(error));
   }
 
-  public subscribeToRoute<T>(route: string): Observable<T> {
+  public subscribe<T>(route: string): Observable<T> {
     return this.ws$.pipe(
       switchMap(ws => {
         const tmp$: Subject<T> = new Subject<T>();

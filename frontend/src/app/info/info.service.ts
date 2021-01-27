@@ -20,7 +20,7 @@ export class InfoService {
     merge(
       this.pollWeatherFromServer()
         .pipe(tap((weather) => console.info('⛅️ New weather (polled):', `${weather.temperature}°`))),
-      this.webSocketService.subscribeToRoute<Weather>('/notification/weather')
+      this.webSocketService.subscribe<Weather>('/notification/weather')
         .pipe(tap((weather) => console.info('⛅️ New weather (pushed):', `${weather.temperature}°`)))
     )
       .pipe(share())

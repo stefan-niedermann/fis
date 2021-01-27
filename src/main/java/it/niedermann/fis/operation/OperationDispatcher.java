@@ -36,17 +36,19 @@ public class OperationDispatcher {
     private final FTPClient ftpClient;
     private final OperationFaxParser parser;
 
-    private final String ftpPath;
-    private final String ftpFileSuffix;
+    private final FisConfiguration config;
+
+    private Thread cancelCurrentOperation;
+    private OperationDto currentOperation;
 
     private String lastPdfName = "";
 
     public OperationDispatcher(
             SimpMessagingTemplate template,
-            FisConfiguration config) throws IOException {
+            FisConfiguration config
+    ) throws IOException {
         this.template = template;
-        this.ftpPath = config.getFtp().getPath();
-        this.ftpFileSuffix = config.getFtp().getFileSuffix();
+        this.config = config;
 
         if (ObjectUtils.isEmpty(config.getTesseract().getTessdata())) {
             config.getTesseract().setTessdata(extractTessResources("tessdata").getAbsolutePath());
@@ -84,7 +86,7 @@ public class OperationDispatcher {
 
                 downloadAndProcessFTPFile(ftpFile);
             } else {
-                logger.debug("→ No new file with suffix \"" + ftpFileSuffix + "\" is present at the server.");
+                logger.debug("→ No new file with suffix \"" + config.getFtp().getFileSuffix() + "\" is present at the server.");
             }
         } catch (IOException e) {
             logger.error(e.getMessage(), e);
@@ -98,7 +100,7 @@ public class OperationDispatcher {
         logger.debug("→ Created temporary file: " + localFile.getName());
 
         try (final var outputStream = new BufferedOutputStream(new FileOutputStream(localFile))) {
-            if (ftpClient.retrieveFile(ftpPath + "/" + ftpFile.getName(), outputStream)) {
+            if (ftpClient.retrieveFile(config.getFtp().getPath() + "/" + ftpFile.getName(), outputStream)) {
                 outputStream.close();
 
                 logger.info("🚒 → Start OCR for \"" + localFile.getName() + "\"…");
@@ -108,6 +110,12 @@ public class OperationDispatcher {
                 logger.debug("→ Start parsing with " + parser.getClass().getSimpleName() + "…");
                 final var dto = parser.parse(ocrText);
                 logger.debug("→ Finished parsing");
+
+                logger.trace("→ Saving operation as currently active operation: \"" + dto.keyword + "\"…");
+                this.currentOperation = dto;
+
+                logger.trace("→ Planning cancellation of currently active operation: \"" + dto.keyword + "\"…");
+                scheduleOperationCancellation(dto);
 
                 logger.debug("→ Start Broadcasting operation: \"" + dto.keyword + "\"…");
                 template.convertAndSend("/notification/operation", dto);
@@ -127,16 +135,44 @@ public class OperationDispatcher {
         }
     }
 
+    private void scheduleOperationCancellation(OperationDto dto) {
+        if (cancelCurrentOperation != null) {
+            logger.trace("→ Interrupt existing operation cancellation attempt");
+            cancelCurrentOperation.interrupt();
+        }
+
+        cancelCurrentOperation = new Thread(() -> {
+            try {
+                logger.trace("Scheduled cancellation of operation \"" + dto.keyword + "\" in " + config.getOperation().getDuration() / 1000 + "s");
+                Thread.sleep(config.getOperation().getDuration());
+                if (Thread.currentThread().isInterrupted()) {
+                    throw new InterruptedException();
+                }
+                logger.info("⏰ Timeout over… unset active operation \"" + dto.keyword + "\"");
+                this.currentOperation = null;
+                template.convertAndSend("/notification/operation", null + "");
+            } catch (InterruptedException e) {
+                logger.trace("→ Existing operation " + "\"" + dto.keyword + "\"" + " cancellation attempt has been interrupted.");
+            }
+        });
+        cancelCurrentOperation.start();
+        logger.trace("→ Cancellation of currently active operation: \"" + dto.keyword + "\" planned.");
+    }
+
     private Optional<FTPFile> poll(String excludeFileName) throws IOException {
         logger.debug("Checking FTP server for incoming operations");
-        return Arrays.stream(ftpClient.listFiles(ftpPath))
+        return Arrays.stream(ftpClient.listFiles(config.getFtp().getPath()))
                 .filter(FTPFile::isFile)
-                .filter(file -> file.getName().endsWith(ftpFileSuffix))
+                .filter(file -> file.getName().endsWith(config.getFtp().getFileSuffix()))
                 .sorted(Comparator
                         .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                         .reversed())
                 .limit(1)
                 .filter(file -> !Objects.equals(excludeFileName, file.getName()))
                 .findFirst();
+    }
+
+    public OperationDto getCurrentOperation() {
+        return this.currentOperation;
     }
 }

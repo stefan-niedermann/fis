@@ -23,8 +23,8 @@ The environment can vary of course, but the idea is that a fax arrives at the pr
 fax printing device (2). The fax printing device should print the information and then forward the fax to a secondary
 number (3) which will be stored by the router on an internal memory / FTP server as a PDF file.
 
-`JarFIS` will poll this FTP storage (4) and download a new incoming PDF file (5). Then it extracts the text using optical
-character recognition, parse the text to a machine-readable JSON file and display it on the info screen (6).
+`JarFIS` will poll this FTP storage (4) and download a new incoming PDF file (5). Then it extracts the text using
+optical character recognition, parse the text to a machine-readable JSON file and display it on the info screen (6).
 
 ![Illustration](illustration.png)
 
@@ -43,7 +43,38 @@ character recognition, parse the text to a machine-readable JSON file and displa
 
 ## Run
 
-### Starting the server
+### Configure
+
+Create a file called `application.yml` next to the `.jar` file which you downloaded. Comment lines (starting with a `#`)
+are optional. Remove the leading `#` to activate and change them. Unit for all time related options is `millisecond`.
+
+```yml 
+fis:
+  ftp:
+    username: SECRET
+    password: SECRET
+    # host: fritz.box
+    # path: /FRITZ/faxbox
+    # fileSuffix: .pdf
+    # pollInterval: 10000
+  weather:
+    key: SECRET # OpenWeatherMap API key
+    # lang: de
+    # units: metric
+    # location: 2921044
+    # pollInterval: 60000
+  # tesseract:
+    # lang: deu
+    # tessdata: 
+  # operation:
+    # duration: 1800000
+    # highlight: 
+```
+
+For more information about advanced configuration (e. g. passing arguments from the command line, ...) see
+the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
+
+### Start
 
 ```sh
 java -jar fis.jar
@@ -51,40 +82,17 @@ java -jar fis.jar
 
 Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 
-#### Mandatory arguments
-
-```
---fis.ftp.username=<secret>
---fis.ftp.password=<secret>
---fis.weather.key=<secret> // OpenWeatherMap API key
-```
-
-#### Optional arguments
-
-```
---fis.ftp.host
---fis.ftp.path
---fis.ftp.fileSuffix
---fis.ftp.pollInterval
---fis.tesseract.tessdata
---fis.tesseract.lang
---fis.weather.lang
---fis.weather.units
---fis.weather.location
---fis.weather.pollInterval
---fis.operation.duration
---fis.operation.highlight
-```
-
 ## Maintainer
 
 [![Niedermann IT logo](https://www.niedermann.it/resources/niedermann-it-dienstleistungen.svg)](https://www.niedermann.it)
 
 ## License
 
-All contributions to this repository are considered to be licensed under the [`GNU Affero General Public License 3+`](https://www.gnu.org/licenses/agpl-3.0).
+All contributions to this repository are considered to be licensed under
+the [`GNU Affero General Public License 3+`](https://www.gnu.org/licenses/agpl-3.0).
 
-Contributors to `JarFIS` retain their copyright. Therefore we recommend to add following line to the header of a file, if you changed it substantially:
+Contributors to `JarFIS` retain their copyright. Therefore we recommend to add following line to the header of a file,
+if you changed it substantially:
 
 ```
 @copyright Copyright (c) <year>, <your name> (<your email address>)

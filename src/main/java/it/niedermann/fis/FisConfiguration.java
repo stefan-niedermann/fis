@@ -128,6 +128,7 @@ public class FisConfiguration {
     }
 
     public static class FtpConfiguration {
+        @NotBlank
         private String host;
         @NotBlank
         private String username;

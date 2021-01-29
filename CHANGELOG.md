@@ -1,11 +1,14 @@
 # Changelog
 
-## 0.5.0-SNAPSHOT
+## 0.6.0-SNAPSHOT
+
+## 0.5.0
 
 - Active operations are remembered (when a new tab is opened while an operation is active, it will directly display it)
 - Active operations are cancelled from the server side (through pushing `null` as new operation after the given
   duration)
-  
+- UI uses production build for smaller file size and correct environment configuration (solves a CORS issue)
+
 ## 0.4.0
 
 - New configuration file (Breaking change!)

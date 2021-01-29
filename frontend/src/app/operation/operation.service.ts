@@ -22,8 +22,10 @@ export class OperationService {
         .pipe(tap((operation) => {
           if (operation) {
             console.info('🚒️ New operation (polled):', operation.keyword);
-          } else {
+          } else if (operation === null) {
             console.info('🚒️ Currently no active operation (polled).');
+          } else {
+            console.error('Unexpected operation (polled):', operation);
           }
         })),
       this.webSocket.subscribe<Operation>('/notification/operation')
@@ -33,7 +35,7 @@ export class OperationService {
           } else if (operation === null) {
             console.info('⏰ Operation timeout over… unset active operation');
           } else {
-            console.error('Unexpected operation:', operation);
+            console.error('Unexpected operation (pushed):', operation);
           }
         }))
     ).subscribe((operation) => this.activeOperation$.next(operation));

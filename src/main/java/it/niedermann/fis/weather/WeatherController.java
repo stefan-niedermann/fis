@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @RestController
@@ -22,8 +23,9 @@ public class WeatherController {
     }
 
     @GetMapping("/weather")
-    public ResponseEntity<WeatherDto> pollWeather() throws IOException {
+    public ResponseEntity<WeatherDto> pollWeather(HttpServletRequest request) throws IOException {
         final var weather = dispatcher.getCurrentWeather();
+        logger.info("Client IP Address: ", request.getRemoteAddr());
         logger.info("⛅ Weather info got polled: " + weather.temperature + "°");
         return ResponseEntity.ok(weather);
     }

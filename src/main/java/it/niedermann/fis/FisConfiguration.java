@@ -16,6 +16,7 @@ public class FisConfiguration {
     private WeatherConfiguration weather = new WeatherConfiguration();
     private FtpConfiguration ftp = new FtpConfiguration();
     private OperationConfiguration operation = new OperationConfiguration();
+    private SecurityConfiguration security = new SecurityConfiguration();
 
     public TesseractConfiguration getTesseract() {
         return tesseract;
@@ -47,6 +48,14 @@ public class FisConfiguration {
 
     public void setOperation(OperationConfiguration operation) {
         this.operation = operation;
+    }
+
+    public SecurityConfiguration getSecurity() {
+        return security;
+    }
+
+    public void setSecurity(SecurityConfiguration security) {
+        this.security = security;
     }
 
     public static class TesseractConfiguration {
@@ -207,6 +216,19 @@ public class FisConfiguration {
 
         public void setHighlight(String highlight) {
             this.highlight = highlight;
+        }
+    }
+
+    public static class SecurityConfiguration {
+        @NotNull
+        private String[] allow;
+
+        public String[] getAllow() {
+            return allow;
+        }
+
+        public void setAllow(String[] allow) {
+            this.allow = allow;
         }
     }
 }

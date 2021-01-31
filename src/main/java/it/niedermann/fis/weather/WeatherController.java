@@ -25,7 +25,7 @@ public class WeatherController {
     @GetMapping("/weather")
     public ResponseEntity<WeatherDto> pollWeather(HttpServletRequest request) throws IOException {
         final var weather = dispatcher.getCurrentWeather();
-        logger.info("Client IP Address: ", request.getRemoteAddr());
+        logger.info("Client IP Address: " + request.getRemoteAddr());
         logger.info("⛅ Weather info got polled: " + weather.temperature + "°");
         return ResponseEntity.ok(weather);
     }

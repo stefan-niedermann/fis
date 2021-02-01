@@ -27,7 +27,8 @@ public class MittelfrankenSuedParserTest {
 
     @Test
     public void parseOperationFaxTest() throws IOException {
-        final var samples = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+        // TODO find samples dynamically
+        final var samples = new int[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11};
         for (var sample : samples) {
             final var expected = getSampleExpected(sample);
             final var input = getSampleInput(sample);

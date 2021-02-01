@@ -1,0 +1,45 @@
+31/01/2021 15:21 +4991 987654321 FF_MUSTERWEHR 5. 81/81
+Wars mes I Ho ce178)9999999  Mısı _ fam3ı.01.2021 fo 15:28 WEM
+------- FAX ------ FAX ------ FAX ------ FAX ------ FAX ------ FAX -------
+Absender : ILS MITTELFRANKEN SÜD
+Fax : +49 (1234) / 9876543
+Termin :
+Einsatznummer: T 5.3 123456 12
+A MITTEILER
+u FINSATZORT
+Straße : Muster Straße
+Haus-Nr. :
+Ort : 99999 Musterdorf - Mustergemeinde Mustergemeinde
+Objekt :
+Station :
+X=1234567.98765432
+Y=1234567.98765432
+u ZIELORT
+Straße : Haus-Nr.:
+Ort :
+Objekt :
+Station :
+u PATIENT
+er EINSATZGRUND rer
+Schlagw.: #T3523#Unwetter#Fahrzeug / sonstiger Gegenstand sichern
+Stichwort: THL UNWETTER
+A --- EINSATZMITTEL
+Name : FF Musterdorf
+Alarmiert : 31.01.2021 15:27:20
+Aus :
+Name : Florian Musterdorf 48/1
+Alarmiert : 31.01.2021 15:27:20
+Aus :
+Name : Florian Musterkreis Land 3/1
+Alarmiert : 31.01.2021 15:27:20
+Aus :
+A --- BEMERKUNG
+XY MARKE farbe
+A BC 123
+Fahrzeug steht in der Musterbach // PPerson sitzt im Fahrzeug ist aber nicht in Gefahr
+777-7 ---------------------- ALARMFAX ENDE rn
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes ,‚ insbesondere personenbezogene Daten, dürfen
+ausschließlich für einsatzbezogene Zwecke verwendet werden. Der
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+diesen Informationen erhalten.

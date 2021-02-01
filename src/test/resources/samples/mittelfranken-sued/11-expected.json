@@ -1,0 +1,18 @@
+{
+  "keyword": "THL UNWETTER",
+  "number": "",
+  "street": "Muster Straße",
+  "location": "99999 Musterdorf - Mustergemeinde",
+  "obj": "",
+  "tags": [
+    "T3523",
+    "Unwetter",
+    "Fahrzeug / sonstiger Gegenstand sichern"
+  ],
+  "vehicles": [
+    "FF Musterdorf",
+    "Musterdorf 48/1",
+    "Musterkreis Land 3/1"
+  ],
+  "note": "XY MARKE farbe\nA BC 123\nFahrzeug steht in der Musterbach // PPerson sitzt im Fahrzeug ist aber nicht in Gefahr"
+}

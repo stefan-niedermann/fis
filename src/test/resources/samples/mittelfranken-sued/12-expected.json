@@ -1,0 +1,19 @@
+{
+  "keyword": "THL UNWETTER",
+  "number": "37",
+  "street": "Muster Straße",
+  "location": "99999 Musterdorf - Mustergemeinde",
+  "obj": "",
+  "tags": [
+    "T3522",
+    "Unwetter",
+    "Keller unter Wasser"
+  ],
+  "vehicles": [
+    "Musterdorf 48/1",
+    "Musterdorf FwA-Geräte",
+    "Faxversand an KEZ RH",
+    "FF Musterdorf"
+  ],
+  "note": "@ RH 012,\nWasser im Keller und Garage ca. halber Meter, Motorräder in der Garage, Wasser läuft\nnoch nach"
+}

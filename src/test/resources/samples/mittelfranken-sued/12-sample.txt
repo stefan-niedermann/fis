@@ -1,0 +1,53 @@
+89/87/2021 28:35 +4999 999999999 FF MUSTERDORF 4. 22/33
+Wars mes I Ho ce178)9999999 fe _ famos.o7.2021 fo20:42 WE
+------- FAX ------ FAX ------ FAX ------ FAX ------ FAX ------ FAX -------
+Absender : ILS MITTELFRANKEN SÜD
+Fax : +49 (1234) / 9876543
+Termin :
+Einsatznummer: T 5.3 123456 1234
+Ar MITTEILER A
+A EINSATZORT
+Straße : Muster Straße
+Haus-Nr. : 37
+Ort : 99999 Musterdorf - Mustergemeinde Mustergemeinde
+Objekt :
+Station :
+X=1234567.89
+Y=9876543.21
+nr ZIELORT
+Straße : Haus-Nr. :
+Ort :
+Objekt :
+Station :
+A --- PATIENT
+rn EINSATZGRUND “rn
+Schlagw.: #T3522#Unwetter#Keller unter Wasser
+Stichwort: THL UNWETTER
+A ----- EINSATZMITTEL
+Name »; Florian Musterdorf 48/1
+Alarmiert ; 09.07.2021 20:41:40
+Aus ;
+Name » Florian Musterdorf FwA-Geräte
+Alarmiert : 09.07.2021 20:41:40
+Aus :
+Name ; Faxversand an KEZ RH
+Alarmiert ; 09.07.2021 20:39:02
+Aus :
+Name » FF Musterdorf
+Alarmiert : 09.07.2021 20:41:39
+Aus ;
+A ------ BEMERKUNG Ar
+@ RH 012
+Wasser im Keller und Garage ca. halber Meter, Motorräder in der Garage, Wasser läuft
+noch nach
+7 ------------ ALARMFAX ENDE A -----
+Rechtlicher Hinweis:
+Die Inhalte dieses Faxes , insbesondere personenbezogene Daten, dürfen
+89/07/2021 20:35 +4999999999999 FF_MUSTERDORF 12. 66/77
+is mr-s {rd ———————__ /Catocae178)9999999  Me,2 mm os.o7.2021 [20:42 ANEO
+
+ausschließlich für einsatzbezogene Zwecke verwendet werden. Der
+
+Empfänger hat sicherzustellen, dass unbefugte Dritte keinen Zugang zu
+
+diesen Informationen erhalten.

@@ -29,7 +29,7 @@ class MittelfrankenSuedParser implements OperationFaxParser {
     /**
      * A list of common OCR mistakes which should be purged from the input.
      */
-    private static final Collection<Character> UNDESIRED_CHARACTERS = List.of(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*', '|');
+    private static final Collection<Character> UNDESIRED_CHARACTERS = List.of(',', ';', '.', ':', ' ', '`', '´', '\'', '"', '_', '-', '+', '*', '|', '»', '«');
 
     @Override
     public OperationDto parse(String input) throws IllegalArgumentException {

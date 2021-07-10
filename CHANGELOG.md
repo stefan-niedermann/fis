@@ -1,6 +1,9 @@
 # Changelog
 
-## 0.6.0-SNAPSHOT
+## 1.0.0
+
+- Update dependencies
+- Mark as stable
 
 ## 0.5.0
 

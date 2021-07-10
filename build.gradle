@@ -17,7 +17,7 @@ dependencies {
     implementation 'net.sourceforge.tess4j:tess4j:4.5.4'
 
     // FTP
-    implementation 'commons-net:commons-net:3.7.2'
+    implementation 'commons-net:commons-net:3.8.0'
 
     // Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'

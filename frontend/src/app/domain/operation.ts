@@ -4,7 +4,7 @@ export interface Operation {
   street: string;
   location: string;
   obj: string;
-  "tags": string[];
-  "vehicles": string[];
-  "note": string;
+  tags: string[];
+  vehicles: string[];
+  note: string;
 }

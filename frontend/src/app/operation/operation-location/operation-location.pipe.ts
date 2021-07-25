@@ -6,7 +6,7 @@ import {Operation} from "../../domain/operation";
 })
 export class OperationLocationPipe implements PipeTransform {
 
-  transform(operation: Operation, ...args: unknown[]): unknown {
+  transform(operation: Operation): string {
     if(!operation) {
       return '';
     }

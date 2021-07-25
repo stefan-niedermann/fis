@@ -1,7 +1,6 @@
 import {Component} from '@angular/core';
 import {OperationService} from "./operation/operation.service";
 import {Observable} from "rxjs";
-import {InfoService} from "./info/info.service";
 
 @Component({
   selector: 'app-root',
@@ -13,7 +12,6 @@ export class AppComponent {
   activeOperation$: Observable<boolean>;
 
   constructor(
-    private infoService: InfoService,
     private operationService: OperationService
   ) {
     this.activeOperation$ = this.operationService.isActiveOperation();

@@ -5,6 +5,9 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {IconUrlPipe} from "./icon-url.pipe";
 import {ClockPipe} from "./clock.pipe";
 import {TemperaturePipe} from "./temperature.pipe";
+import { MockProvider } from 'ng-mocks';
+import { InfoService } from './info.service';
+import { EMPTY } from 'rxjs';
 
 describe('InfoComponent', () => {
   let component: InfoComponent;
@@ -14,6 +17,12 @@ describe('InfoComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+      ],
+      providers: [
+        MockProvider(InfoService, {
+          getCurrentWeather: () => EMPTY,
+          getCurrentTime: () => EMPTY
+        })
       ],
       declarations: [
         InfoComponent,

@@ -14,8 +14,8 @@ export class InfoService {
   private readonly currentWeather$: Subject<Weather> = new BehaviorSubject<Weather>(null);
 
   constructor(
-    private http: HttpClient,
-    private webSocketService: WebSocketService
+    private readonly http: HttpClient,
+    private readonly webSocketService: WebSocketService
   ) {
     merge(
       this.pollWeatherFromServer()

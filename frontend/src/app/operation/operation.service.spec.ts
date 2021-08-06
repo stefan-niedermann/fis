@@ -6,7 +6,7 @@ import {HttpClientTestingModule, HttpTestingController, TestRequest} from '@angu
 import {MockProvider} from 'ng-mocks'
 import {WebSocketService} from '../web-socket.service';
 import {EMPTY} from 'rxjs';
-import {environment} from 'src/environments/environment';
+import {environment} from '../../environments/environment';
 
 describe('OperationService', () => {
   let service: OperationService;
@@ -59,11 +59,11 @@ describe('OperationService', () => {
       .isActiveOperation()
       .subscribe({
         next: (active) => {
-          expect(active).toBeTrue();
+          expect(active).toBeTruthy();
           done();
         },
-        error: fail,
-        complete: fail
+        error: () => fail(),
+        complete: () => fail()
       });
   })
 
@@ -89,8 +89,8 @@ describe('OperationService', () => {
           expect(operation.location).toEqual('Samplecity');
           done();
         },
-        error: fail,
-        complete: fail
+        error: () => fail(),
+        complete: () => fail()
       });
   })
 });

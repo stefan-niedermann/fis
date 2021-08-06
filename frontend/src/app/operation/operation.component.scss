@@ -1,15 +1,7 @@
 :host {
-  --main-bg-color: white;
-  --main-fg-color: black;
-
   hyphens: auto;
   background-color: var(--main-bg-color);
   color: var(--main-fg-color);
-
-  &.dark-theme {
-    --main-bg-color: black;
-    --main-fg-color: white;
-  }
 }
 
 ul {

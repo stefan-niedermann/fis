@@ -1,16 +1,6 @@
 :host {
-  --main-bg-color: white;
-  --main-fg-color: black;
-
-  background-color: var(--main-bg-color);
-  color: var(--main-fg-color);
   justify-content: space-around;
   hyphens: auto;
-
-  &.dark-theme {
-    --main-bg-color: black;
-    --main-fg-color: white;
-  }
 }
 
 div {

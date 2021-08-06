@@ -1,5 +1,4 @@
 :host {
-  --main-fg-color: black;
   --vehicles-bg-color: #ddd;
   --vehicles-fg-color: #333;
   --vehicles-highlight-fg-color: var(--main-fg-color);
@@ -13,7 +12,6 @@
   }
 
   &.dark-theme {
-    --main-fg-color: white;
     --vehicles-bg-color: #222;
     --vehicles-fg-color: #ccc;
   }

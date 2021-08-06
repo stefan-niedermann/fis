@@ -1,4 +1,4 @@
-import {Component, HostBinding, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {InfoService} from "./info.service";
 import {Observable} from 'rxjs';
 import {map} from "rxjs/operators";
@@ -9,23 +9,16 @@ import {Weather} from "../domain/weather";
   templateUrl: './info.component.html',
   styleUrls: ['./info.component.scss']
 })
-export class InfoComponent implements OnInit, OnDestroy {
+export class InfoComponent implements OnInit {
 
   private weather$: Observable<Weather>;
   iconUrl$: Observable<string>;
   temperature$: Observable<number>;
   time$: Observable<Date>;
 
-  @HostBinding('class.dark-theme') darkThemeClass: boolean = false;
-  private darkThemeSubscription;
-
   constructor(
     private infoService: InfoService
   ) {
-    this.darkThemeSubscription = this.infoService.isDarkTheme()
-      .subscribe(isDarkTheme => {
-        this.darkThemeClass = isDarkTheme;
-      });
   }
 
   ngOnInit(): void {
@@ -38,9 +31,4 @@ export class InfoComponent implements OnInit, OnDestroy {
     ));
     this.time$ = this.infoService.getCurrentTime();
   }
-
-  ngOnDestroy(): void {
-    this.darkThemeSubscription.unsubscribe();
-  }
-
 }

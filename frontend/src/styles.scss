@@ -4,6 +4,14 @@ html {
 }
 
 body {
+  --main-bg-color: white;
+  --main-fg-color: black;
+
+  &.dark-theme {
+    --main-bg-color: black;
+    --main-fg-color: white;
+  }
+
   margin: 0;
   color: var(--main-fg-color);
   background: var(--main-bg-color);

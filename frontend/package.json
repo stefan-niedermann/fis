@@ -7,7 +7,9 @@
     "build": "ng build --configuration production",
     "test": "ng test --silent",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e --headless --watch=false",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -30,15 +32,16 @@
     "@angular-devkit/build-angular": "~12.2.0",
     "@angular/cli": "~12.2.0",
     "@angular/compiler-cli": "~12.2.0",
+    "@cypress/schematic": "^1.5.0",
     "@types/jest": "^27.0.0",
     "@types/node": "^16.4.13",
     "@types/stompjs": "^2.3.5",
     "codelyzer": "^6.0.2",
     "jest": "^27.0.6",
     "ng-mocks": "^12.4.0",
-    "protractor": "~7.0.0",
     "ts-node": "~10.2.0",
     "tslint": "~6.1.0",
-    "typescript": "~4.3.5"
+    "typescript": "~4.3.5",
+    "cypress": "8.2.0"
   }
 }

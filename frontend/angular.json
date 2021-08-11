@@ -95,8 +95,8 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "testMatch": [
-              "**/__tests__/**/*.[t]s?(x)",
-              "**/?(*.)+(spec).[t]s?(x)"
+              "**/src/**/__tests__/**/*.[t]s?(x)",
+              "**/src/**/?(*.)+(spec).[t]s?(x)"
             ]
           }
         },

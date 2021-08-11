@@ -7,7 +7,6 @@ import { InfoService } from './info/info.service';
 import { InfoComponent } from './info/info.component';
 import { OperationComponent } from './operation/operation.component';
 import { EMPTY } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
 import { OperationService } from './operation/operation.service';
 
 describe('AppComponent', () => {

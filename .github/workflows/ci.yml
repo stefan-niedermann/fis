@@ -25,6 +25,19 @@ jobs:
         working-directory: frontend
         run: npm run test
 
+  e2e-ui:
+    name: Frontend End to End tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend End to End tests
+        working-directory: frontend
+        run: npm run e2e
+
   test-backend:
     name: Backend Unit tests
     runs-on: ubuntu-latest

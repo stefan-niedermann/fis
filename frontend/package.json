@@ -33,7 +33,7 @@
     "@angular/cli": "~12.2.1",
     "@angular/compiler-cli": "~12.2.1",
     "@cypress/schematic": "^1.5.0",
-    "@types/jest": "^27.0.0",
+    "@types/jest": "^27.0.1",
     "@types/node": "^16.6.0",
     "@types/stompjs": "^2.3.5",
     "codelyzer": "^6.0.2",

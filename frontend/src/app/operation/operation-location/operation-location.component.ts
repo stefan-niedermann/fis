@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {Operation} from "../../domain/operation";
 
 @Component({
@@ -6,14 +6,9 @@ import {Operation} from "../../domain/operation";
   templateUrl: './operation-location.component.html',
   styleUrls: ['./operation-location.component.scss']
 })
-export class OperationLocationComponent implements OnInit {
+export class OperationLocationComponent {
 
   @Input()
   operation: Operation;
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
-
+  
 }

@@ -39,7 +39,7 @@
     "@angular/compiler-cli": "~12.2.4",
     "@cypress/schematic": "^1.5.0",
     "@types/jest": "^27.0.1",
-    "@types/node": "^16.7.10",
+    "@types/node": "^16.7.13",
     "@types/stompjs": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "4.31.0",
     "@typescript-eslint/parser": "4.31.0",

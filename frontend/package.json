@@ -42,7 +42,7 @@
     "@types/node": "^16.11.4",
     "@types/stompjs": "^2.3.5",
     "@typescript-eslint/eslint-plugin": "5.2.0",
-    "@typescript-eslint/parser": "5.1.0",
+    "@typescript-eslint/parser": "5.2.0",
     "cypress": "8.6.0",
     "eslint": "^7.26.0",
     "jest": "^27.3.1",

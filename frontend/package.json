@@ -14,7 +14,7 @@
   "private": true,
   "dependencies": {
     "@angular/animations": "~12.2.11",
-    "@angular/common": "~12.2.11",
+    "@angular/common": "~12.2.12",
     "@angular/compiler": "~12.2.11",
     "@angular/core": "~12.2.11",
     "@angular/forms": "~12.2.11",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@angular-builders/jest": "^12.1.2",
-    "@angular-devkit/build-angular": "~12.2.11",
+    "@angular-devkit/build-angular": "~12.2.12",
     "@angular-eslint/builder": "12.6.1",
     "@angular-eslint/eslint-plugin": "12.6.1",
     "@angular-eslint/eslint-plugin-template": "12.6.1",

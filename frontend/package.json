@@ -18,7 +18,7 @@
     "@angular/compiler": "~12.2.11",
     "@angular/core": "~12.2.11",
     "@angular/forms": "~12.2.11",
-    "@angular/platform-browser": "~12.2.11",
+    "@angular/platform-browser": "~12.2.12",
     "@angular/platform-browser-dynamic": "~12.2.11",
     "net": "^1.0.2",
     "rxjs": "~7.4.0",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@angular-builders/jest": "^12.1.2",
-    "@angular-devkit/build-angular": "~12.2.11",
+    "@angular-devkit/build-angular": "~12.2.12",
     "@angular-eslint/builder": "12.6.1",
     "@angular-eslint/eslint-plugin": "12.6.1",
     "@angular-eslint/eslint-plugin-template": "12.6.1",

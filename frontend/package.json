@@ -19,7 +19,7 @@
     "@angular/core": "~12.2.11",
     "@angular/forms": "~12.2.11",
     "@angular/platform-browser": "~12.2.12",
-    "@angular/platform-browser-dynamic": "~12.2.11",
+    "@angular/platform-browser-dynamic": "~12.2.12",
     "net": "^1.0.2",
     "rxjs": "~7.4.0",
     "sockjs-client": "^1.5.2",

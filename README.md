@@ -84,7 +84,7 @@ Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 
 ## Maintainer
 
-[![Niedermann IT logo](https://www.niedermann.it/resources/niedermann-it-dienstleistungen.svg)](https://www.niedermann.it)
+[![Niedermann IT logo](https://www.niedermann.it/assets/www.niedermann.it.svg)](https://www.niedermann.it)
 
 ## License
 

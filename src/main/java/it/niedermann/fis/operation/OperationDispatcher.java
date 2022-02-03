@@ -63,7 +63,7 @@ public class OperationDispatcher {
         if (!ftpClient.login(config.getFtp().getUsername(), config.getFtp().getPassword())) {
             throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.getFtp().getHost() + ". Please check FTP credentials.");
         }
-        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", palling each " + config.getFtp().getPollInterval() / 1000 + " seconds.");
+        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", palling each " + config.getFtp().getPollInterval() / 1_000 + " seconds.");
 
         parser = OperationFaxParser.create("mittelfranken-sued");
     }
@@ -143,7 +143,7 @@ public class OperationDispatcher {
 
         cancelCurrentOperation = new Thread(() -> {
             try {
-                logger.trace("Scheduled cancellation of operation \"" + dto.keyword + "\" in " + config.getOperation().getDuration() / 1000 + "s");
+                logger.trace("Scheduled cancellation of operation \"" + dto.keyword + "\" in " + config.getOperation().getDuration() / 1_000 + "s");
                 Thread.sleep(config.getOperation().getDuration());
                 if (Thread.currentThread().isInterrupted()) {
                     throw new InterruptedException();

@@ -66,6 +66,6 @@ public class OpenWeatherMapProvider implements WeatherProvider {
 
     private boolean isDay(OpenWeatherMapResponseDto.Sys sys) {
         final var now = Instant.now();
-        return now.isAfter(Instant.ofEpochMilli(sys.sunrise * 1000)) && now.isBefore(Instant.ofEpochMilli(sys.sunset * 1000));
+        return now.isAfter(Instant.ofEpochMilli(sys.sunrise * 1_000)) && now.isBefore(Instant.ofEpochMilli(sys.sunset * 1_000));
     }
 }

@@ -74,7 +74,7 @@ public class OperationDispatcher {
             final var finalLastPdfName = lastPdfName;
             final var optionalFtpFile = poll(finalLastPdfName);
             if (optionalFtpFile.isPresent()) {
-                final FTPFile ftpFile = optionalFtpFile.get();
+                final var ftpFile = optionalFtpFile.get();
 
                 lastPdfName = ftpFile.getName();
                 logger.debug("Found a new file: \"" + ftpFile.getName() + "\"");

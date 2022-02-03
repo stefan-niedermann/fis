@@ -54,7 +54,7 @@ public class OperationDispatcher {
             config.getTesseract().setTessdata(extractTessResources("tessdata").getAbsolutePath());
         }
         tesseract = new Tesseract();
-        tesseract.setTessVariable("LC_ALL", "C");
+        tesseract.setVariable("LC_ALL", "C");
         tesseract.setDatapath(config.getTesseract().getTessdata());
         tesseract.setLanguage(config.getTesseract().getLang());
 

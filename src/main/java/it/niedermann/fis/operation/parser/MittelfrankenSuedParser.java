@@ -1,6 +1,6 @@
 package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.operation.OperationDto;
+import it.niedermann.fis.main.model.OperationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
@@ -44,14 +44,14 @@ class MittelfrankenSuedParser implements OperationFaxParser {
         final var dto = new OperationDto();
         final var lines = input.split("\n");
 
-        runSafe("keyword", () -> dto.keyword = findKeyword(lines));
-        runSafe("tags", () -> dto.tags = findTags(lines));
-        runSafe("street", () -> dto.street = findValue("Straße", lines));
-        runSafe("number", () -> dto.number = findValue("Haus-Nr.", lines));
-        runSafe("location", () -> dto.location = findLocation(lines));
-        runSafe("object", () -> dto.obj = findObject(lines));
-        runSafe("vehicles", () -> dto.vehicles = findVehicles(lines));
-        runSafe("note", () -> dto.note = findNote(lines));
+        runSafe("keyword", () -> dto.setKeyword(findKeyword(lines)));
+        runSafe("tags", () -> dto.setTags(Arrays.asList(findTags(lines))));
+        runSafe("street", () -> dto.setStreet(findValue("Straße", lines)));
+        runSafe("number", () -> dto.setNumber(findValue("Haus-Nr.", lines)));
+        runSafe("location", () -> dto.setLocation(findLocation(lines)));
+        runSafe("object", () -> dto.setObj(findObject(lines)));
+        runSafe("vehicles", () -> dto.setVehicles(Arrays.asList(findVehicles(lines))));
+        runSafe("note", () -> dto.setNote(findNote(lines)));
 
         return dto;
     }

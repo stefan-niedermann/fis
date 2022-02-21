@@ -1,6 +1,7 @@
 package it.niedermann.fis.parameter;
 
 import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.model.ParameterDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,7 @@ public class ParameterController {
     private final ParameterDto dto = new ParameterDto();
 
     public ParameterController(FisConfiguration config) {
-        dto.language = config.getWeather().getLang();
-        dto.operation.duration = config.getOperation().getDuration();
-        dto.operation.highlight = config.getOperation().getHighlight();
+        dto.setHighlight(config.getOperation().getHighlight());
     }
 
     @GetMapping("/parameter")

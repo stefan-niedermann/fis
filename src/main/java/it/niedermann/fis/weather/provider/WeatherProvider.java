@@ -1,6 +1,6 @@
 package it.niedermann.fis.weather.provider;
 
-import it.niedermann.fis.weather.WeatherDto;
+import it.niedermann.fis.main.model.WeatherDto;
 
 import java.io.IOException;
 

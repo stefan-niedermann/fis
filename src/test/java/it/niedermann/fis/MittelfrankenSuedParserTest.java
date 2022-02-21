@@ -1,7 +1,6 @@
 package it.niedermann.fis;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.niedermann.fis.operation.OperationDto;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;

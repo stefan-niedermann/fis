@@ -13,6 +13,7 @@ import {map} from "rxjs/operators";
 export class OperationComponent {
   private readonly keywords = ['DEKON', 'THL', 'ABC', 'INF', 'SON', 'RD', 'B'];
 
+  readonly darkThemeClass = 'dark-theme';
   operation$: Observable<Operation>;
   operationKeyword$: Observable<string>;
   operationClass$: Observable<string>;

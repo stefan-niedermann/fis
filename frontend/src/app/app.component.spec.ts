@@ -1,13 +1,13 @@
-import {TestBed} from '@angular/core/testing';
-import {AppComponent} from './app.component';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
-import { MockComponent, MockProvider } from 'ng-mocks';
-import { Renderer2 } from '@angular/core';
-import { InfoService } from './info/info.service';
-import { InfoComponent } from './info/info.component';
-import { OperationComponent } from './operation/operation.component';
-import { EMPTY } from 'rxjs';
-import { OperationService } from './operation/operation.service';
+import {TestBed} from '@angular/core/testing'
+import {AppComponent} from './app.component'
+import {HttpClientTestingModule} from '@angular/common/http/testing'
+import {MockComponent, MockProvider} from 'ng-mocks'
+import {Renderer2} from '@angular/core'
+import {InfoService} from './info/info.service'
+import {InfoComponent} from './info/info.component'
+import {OperationComponent} from './operation/operation.component'
+import {EMPTY} from 'rxjs'
+import {OperationService} from './operation/operation.service'
 
 describe('AppComponent', () => {
   beforeEach(async () => {
@@ -28,13 +28,13 @@ describe('AppComponent', () => {
         }),
         MockProvider(OperationService)
       ]
-    }).compileComponents();
-  });
+    }).compileComponents()
+  })
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
+    const fixture = TestBed.createComponent(AppComponent)
+    const app = fixture.componentInstance
+    expect(app).toBeTruthy()
+  })
 
-});
+})

@@ -1,9 +1,9 @@
-import { Component, Inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
-import { OperationService } from "./operation/operation.service";
-import { Observable, Subject } from "rxjs";
-import { DOCUMENT } from '@angular/common';
-import { InfoService } from './info/info.service';
-import { takeUntil } from 'rxjs/operators';
+import {Component, Inject, OnDestroy, OnInit, Renderer2} from '@angular/core'
+import {OperationService} from './operation/operation.service'
+import {Observable, Subject} from 'rxjs'
+import {DOCUMENT} from '@angular/common'
+import {InfoService} from './info/info.service'
+import {takeUntil} from 'rxjs/operators'
 
 @Component({
   selector: 'app-root',
@@ -12,9 +12,9 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class AppComponent implements OnInit, OnDestroy {
 
-  private readonly darkThemeClass = 'dark-theme';
-  private readonly unsubscribe$ = new Subject<void>();
-  readonly activeOperation$: Observable<boolean>;
+  private readonly darkThemeClass = 'dark-theme'
+  private readonly unsubscribe$ = new Subject<void>()
+  readonly activeOperation$: Observable<boolean>
 
   constructor(
     @Inject(DOCUMENT) private readonly document: Document,
@@ -22,7 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
     private readonly infoService: InfoService,
     private readonly operationService: OperationService
   ) {
-    this.activeOperation$ = this.operationService.isActiveOperation();
+    this.activeOperation$ = this.operationService.isActiveOperation()
   }
 
   ngOnInit() {
@@ -31,15 +31,15 @@ export class AppComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe((isDarkTheme) => {
         if (isDarkTheme) {
-          this.renderer.addClass(this.document.body, this.darkThemeClass);
+          this.renderer.addClass(this.document.body, this.darkThemeClass)
         } else {
-          this.renderer.removeClass(this.document.body, this.darkThemeClass);
+          this.renderer.removeClass(this.document.body, this.darkThemeClass)
         }
-      });
+      })
   }
 
   ngOnDestroy() {
-    this.unsubscribe$.next();
-    this.unsubscribe$.complete();
+    this.unsubscribe$.next()
+    this.unsubscribe$.complete()
   }
 }

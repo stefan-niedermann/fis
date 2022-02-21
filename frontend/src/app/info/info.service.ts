@@ -1,17 +1,17 @@
-import {Injectable} from '@angular/core';
-import {WebSocketService} from "../web-socket.service";
-import {BehaviorSubject, merge, Observable, Subject, timer} from "rxjs";
-import {HttpClient} from "@angular/common/http";
-import {Weather} from "src/app/domain/weather";
-import {map, share, tap} from "rxjs/operators";
-import {environment} from "../../environments/environment";
+import {Injectable} from '@angular/core'
+import {WebSocketService} from '../web-socket.service'
+import {filter, merge, Observable, ReplaySubject, Subject, timer} from 'rxjs'
+import {HttpClient} from '@angular/common/http'
+import {Weather} from 'src/app/domain/weather'
+import {map, share, tap} from 'rxjs/operators'
+import {environment} from '../../environments/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class InfoService {
 
-  private readonly currentWeather$: Subject<Weather> = new BehaviorSubject<Weather>(null);
+  private readonly currentWeather$: Subject<Weather> = new ReplaySubject<Weather>(1)
 
   constructor(
     private readonly http: HttpClient,
@@ -23,10 +23,14 @@ export class InfoService {
       this.webSocketService.subscribe<Weather>('/notification/weather')
         .pipe(tap((weather) => console.info('⛅️ New weather (pushed):', `${weather.temperature}°`)))
     )
-      .pipe(share())
-      .subscribe(weather => {
-        this.currentWeather$.next(weather);
-      });
+      .pipe(
+        filter(weather => typeof weather === 'object'),
+        share()
+      )
+      .subscribe({
+        next: weather => this.currentWeather$.next(weather),
+        error: error => console.error(error)
+      })
   }
 
   public isDarkTheme(): Observable<boolean> {
@@ -36,18 +40,18 @@ export class InfoService {
         return weather
           ? !weather.isDay
           : false
-      }));
+      }))
   }
 
   public getCurrentWeather(): Observable<Weather> {
-    return this.currentWeather$.asObservable();
+    return this.currentWeather$.asObservable()
   }
 
   private pollWeatherFromServer(): Observable<Weather> {
-    return this.http.get<Weather>(`${environment.hostUrl}/weather`);
+    return this.http.get<Weather>(`${environment.hostUrl}/weather`)
   }
 
   public getCurrentTime(): Observable<Date> {
-    return timer(0, 5000).pipe(map(_ => new Date()))
+    return timer(0, 5_000).pipe(map(_ => new Date()))
   }
 }

@@ -4,8 +4,8 @@ import {OperationLocationComponent} from './operation-location.component';
 import {OperationLocationPipe} from "./operation-location.pipe";
 
 describe('OperationLocationComponent', () => {
-  let component: OperationLocationComponent;
-  let fixture: ComponentFixture<OperationLocationComponent>;
+  let component: OperationLocationComponent
+  let fixture: ComponentFixture<OperationLocationComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -14,16 +14,16 @@ describe('OperationLocationComponent', () => {
         OperationLocationPipe
       ]
     })
-      .compileComponents();
-  });
+      .compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(OperationLocationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(OperationLocationComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

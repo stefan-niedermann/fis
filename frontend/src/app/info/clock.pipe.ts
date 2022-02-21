@@ -7,11 +7,11 @@ export class ClockPipe implements PipeTransform {
 
   transform(date: Date, ...args: unknown[]): unknown {
     if (!(date instanceof Date)) {
-      return '';
+      return ''
     }
-    const hours = date.getHours();
-    const minutes = date.getMinutes();
-    return `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes} Uhr`;
+    const hours = date.getHours()
+    const minutes = date.getMinutes()
+    return `${hours < 10 ? `0${hours}` : hours}:${minutes < 10 ? `0${minutes}` : minutes} Uhr`
   }
 
 }

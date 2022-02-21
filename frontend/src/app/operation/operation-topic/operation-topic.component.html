@@ -1,7 +1,7 @@
-<strong>{{operation.keyword | operationKeyword}}</strong>
+<strong>{{operation?.keyword | operationKeyword}}</strong>
 <ul>
-  <li *ngFor="let tag of operation.tags">
+  <li *ngFor="let tag of operation?.tags">
     {{tag}}
   </li>
 </ul>
-<p>{{operation.note}}</p>
+<p>{{operation?.note}}</p>

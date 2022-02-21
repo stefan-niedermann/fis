@@ -5,13 +5,13 @@ import {HttpClientTestingModule} from "@angular/common/http/testing";
 import {IconUrlPipe} from "./icon-url.pipe";
 import {ClockPipe} from "./clock.pipe";
 import {TemperaturePipe} from "./temperature.pipe";
-import { MockProvider } from 'ng-mocks';
-import { InfoService } from './info.service';
-import { EMPTY } from 'rxjs';
+import {MockProvider} from 'ng-mocks';
+import {InfoService} from './info.service';
+import {EMPTY} from 'rxjs';
 
 describe('InfoComponent', () => {
-  let component: InfoComponent;
-  let fixture: ComponentFixture<InfoComponent>;
+  let component: InfoComponent
+  let fixture: ComponentFixture<InfoComponent>
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -31,16 +31,16 @@ describe('InfoComponent', () => {
         TemperaturePipe
       ]
     })
-    .compileComponents();
-  });
+    .compileComponents()
+  })
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(InfoComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    fixture = TestBed.createComponent(InfoComponent)
+    component = fixture.componentInstance
+    fixture.detectChanges()
+  })
 
   it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-});
+    expect(component).toBeTruthy()
+  })
+})

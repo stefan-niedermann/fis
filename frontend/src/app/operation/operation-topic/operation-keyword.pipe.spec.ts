@@ -3,15 +3,15 @@ import {OperationKeywordPipe} from './operation-keyword.pipe';
 describe('OperationKeywordPipe', () => {
 
   const pipe = new OperationKeywordPipe();
-  
+
   it('create an instance', () => {
     expect(pipe).toBeTruthy();
   });
 
   it('should return an empty string for falsy values', () => {
     expect(pipe.transform(false as any)).toEqual('');
-    expect(pipe.transform(null)).toEqual('');
-    expect(pipe.transform(undefined)).toEqual('');
+    expect(pipe.transform(null as any)).toEqual('');
+    expect(pipe.transform(undefined as any)).toEqual('');
     expect(pipe.transform(0 as any)).toEqual('');
     expect(pipe.transform('')).toEqual('');
     expect(pipe.transform(NaN as any)).toEqual('');
@@ -23,16 +23,16 @@ describe('OperationKeywordPipe', () => {
       expect(pipe.transform('B 123')).toEqual('B');
       expect(pipe.transform('B 456')).toEqual('B');
       expect(pipe.transform('B foo bar')).toEqual('B');
-      
+
       expect(pipe.transform('THL 123')).toEqual('THL');
       expect(pipe.transform('THL 456 b')).toEqual('THL');
       expect(pipe.transform('THL foo bar')).toEqual('THL');
     })
-  
+
     it('should not strip the second part if it is one or two characters long', () => {
       expect(pipe.transform('B a')).toEqual('BA');
       expect(pipe.transform('B 13')).toEqual('B13');
-      
+
       expect(pipe.transform('THL ba')).toEqual('THLBA');
       expect(pipe.transform('THL 4')).toEqual('THL4');
     })

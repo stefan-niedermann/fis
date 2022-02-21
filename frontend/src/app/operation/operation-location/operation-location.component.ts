@@ -1,5 +1,5 @@
-import {Component, Input} from '@angular/core';
-import {Operation} from "../../domain/operation";
+import {Component, Input} from '@angular/core'
+import {Operation} from '../../domain/operation'
 
 @Component({
   selector: 'app-operation-location',
@@ -9,6 +9,6 @@ import {Operation} from "../../domain/operation";
 export class OperationLocationComponent {
 
   @Input()
-  operation: Operation;
-  
+  operation: Operation | undefined
+
 }

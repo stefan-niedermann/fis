@@ -1,6 +1,6 @@
 package it.niedermann.fis.weather.provider.openweathermap;
 
-import it.niedermann.fis.weather.WeatherDto;
+import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,14 +52,14 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             return null;
         }
         final var dto = new WeatherDto();
-        dto.temperature = response.main.temp;
+        dto.setTemperature(response.main.temp);
         if (response.sys == null) {
-            dto.isDay = true;
+            dto.setIsDay(true);
         } else {
-            dto.isDay = isDay(response.sys);
+            dto.setIsDay(isDay(response.sys));
         }
         if (response.weather != null && response.weather.length > 0) {
-            dto.icon = OpenWeatherMapIconMappingUtil.get(response.weather[0].id, dto.isDay);
+            dto.setIcon(OpenWeatherMapIconMappingUtil.get(response.weather[0].id, dto.getIsDay()));
         }
         return dto;
     }

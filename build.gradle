@@ -1,6 +1,7 @@
 plugins {
     id 'org.springframework.boot' version '2.6.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.openapi.generator' version '5.3.0'
     id 'java'
 }
 
@@ -10,9 +11,17 @@ sourceCompatibility = '11'
 
 repositories {
     mavenCentral()
+    mavenLocal()
+    maven { url "https://repo1.maven.org/maven2" }
 }
 
 dependencies {
+    // OpenAPI
+    implementation 'org.openapitools:openapi-generator-gradle-plugin:5.3.0'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
+    implementation 'com.google.guava:guava:20.0'
+
     // OCR
     implementation 'net.sourceforge.tess4j:tess4j:5.1.1'
 
@@ -35,6 +44,10 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+configurations.all {
+    exclude module: 'slf4j-simple'
+}
+
 bootJar {
     launchScript()
 }
@@ -42,3 +55,31 @@ bootJar {
 test {
     useJUnitPlatform()
 }
+
+openApiGenerate {
+    generatorName = "spring"
+    inputSpec = "$rootDir/api.yml".toString()
+    outputDir = "$buildDir/gen"
+    apiPackage = "it.niedermann.fis.main.api"
+    invokerPackage = "it.niedermann.fis.main.invoker"
+    modelPackage = "it.niedermann.fis.main.model"
+    modelNameSuffix = "Dto"
+    configOptions = [
+            dateLibrary: "java11",
+            delegatePattern: "true"
+    ]
+
+    jar {
+        enabled = false
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir("$buildDir/gen/src/main/java")
+        }
+    }
+}
+
+compileJava.dependsOn tasks.openApiGenerate

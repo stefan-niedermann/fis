@@ -1,6 +1,7 @@
 package it.niedermann.fis.weather;
 
 import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class WeatherDispatcher {
         } else {
             lastWeatherInformation = newWeatherInformation;
             template.convertAndSend("/notification/weather", lastWeatherInformation);
-            logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.temperature + "°");
+            logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.getTemperature() + "°");
         }
     }
 

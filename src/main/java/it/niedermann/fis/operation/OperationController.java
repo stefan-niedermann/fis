@@ -1,5 +1,6 @@
 package it.niedermann.fis.operation;
 
+import it.niedermann.fis.main.model.OperationDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class OperationController {
             logger.info("🚒 Operation got polled, but currently not active operation");
             return ResponseEntity.noContent().build();
         }
-        logger.info("🚒 Operation got polled: " + operation.keyword);
+        logger.info("🚒 Operation got polled: " + operation.getKeyword());
         return ResponseEntity.ok(operation);
     }
 }

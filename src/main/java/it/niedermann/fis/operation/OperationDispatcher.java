@@ -1,6 +1,7 @@
 package it.niedermann.fis.operation;
 
 import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
@@ -111,15 +112,15 @@ public class OperationDispatcher {
                 final var dto = parser.parse(ocrText);
                 logger.debug("→ Finished parsing");
 
-                logger.trace("→ Saving operation as currently active operation: \"" + dto.keyword + "\"…");
+                logger.trace("→ Saving operation as currently active operation: \"" + dto.getKeyword() + "\"…");
                 this.currentOperation = dto;
 
-                logger.trace("→ Planning cancellation of currently active operation: \"" + dto.keyword + "\"…");
+                logger.trace("→ Planning cancellation of currently active operation: \"" + dto.getKeyword() + "\"…");
                 scheduleOperationCancellation(dto);
 
-                logger.debug("→ Start Broadcasting operation: \"" + dto.keyword + "\"…");
+                logger.debug("→ Start Broadcasting operation: \"" + dto.getKeyword() + "\"…");
                 template.convertAndSend("/notification/operation", dto);
-                logger.info("🚒 → Finished broadcast for \"" + dto.keyword + "\".");
+                logger.info("🚒 → Finished broadcast for \"" + dto.getKeyword() + "\".");
 
             } else {
                 logger.warn("🚒 → Could not download new FTP file!");
@@ -143,20 +144,20 @@ public class OperationDispatcher {
 
         cancelCurrentOperation = new Thread(() -> {
             try {
-                logger.trace("Scheduled cancellation of operation \"" + dto.keyword + "\" in " + config.getOperation().getDuration() / 1_000 + "s");
+                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.getOperation().getDuration() / 1_000 + "s");
                 Thread.sleep(config.getOperation().getDuration());
                 if (Thread.currentThread().isInterrupted()) {
                     throw new InterruptedException();
                 }
-                logger.info("⏰ Timeout over… unset active operation \"" + dto.keyword + "\"");
+                logger.info("⏰ Timeout over… unset active operation \"" + dto.getKeyword() + "\"");
                 this.currentOperation = null;
                 template.convertAndSend("/notification/operation", null + "");
             } catch (InterruptedException e) {
-                logger.trace("→ Existing operation " + "\"" + dto.keyword + "\"" + " cancellation attempt has been interrupted.");
+                logger.trace("→ Existing operation " + "\"" + dto.getKeyword() + "\"" + " cancellation attempt has been interrupted.");
             }
         });
         cancelCurrentOperation.start();
-        logger.trace("→ Cancellation of currently active operation: \"" + dto.keyword + "\" planned.");
+        logger.trace("→ Cancellation of currently active operation: \"" + dto.getKeyword() + "\" planned.");
     }
 
     private Optional<FTPFile> poll(String excludeFileName) throws IOException {

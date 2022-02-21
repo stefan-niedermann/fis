@@ -1,0 +1,120 @@
+---
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "JarFIS"
+  description: "API for JarFIS"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    name: "Swagger API Team"
+  license:
+    name: "MIT"
+host: "example.com"
+basePath: "/api"
+schemes:
+  - "http"
+consumes:
+  - "application/json"
+produces:
+  - "application/json"
+paths:
+  /parameter:
+    get:
+      description: "Returns environment specific variables for the consumer"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Configuration parameters"
+          schema:
+            type: "object"
+            items:
+              $ref: "#/definitions/Parameter"
+        "304":
+          description: "If-None-Match"
+  /weather:
+    get:
+      description: "Returns information about the current weather"
+      produces:
+        - "application/json"
+      responses:
+        "200":
+          description: "Current weather"
+          schema:
+            type: "object"
+            items:
+              $ref: "#/definitions/Weather"
+        "304":
+          description: "If-None-Match"
+  /operation:
+    get:
+      description: "Information about currently active operations"
+      produces:
+        - "application/json"
+      responses:
+        "204":
+          description: "Currently no operation is active"
+        "200":
+          description: "Currently active operation"
+          schema:
+            type: "object"
+            items:
+              $ref: "#/definitions/Operation"
+        "304":
+          description: "If-None-Match"
+definitions:
+  Parameter:
+    type: "object"
+    required:
+      - "highlight"
+    properties:
+      highlight:
+        type: "string"
+        description: "This term should be highlighted by the consumer, e. g. the name of the firefighter station"
+  Weather:
+    type: "object"
+    required:
+      - "temperature"
+      - "icon"
+      - "isDay"
+    properties:
+      temperature:
+        type: "number"
+        format: "float"
+      icon:
+        type: "string"
+      isDay:
+        type: "boolean"
+        description: "Defines whether the current weather information is at day or night"
+  Operation:
+    type: "object"
+    required:
+      - "keyword"
+      - "tags"
+      - "vehicles"
+      - "note"
+      - "street"
+      - "number"
+      - "location"
+      - "obj"
+    properties:
+      keyword:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      vehicles:
+        type: "array"
+        items:
+          type: "string"
+      note:
+        type: "string"
+      street:
+        type: "string"
+      number:
+        type: "string"
+      location:
+        type: "string"
+      obj:
+        type: "string"

@@ -1,5 +1,6 @@
 package it.niedermann.fis.weather;
 
+import it.niedermann.fis.main.model.WeatherDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class WeatherController {
     @GetMapping("/weather")
     public ResponseEntity<WeatherDto> pollWeather() throws IOException {
         final var weather = dispatcher.getCurrentWeather();
-        logger.info("⛅ Weather info got polled: " + weather.temperature + "°");
+        logger.info("⛅ Weather info got polled: " + weather.getTemperature() + "°");
         return ResponseEntity.ok(weather);
     }
 }

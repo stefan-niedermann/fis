@@ -42,6 +42,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     private OperationDto currentOperation;
 
     private String lastPdfName = "";
+    private boolean processing = false;
 
     public OperationApiDelegateImpl(
             FisConfiguration config
@@ -68,13 +69,11 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     @Override
     public ResponseEntity<OperationDto> operationGet(String ifNoneMatch) {
-        final var operation = getCurrentOperation();
-        if (operation == null) {
-            logger.info("🚒 Operation got polled, but currently not active operation");
-            return ResponseEntity.noContent().build();
-        }
-        logger.info("🚒 Operation got polled: " + operation.getKeyword());
-        return ResponseEntity.ok(operation);
+        return processing
+                ? ResponseEntity.accepted().build()
+                : currentOperation == null
+                ? ResponseEntity.noContent().build()
+                : ResponseEntity.ok(currentOperation);
     }
 
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
@@ -103,6 +102,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     }
 
     private void downloadAndProcessFTPFile(FTPFile ftpFile) throws IOException {
+        this.processing = true;
         logger.info("🚒 New incoming PDF detected: " + ftpFile.getName());
 
         final var localFile = File.createTempFile("operation-", ".pdf");
@@ -133,6 +133,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
         } catch (IllegalArgumentException e) {
             logger.info("🚒 → The given file could not be validated as an operation fax.");
         } finally {
+            this.processing = false;
             if (!localFile.delete()) {
                 logger.warn("🚒 → Could not delete downloaded FTP file: " + localFile.getName());
             }
@@ -173,9 +174,5 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
                 .limit(1)
                 .filter(file -> !Objects.equals(excludeFileName, file.getName()))
                 .findFirst();
-    }
-
-    public OperationDto getCurrentOperation() {
-        return this.currentOperation;
     }
 }

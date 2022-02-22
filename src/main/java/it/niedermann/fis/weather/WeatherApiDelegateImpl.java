@@ -20,7 +20,7 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     private static final Logger logger = LoggerFactory.getLogger(WeatherApiDelegateImpl.class);
 
     private final WeatherProvider weatherProvider;
-    private WeatherDto lastWeatherInformation;
+    private WeatherDto weather;
 
     public WeatherApiDelegateImpl(
             FisConfiguration config
@@ -34,8 +34,9 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     @Override
     public ResponseEntity<WeatherDto> weatherGet(String ifNoneMatch) {
         try {
-            final var weather = getCurrentWeather();
-            logger.info("⛅ Weather info got polled: " + weather.getTemperature() + "°");
+            if (weather == null) {
+                this.weather = weatherProvider.fetchWeather();
+            }
             return ResponseEntity.ok(weather);
         } catch (IOException e) {
             e.printStackTrace();
@@ -47,21 +48,11 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     public void pollWeather() throws IOException {
         final var newWeatherInformation = weatherProvider.fetchWeather();
 
-        if (Objects.equals(newWeatherInformation, lastWeatherInformation)) {
+        if (Objects.equals(newWeatherInformation, weather)) {
             logger.debug("Skip weather broadcast because it didn't change.");
         } else {
-            lastWeatherInformation = newWeatherInformation;
-            logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.getTemperature() + "°");
+            weather = newWeatherInformation;
+            logger.info("⛅ Broadcast weather information: " + weather.getTemperature() + "°");
         }
-    }
-
-    /**
-     * @return the last cached weather information if available, a freshly fetched info otherwise.
-     */
-    public WeatherDto getCurrentWeather() throws IOException {
-        if (lastWeatherInformation == null) {
-            this.lastWeatherInformation = weatherProvider.fetchWeather();
-        }
-        return lastWeatherInformation;
     }
 }

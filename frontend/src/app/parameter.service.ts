@@ -30,7 +30,7 @@ export class ParameterService {
         map(resp => resp.body),
       )
     ),
-    tap(parameter => console.info('⚙️ New parameter (polled):', `${parameter}°`)),
+    tap(parameter => console.info('⚙️ Parameter:', `${parameter}°`)),
     share()
   )
 

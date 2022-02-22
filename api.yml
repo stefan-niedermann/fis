@@ -61,12 +61,14 @@ paths:
       produces:
         - "application/json"
       responses:
-        "204":
-          description: "Currently no operation is active"
         "200":
           description: "Currently active operation"
           schema:
             $ref: "#/definitions/Operation"
+        "202":
+          description: "Operation parsing is processing"
+        "204":
+          description: "Currently no operation is active"
         "304":
           description: "If-None-Match"
 definitions:

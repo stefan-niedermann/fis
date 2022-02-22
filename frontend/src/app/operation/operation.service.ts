@@ -1,31 +1,34 @@
 import {Injectable} from '@angular/core'
-import {merge, Observable, ReplaySubject, Subject} from 'rxjs'
+import {BehaviorSubject, merge, Observable, Subject} from 'rxjs'
 import {WebSocketService} from '../web-socket.service'
 import {map, tap} from 'rxjs/operators'
-import {Operation} from '../domain/operation'
-import {environment} from '../../environments/environment'
 import {HttpClient} from '@angular/common/http'
+import {DefaultService, Operation} from "../gen";
 
 @Injectable({
   providedIn: 'root'
 })
 export class OperationService {
 
-  private readonly activeOperation$: Subject<Operation> = new ReplaySubject<Operation>()
+  private readonly activeOperation$: Subject<Operation | null> = new BehaviorSubject<Operation | null>(null)
 
   constructor(
-    private http: HttpClient,
-    private webSocket: WebSocketService
+    private readonly http: HttpClient,
+    private readonly webSocket: WebSocketService,
+    private readonly apiService: DefaultService
   ) {
     merge(
-      this.pollOperationFromServer()
-        .pipe(tap((operation) => {
-          if (operation) {
-            console.info('🚒️ New operation (polled):', operation.keyword)
-          } else if (operation === null) {
+      this.apiService.operationGet('response')
+        .pipe(map((operation) => {
+          if(operation.status === 204) {
+            console.info('🚒️ New operation (polled):', operation.body)
+            return operation.body
+          } else if (operation.status === 204) {
             console.info('🚒️ Currently no active operation (polled).')
+            return null
           } else {
             console.error('Unexpected operation (polled):', operation)
+            return null
           }
         })),
       this.webSocket.subscribe<Operation>('/notification/operation')
@@ -44,11 +47,7 @@ export class OperationService {
     })
   }
 
-  private pollOperationFromServer(): Observable<Operation> {
-    return this.http.get<Operation>(`${environment.hostUrl}/operation`)
-  }
-
-  public getActiveOperation(): Observable<Operation> {
+  public getActiveOperation(): Observable<Operation | null> {
     return this.activeOperation$
       .asObservable()
   }

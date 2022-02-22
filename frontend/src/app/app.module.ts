@@ -13,6 +13,7 @@ import {OperationKeywordPipe} from './operation/operation-topic/operation-keywor
 import {OperationTopicComponent} from './operation/operation-topic/operation-topic.component'
 import {OperationVehiclesComponent} from './operation/operation-vehicles/operation-vehicles.component'
 import {OperationLocationComponent} from './operation/operation-location/operation-location.component'
+import {ApiModule} from "./gen";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import {OperationLocationComponent} from './operation/operation-location/operati
   ],
   imports: [
     BrowserModule,
-    HttpClientModule
+    HttpClientModule,
+    ApiModule
   ],
   providers: [],
   bootstrap: [AppComponent]

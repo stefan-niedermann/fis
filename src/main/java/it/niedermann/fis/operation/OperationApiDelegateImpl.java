@@ -16,7 +16,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -30,7 +29,6 @@ import java.util.Optional;
 import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 
 @Service
-@CrossOrigin(origins = "http://localhost:4200")
 public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationApiDelegateImpl.class);
@@ -74,7 +72,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Object> operationGet() {
+    public ResponseEntity<OperationDto> operationGet() {
         final var operation = getCurrentOperation();
         if (operation == null) {
             logger.info("🚒 Operation got polled, but currently not active operation");

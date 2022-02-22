@@ -2,9 +2,8 @@ import {Injectable} from '@angular/core'
 import {WebSocketService} from '../web-socket.service'
 import {filter, merge, Observable, ReplaySubject, Subject, timer} from 'rxjs'
 import {HttpClient} from '@angular/common/http'
-import {Weather} from 'src/app/domain/weather'
 import {map, share, tap} from 'rxjs/operators'
-import {environment} from '../../environments/environment'
+import {DefaultService, Weather} from "../gen";
 
 @Injectable({
   providedIn: 'root'
@@ -15,10 +14,11 @@ export class InfoService {
 
   constructor(
     private readonly http: HttpClient,
-    private readonly webSocketService: WebSocketService
+    private readonly webSocketService: WebSocketService,
+    private readonly apiService: DefaultService
   ) {
     merge(
-      this.pollWeatherFromServer()
+      this.apiService.weatherGet()
         .pipe(tap((weather) => console.info('⛅️ New weather (polled):', `${weather.temperature}°`))),
       this.webSocketService.subscribe<Weather>('/notification/weather')
         .pipe(tap((weather) => console.info('⛅️ New weather (pushed):', `${weather.temperature}°`)))
@@ -45,10 +45,6 @@ export class InfoService {
 
   public getCurrentWeather(): Observable<Weather> {
     return this.currentWeather$.asObservable()
-  }
-
-  private pollWeatherFromServer(): Observable<Weather> {
-    return this.http.get<Weather>(`${environment.hostUrl}/weather`)
   }
 
   public getCurrentTime(): Observable<Date> {

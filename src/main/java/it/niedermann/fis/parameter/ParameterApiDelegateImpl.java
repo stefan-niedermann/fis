@@ -5,10 +5,8 @@ import it.niedermann.fis.main.api.ParameterApiDelegate;
 import it.niedermann.fis.main.model.ParameterDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Service
-@CrossOrigin(origins = "http://localhost:4200")
 public class ParameterApiDelegateImpl implements ParameterApiDelegate {
 
     private final ParameterDto dto = new ParameterDto();
@@ -18,7 +16,7 @@ public class ParameterApiDelegateImpl implements ParameterApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Object> parameterGet() {
+    public ResponseEntity<ParameterDto> parameterGet() {
         return ResponseEntity.ok(dto);
     }
 }

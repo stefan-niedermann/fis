@@ -1,4 +1,3 @@
-{{ (operation$ | async) | json }}
 <ng-container *ngIf="(operation$ | async) !== null">
   <app-operation-topic [ngClass]="operationClass$ | async" [operation]="operation$ | async"></app-operation-topic>
   <div>

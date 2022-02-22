@@ -9,9 +9,10 @@ import {
   interval,
   Observable,
   of,
+  shareReplay,
   startWith,
 } from 'rxjs'
-import {map, share, switchMap, tap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {DefaultService, Operation} from "../gen";
 
 @Injectable({
@@ -21,7 +22,7 @@ export class OperationService {
 
   private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
   private readonly processing$ = new BehaviorSubject(false)
-  private readonly activeOperation$ = interval(2_000).pipe(
+  private readonly activeOperation$: Observable<Operation | null> = interval(2_000).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
     concatMap(lastETag => this.apiService.operationGet(lastETag, 'response')
@@ -41,7 +42,7 @@ export class OperationService {
         console.info('🚒️ Active operation:', operation)
       }
     }),
-    share()
+    shareReplay(1)
   )
 
   constructor(
@@ -49,7 +50,7 @@ export class OperationService {
   ) {
   }
 
-  public getActiveOperation(): Observable<Operation | null> {
+  public getActiveOperation() {
     return this.activeOperation$
   }
 

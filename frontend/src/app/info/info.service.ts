@@ -8,10 +8,11 @@ import {
   filter,
   interval,
   of,
+  shareReplay,
   startWith,
   timer
 } from 'rxjs'
-import {map, share, switchMap, tap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {DefaultService} from "../gen";
 
 @Injectable({
@@ -32,17 +33,17 @@ export class InfoService {
       )
     ),
     tap(weather => console.info('⛅️ Current weather:', `${weather?.temperature}°`)),
-    share()
+    shareReplay(1)
   )
 
   private readonly isDarkTheme$ = this.weather$.pipe(
     map(weather => !weather.isDay),
-    share()
+    shareReplay(1)
   )
 
   private readonly currentTime$ = timer(0, 5_000).pipe(
     map(_ => new Date()),
-    share()
+    shareReplay(1)
   )
 
   constructor(

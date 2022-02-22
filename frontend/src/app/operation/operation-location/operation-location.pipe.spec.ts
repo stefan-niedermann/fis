@@ -1,5 +1,5 @@
 import {OperationLocationPipe} from './operation-location.pipe'
-import {Operation} from '../../domain/operation'
+import {Operation} from "../../gen";
 
 describe('OperationLocationPipe', () => {
   const pipe = new OperationLocationPipe()

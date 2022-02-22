@@ -11,13 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
 import java.util.Objects;
 
 @Service
-@CrossOrigin(origins = "http://localhost:4200")
 public class WeatherApiDelegateImpl implements WeatherApiDelegate {
 
     private static final Logger logger = LoggerFactory.getLogger(WeatherApiDelegateImpl.class);
@@ -38,14 +36,14 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     }
 
     @Override
-    public ResponseEntity<Object> weatherGet() {
+    public ResponseEntity<WeatherDto> weatherGet() {
         try {
             final var weather = getCurrentWeather();
             logger.info("⛅ Weather info got polled: " + weather.getTemperature() + "°");
             return ResponseEntity.ok(weather);
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body(e);
+            return ResponseEntity.internalServerError().build();
         }
     }
 

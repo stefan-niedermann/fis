@@ -21,7 +21,7 @@ export class OperationComponent {
       map(keyword => keyword.toLowerCase())
     )
   readonly highlightTerm$ = this.parameterService.getParameter()
-    .pipe(map(parameter => parameter.operation.highlight))
+    .pipe(map(parameter => parameter.highlight))
   readonly highlight$ = this.highlightTerm$
     .pipe(map(term => !!term))
 

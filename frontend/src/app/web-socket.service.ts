@@ -5,6 +5,7 @@ import * as SockJS from 'sockjs-client'
 import {Observable, Subject} from 'rxjs'
 import {environment} from '../environments/environment'
 import {switchMap} from 'rxjs/operators'
+import {Operation, Weather} from "./gen";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +23,7 @@ export class WebSocketService {
     }, error => console.error(error))
   }
 
-  public subscribe<T>(route: string): Observable<T> {
+  public subscribe<T extends Weather | Operation>(route: string): Observable<T> {
     return this.ws$.pipe(
       switchMap(ws => {
         const tmp$: Subject<T> = new Subject<T>()

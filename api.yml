@@ -9,7 +9,7 @@ info:
     name: "Swagger API Team"
   license:
     name: "MIT"
-host: "example.com"
+host: ""
 basePath: "/api"
 schemes:
   - "http"
@@ -27,9 +27,7 @@ paths:
         "200":
           description: "Configuration parameters"
           schema:
-            type: "object"
-            items:
-              $ref: "#/definitions/Parameter"
+            $ref: "#/definitions/Parameter"
         "304":
           description: "If-None-Match"
   /weather:
@@ -41,9 +39,7 @@ paths:
         "200":
           description: "Current weather"
           schema:
-            type: "object"
-            items:
-              $ref: "#/definitions/Weather"
+            $ref: "#/definitions/Weather"
         "304":
           description: "If-None-Match"
   /operation:
@@ -57,9 +53,7 @@ paths:
         "200":
           description: "Currently active operation"
           schema:
-            type: "object"
-            items:
-              $ref: "#/definitions/Operation"
+            $ref: "#/definitions/Operation"
         "304":
           description: "If-None-Match"
 definitions:

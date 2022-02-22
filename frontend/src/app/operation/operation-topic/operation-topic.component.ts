@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core'
-import {Operation} from '../../domain/operation'
+import {Operation} from "../../gen";
 
 @Component({
   selector: 'app-operation-topic',

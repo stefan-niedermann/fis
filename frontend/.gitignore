@@ -6,7 +6,7 @@
 /out-tsc
 /.angular
 /cypress/videos
-/src/gen
+/src/app/gen
 # Only exists if Bazel was run
 /bazel-out
 

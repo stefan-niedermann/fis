@@ -9,10 +9,8 @@ import {map} from "rxjs/operators";
 })
 export class InfoComponent {
 
-  private readonly weather$ = this.infoService.getCurrentWeather()
-
-  readonly iconUrl$ = this.weather$.pipe(map(weather => weather.icon))
-  readonly temperature$ = this.weather$.pipe(map(weather => weather.temperature))
+  readonly iconUrl$ = this.infoService.getWeather().pipe(map(weather => weather.icon))
+  readonly temperature$ = this.infoService.getWeather().pipe(map(weather => weather.temperature))
   readonly time$ = this.infoService.getCurrentTime()
 
   constructor(

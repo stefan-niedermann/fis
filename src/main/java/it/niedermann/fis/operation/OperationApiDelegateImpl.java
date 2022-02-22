@@ -12,7 +12,6 @@ import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -33,8 +32,6 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationApiDelegateImpl.class);
 
-    private final SimpMessagingTemplate template;
-
     private final ITesseract tesseract;
     private final FTPClient ftpClient;
     private final OperationFaxParser parser;
@@ -47,10 +44,8 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     private String lastPdfName = "";
 
     public OperationApiDelegateImpl(
-            SimpMessagingTemplate template,
             FisConfiguration config
     ) throws IOException {
-        this.template = template;
         this.config = config;
 
         if (ObjectUtils.isEmpty(config.getTesseract().getTessdata())) {
@@ -72,7 +67,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     }
 
     @Override
-    public ResponseEntity<OperationDto> operationGet() {
+    public ResponseEntity<OperationDto> operationGet(String ifNoneMatch) {
         final var operation = getCurrentOperation();
         if (operation == null) {
             logger.info("🚒 Operation got polled, but currently not active operation");
@@ -130,11 +125,6 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
                 logger.trace("→ Planning cancellation of currently active operation: \"" + dto.getKeyword() + "\"…");
                 scheduleOperationCancellation(dto);
-
-                logger.debug("→ Start Broadcasting operation: \"" + dto.getKeyword() + "\"…");
-                template.convertAndSend("/notification/operation", dto);
-                logger.info("🚒 → Finished broadcast for \"" + dto.getKeyword() + "\".");
-
             } else {
                 logger.warn("🚒 → Could not download new FTP file!");
             }
@@ -164,7 +154,6 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
                 }
                 logger.info("⏰ Timeout over… unset active operation \"" + dto.getKeyword() + "\"");
                 this.currentOperation = null;
-                template.convertAndSend("/notification/operation", null + "");
             } catch (InterruptedException e) {
                 logger.trace("→ Existing operation " + "\"" + dto.getKeyword() + "\"" + " cancellation attempt has been interrupted.");
             }

@@ -8,7 +8,6 @@ import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +20,11 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     private static final Logger logger = LoggerFactory.getLogger(WeatherApiDelegateImpl.class);
 
     private final WeatherProvider weatherProvider;
-    private final SimpMessagingTemplate template;
     private WeatherDto lastWeatherInformation;
 
     public WeatherApiDelegateImpl(
-            SimpMessagingTemplate template,
             FisConfiguration config
     ) {
-        this.template = template;
         this.weatherProvider = new OpenWeatherMapProvider(config.getWeather().getLang(),
                 config.getWeather().getLocation(),
                 config.getWeather().getUnits(),
@@ -36,7 +32,7 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     }
 
     @Override
-    public ResponseEntity<WeatherDto> weatherGet() {
+    public ResponseEntity<WeatherDto> weatherGet(String ifNoneMatch) {
         try {
             final var weather = getCurrentWeather();
             logger.info("⛅ Weather info got polled: " + weather.getTemperature() + "°");
@@ -55,7 +51,6 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
             logger.debug("Skip weather broadcast because it didn't change.");
         } else {
             lastWeatherInformation = newWeatherInformation;
-            template.convertAndSend("/notification/weather", lastWeatherInformation);
             logger.info("⛅ Broadcast weather information: " + lastWeatherInformation.getTemperature() + "°");
         }
     }

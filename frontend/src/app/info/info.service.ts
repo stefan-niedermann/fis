@@ -1,53 +1,64 @@
 import {Injectable} from '@angular/core'
-import {WebSocketService} from '../web-socket.service'
-import {filter, merge, Observable, ReplaySubject, Subject, timer} from 'rxjs'
-import {HttpClient} from '@angular/common/http'
-import {map, share, tap} from 'rxjs/operators'
-import {DefaultService, Weather} from "../gen";
+import {
+  BehaviorSubject,
+  catchError,
+  concatMap,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  interval,
+  of,
+  startWith,
+  timer
+} from 'rxjs'
+import {map, share, switchMap, tap} from 'rxjs/operators'
+import {DefaultService} from "../gen";
 
 @Injectable({
   providedIn: 'root'
 })
 export class InfoService {
 
-  private readonly currentWeather$: Subject<Weather> = new ReplaySubject<Weather>(1)
+  private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
+  private readonly weather$ = interval(30_000).pipe(
+    startWith(0),
+    switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
+    concatMap(lastETag => this.apiService.weatherGet(lastETag, 'response')
+      .pipe(
+        catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
+        tap(resp => this.lastETag$.next(resp.headers.get('ETag') || undefined)),
+        filter(resp => resp.body !== undefined),
+        map(resp => resp.body),
+      )
+    ),
+    tap(weather => console.info('⛅️ New weather (polled):', `${weather?.temperature}°`)),
+    share()
+  )
+
+  private readonly isDarkTheme$ = this.weather$.pipe(
+    map(weather => !weather.isDay),
+    share()
+  )
+
+  private readonly currentTime$ = timer(0, 5_000).pipe(
+    map(_ => new Date()),
+    share()
+  )
 
   constructor(
-    private readonly http: HttpClient,
-    private readonly webSocketService: WebSocketService,
     private readonly apiService: DefaultService
   ) {
-    merge(
-      this.apiService.weatherGet()
-        .pipe(tap((weather) => console.info('⛅️ New weather (polled):', `${weather.temperature}°`))),
-      this.webSocketService.subscribe<Weather>('/notification/weather')
-        .pipe(tap((weather) => console.info('⛅️ New weather (pushed):', `${weather.temperature}°`)))
-    )
-      .pipe(
-        filter(weather => typeof weather === 'object'),
-        share()
-      )
-      .subscribe({
-        next: weather => this.currentWeather$.next(weather),
-        error: error => console.error(error)
-      })
   }
 
-  public isDarkTheme(): Observable<boolean> {
-    return this.currentWeather$
-      .asObservable()
-      .pipe(map(weather => {
-        return weather
-          ? !weather.isDay
-          : false
-      }))
+  public getWeather() {
+    return this.weather$
   }
 
-  public getCurrentWeather(): Observable<Weather> {
-    return this.currentWeather$.asObservable()
+  public isDarkTheme() {
+    return this.isDarkTheme$
   }
 
-  public getCurrentTime(): Observable<Date> {
-    return timer(0, 5_000).pipe(map(_ => new Date()))
+  public getCurrentTime() {
+    return this.currentTime$
   }
 }

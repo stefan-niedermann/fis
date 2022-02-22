@@ -31,7 +31,7 @@ export class InfoService {
         map(resp => resp.body),
       )
     ),
-    tap(weather => console.info('⛅️ New weather (polled):', `${weather?.temperature}°`)),
+    tap(weather => console.info('⛅️ Current weather:', `${weather?.temperature}°`)),
     share()
   )
 

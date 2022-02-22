@@ -5,6 +5,7 @@ import {
   concatMap,
   distinctUntilChanged,
   EMPTY,
+  filter,
   interval,
   Observable,
   of,
@@ -19,23 +20,27 @@ import {DefaultService, Operation} from "../gen";
 export class OperationService {
 
   private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
-  private readonly activeOperation$ = interval(1_000).pipe(
+  private readonly processing$ = new BehaviorSubject(false)
+  private readonly activeOperation$ = interval(2_000).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
     concatMap(lastETag => this.apiService.operationGet(lastETag, 'response')
       .pipe(
         catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
+        filter(resp => resp.status !== 304),
+        tap(resp => this.processing$.next(resp.status === 202)),
         tap(resp => this.lastETag$.next(resp.headers.get('ETag') || undefined)),
-        tap(operation => {
-          if (operation.status === 200) {
-            console.info('🚒️ New operation (polled):', operation.body)
-          } else if (operation.status === 204) {
-            console.info('🚒️ Currently no active operation (polled).')
-          }
-        }),
-        map(resp => resp.body),
+        map(resp => resp.status === 200 ? resp.body : null),
       )
     ),
+    distinctUntilChanged(),
+    tap(operation => {
+      if (operation === null) {
+        console.info('🚒️ Currently no active operation.')
+      } else {
+        console.info('🚒️ Active operation:', operation)
+      }
+    }),
     share()
   )
 
@@ -48,7 +53,11 @@ export class OperationService {
     return this.activeOperation$
   }
 
-  public isActiveOperation(): Observable<boolean> {
+  public isActiveOperation() {
     return this.activeOperation$.pipe(map(operation => operation !== null))
+  }
+
+  public isProcessing() {
+    return this.processing$.asObservable()
   }
 }

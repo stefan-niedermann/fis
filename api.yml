@@ -20,7 +20,12 @@ produces:
 paths:
   /parameter:
     get:
+      summary: "Get Parameter"
       description: "Returns environment specific variables for the consumer"
+      parameters:
+        - name: "If-None-Match"
+          type: "string"
+          in: header
       produces:
         - "application/json"
       responses:
@@ -33,6 +38,10 @@ paths:
   /weather:
     get:
       description: "Returns information about the current weather"
+      parameters:
+        - name: "If-None-Match"
+          type: "string"
+          in: header
       produces:
         - "application/json"
       responses:
@@ -45,6 +54,10 @@ paths:
   /operation:
     get:
       description: "Information about currently active operations"
+      parameters:
+        - name: "If-None-Match"
+          type: "string"
+          in: header
       produces:
         - "application/json"
       responses:
@@ -80,38 +93,6 @@ definitions:
       isDay:
         type: "boolean"
         description: "Defines whether the current weather information is at day or night"
-  Operation:
-    type: "object"
-    required:
-      - "keyword"
-      - "tags"
-      - "vehicles"
-      - "note"
-      - "street"
-      - "number"
-      - "location"
-      - "obj"
-    properties:
-      keyword:
-        type: "string"
-      tags:
-        type: "array"
-        items:
-          type: "string"
-      vehicles:
-        type: "array"
-        items:
-          type: "string"
-      note:
-        type: "string"
-      street:
-        type: "string"
-      number:
-        type: "string"
-      location:
-        type: "string"
-      obj:
-        type: "string"
   WeatherIcon:
     type: "string"
     enum:
@@ -149,3 +130,35 @@ definitions:
       - "thunder"
       - "tornado"
       - "wind"
+  Operation:
+    type: "object"
+    required:
+      - "keyword"
+      - "tags"
+      - "vehicles"
+      - "note"
+      - "street"
+      - "number"
+      - "location"
+      - "obj"
+    properties:
+      keyword:
+        type: "string"
+      tags:
+        type: "array"
+        items:
+          type: "string"
+      vehicles:
+        type: "array"
+        items:
+          type: "string"
+      note:
+        type: "string"
+      street:
+        type: "string"
+      number:
+        type: "string"
+      location:
+        type: "string"
+      obj:
+        type: "string"

@@ -16,7 +16,7 @@ public class ParameterApiDelegateImpl implements ParameterApiDelegate {
     }
 
     @Override
-    public ResponseEntity<ParameterDto> parameterGet() {
+    public ResponseEntity<ParameterDto> parameterGet(String ifNoneMatch) {
         return ResponseEntity.ok(dto);
     }
 }

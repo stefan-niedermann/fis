@@ -1,8 +1,16 @@
 import {Injectable} from '@angular/core'
-import {BehaviorSubject, merge, Observable, Subject} from 'rxjs'
-import {WebSocketService} from '../web-socket.service'
-import {map, tap} from 'rxjs/operators'
-import {HttpClient} from '@angular/common/http'
+import {
+  BehaviorSubject,
+  catchError,
+  concatMap,
+  distinctUntilChanged,
+  EMPTY,
+  interval,
+  Observable,
+  of,
+  startWith,
+} from 'rxjs'
+import {map, share, switchMap, tap} from 'rxjs/operators'
 import {DefaultService, Operation} from "../gen";
 
 @Injectable({
@@ -10,51 +18,37 @@ import {DefaultService, Operation} from "../gen";
 })
 export class OperationService {
 
-  private readonly activeOperation$: Subject<Operation | null> = new BehaviorSubject<Operation | null>(null)
-
-  constructor(
-    private readonly http: HttpClient,
-    private readonly webSocket: WebSocketService,
-    private readonly apiService: DefaultService
-  ) {
-    merge(
-      this.apiService.operationGet('response')
-        .pipe(map((operation) => {
-          if(operation.status === 204) {
+  private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
+  private readonly activeOperation$ = interval(1_000).pipe(
+    startWith(0),
+    switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
+    concatMap(lastETag => this.apiService.operationGet(lastETag, 'response')
+      .pipe(
+        catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
+        tap(resp => this.lastETag$.next(resp.headers.get('ETag') || undefined)),
+        tap(operation => {
+          if (operation.status === 200) {
             console.info('🚒️ New operation (polled):', operation.body)
-            return operation.body
           } else if (operation.status === 204) {
             console.info('🚒️ Currently no active operation (polled).')
-            return null
-          } else {
-            console.error('Unexpected operation (polled):', operation)
-            return null
           }
-        })),
-      this.webSocket.subscribe<Operation>('/notification/operation')
-        .pipe(tap((operation) => {
-          if (operation) {
-            console.info('🚒️ New operation (pushed):', operation.keyword)
-          } else if (operation === null) {
-            console.info('⏰ Operation timeout over… unset active operation')
-          } else {
-            console.error('Unexpected operation (pushed):', operation)
-          }
-        }))
-    ).subscribe({
-      next: operation => this.activeOperation$.next(operation),
-      error: error => console.error(error)
-    })
+        }),
+        map(resp => resp.body),
+      )
+    ),
+    share()
+  )
+
+  constructor(
+    private readonly apiService: DefaultService
+  ) {
   }
 
   public getActiveOperation(): Observable<Operation | null> {
     return this.activeOperation$
-      .asObservable()
   }
 
   public isActiveOperation(): Observable<boolean> {
-    return this.activeOperation$
-      .asObservable()
-      .pipe(map(operation => !!operation))
+    return this.activeOperation$.pipe(map(operation => operation !== null))
   }
 }

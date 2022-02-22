@@ -3,9 +3,6 @@ import {TestBed} from '@angular/core/testing'
 import {OperationService} from './operation.service'
 import {HttpClientTestingModule, HttpTestingController, TestRequest} from '@angular/common/http/testing'
 
-import {MockProvider} from 'ng-mocks'
-import {WebSocketService} from '../web-socket.service'
-import {EMPTY} from 'rxjs'
 import {environment} from '../../environments/environment'
 
 describe('OperationService', () => {
@@ -18,11 +15,6 @@ describe('OperationService', () => {
       imports: [
         HttpClientTestingModule,
       ],
-      providers: [
-        MockProvider(WebSocketService, {
-          subscribe: () => EMPTY
-        })
-      ]
     })
     service = TestBed.inject(OperationService)
     httpMock = TestBed.inject(HttpTestingController)
@@ -83,10 +75,10 @@ describe('OperationService', () => {
       .getActiveOperation()
       .subscribe({
         next: (operation) => {
-          expect(operation.keyword).toEqual('B 1')
-          expect(operation.number).toEqual('5')
-          expect(operation.street).toEqual('samplestreet')
-          expect(operation.location).toEqual('Samplecity')
+          expect(operation?.keyword).toEqual('B 1')
+          expect(operation?.number).toEqual('5')
+          expect(operation?.street).toEqual('samplestreet')
+          expect(operation?.location).toEqual('Samplecity')
           done()
         },
         error: error => console.error(error),

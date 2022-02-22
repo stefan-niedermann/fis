@@ -8,9 +8,10 @@ import {
   filter,
   interval,
   of,
+  shareReplay,
   startWith
 } from 'rxjs'
-import {map, share, switchMap, tap} from 'rxjs/operators'
+import {map, switchMap, tap} from 'rxjs/operators'
 import {DefaultService} from "./gen";
 
 @Injectable({
@@ -30,8 +31,8 @@ export class ParameterService {
         map(resp => resp.body),
       )
     ),
-    tap(parameter => console.info('⚙️ Parameter:', `${parameter}°`)),
-    share()
+    tap(parameter => console.info('⚙️ Parameter:', parameter)),
+    shareReplay(1)
   )
 
   constructor(

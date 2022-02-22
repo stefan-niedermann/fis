@@ -1,6 +1,7 @@
 package it.niedermann.fis.operation;
 
 import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.api.OperationApiDelegate;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationFaxParser;
 import net.sourceforge.tess4j.ITesseract;
@@ -10,10 +11,12 @@ import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -27,9 +30,10 @@ import java.util.Optional;
 import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 
 @Service
-public class OperationDispatcher {
+@CrossOrigin(origins = "http://localhost:4200")
+public class OperationApiDelegateImpl implements OperationApiDelegate {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(OperationApiDelegateImpl.class);
 
     private final SimpMessagingTemplate template;
 
@@ -44,7 +48,7 @@ public class OperationDispatcher {
 
     private String lastPdfName = "";
 
-    public OperationDispatcher(
+    public OperationApiDelegateImpl(
             SimpMessagingTemplate template,
             FisConfiguration config
     ) throws IOException {
@@ -67,6 +71,17 @@ public class OperationDispatcher {
         logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", palling each " + config.getFtp().getPollInterval() / 1_000 + " seconds.");
 
         parser = OperationFaxParser.create("mittelfranken-sued");
+    }
+
+    @Override
+    public ResponseEntity<Object> operationGet() {
+        final var operation = getCurrentOperation();
+        if (operation == null) {
+            logger.info("🚒 Operation got polled, but currently not active operation");
+            return ResponseEntity.noContent().build();
+        }
+        logger.info("🚒 Operation got polled: " + operation.getKeyword());
+        return ResponseEntity.ok(operation);
     }
 
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")

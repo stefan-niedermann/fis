@@ -15,11 +15,13 @@ fis:
     duration: 1800000
 
 logging:
+  level:
+    org.springframework.web.socket.config.WebSocketMessageBrokerStats: ERROR
   pattern:
     console:
   file:
     name: fis.log
   logback:
     rollingpolicy:
-      file-name-pattern: fis-%d{yyyy-MM-dd}.%i.log
+      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
       max-history: 30

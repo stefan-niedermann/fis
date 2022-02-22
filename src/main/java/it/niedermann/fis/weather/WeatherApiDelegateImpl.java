@@ -1,28 +1,32 @@
 package it.niedermann.fis.weather;
 
 import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.api.WeatherApiDelegate;
 import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.io.IOException;
 import java.util.Objects;
 
 @Service
-public class WeatherDispatcher {
+@CrossOrigin(origins = "http://localhost:4200")
+public class WeatherApiDelegateImpl implements WeatherApiDelegate {
 
-    private static final Logger logger = LoggerFactory.getLogger(WeatherDispatcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeatherApiDelegateImpl.class);
 
     private final WeatherProvider weatherProvider;
     private final SimpMessagingTemplate template;
     private WeatherDto lastWeatherInformation;
 
-    public WeatherDispatcher(
+    public WeatherApiDelegateImpl(
             SimpMessagingTemplate template,
             FisConfiguration config
     ) {
@@ -31,6 +35,18 @@ public class WeatherDispatcher {
                 config.getWeather().getLocation(),
                 config.getWeather().getUnits(),
                 config.getWeather().getKey());
+    }
+
+    @Override
+    public ResponseEntity<Object> weatherGet() {
+        try {
+            final var weather = getCurrentWeather();
+            logger.info("⛅ Weather info got polled: " + weather.getTemperature() + "°");
+            return ResponseEntity.ok(weather);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.internalServerError().body(e);
+        }
     }
 
     @Scheduled(fixedDelayString = "${fis.weather.pollInterval}")

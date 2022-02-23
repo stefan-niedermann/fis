@@ -69,10 +69,10 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     @Override
     public ResponseEntity<OperationDto> operationGet(String ifNoneMatch) {
-        return processing
+        return currentOperation == null
+                ? processing
                 ? ResponseEntity.accepted().build()
-                : currentOperation == null
-                ? ResponseEntity.noContent().build()
+                : ResponseEntity.noContent().build()
                 : ResponseEntity.ok(currentOperation);
     }
 

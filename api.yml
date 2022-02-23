@@ -9,7 +9,7 @@ info:
     name: "Swagger API Team"
   license:
     name: "MIT"
-host: ""
+host: "localhost:4200"
 basePath: "/api"
 schemes:
   - "http"

@@ -43,8 +43,10 @@ export class AppComponent implements OnInit, OnDestroy {
       .subscribe(state => {
         switch (state) {
           case OperationState.ACTIVE:
-          case OperationState.PROCESSING:
             this.router.navigate(['/operation'])
+            break;
+          case OperationState.PROCESSING:
+            this.router.navigate(['/operation-processing'])
             break;
           case OperationState.VOID:
           default:

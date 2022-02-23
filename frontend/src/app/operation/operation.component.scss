@@ -1,4 +1,6 @@
 :host {
+  display: flex;
+  height: 100vh;
   hyphens: auto;
   background-color: var(--main-bg-color);
   color: var(--main-fg-color);

@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core'
 import {
   BehaviorSubject,
   catchError,
+  combineLatest,
   concatMap,
   distinctUntilChanged,
   EMPTY,
@@ -55,10 +56,23 @@ export class OperationService {
   }
 
   public isActiveOperation() {
-    return this.activeOperation$.pipe(map(operation => operation !== null))
+    return combineLatest([this.activeOperation$, this.processing$])
+      .pipe(map(([operation, processing]) => {
+        return processing
+          ? OperationState.PROCESSING
+          : operation === null
+            ? OperationState.VOID
+            : OperationState.ACTIVE
+      }))
   }
 
   public isProcessing() {
     return this.processing$.asObservable()
   }
+}
+
+export enum OperationState {
+  VOID,
+  ACTIVE,
+  PROCESSING
 }

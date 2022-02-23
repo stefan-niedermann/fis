@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser'
 import {NgModule} from '@angular/core'
+import {RouterModule} from '@angular/router'
 
 import {AppComponent} from './app.component'
 import {OperationComponent} from './operation/operation.component'
@@ -32,7 +33,17 @@ import {ApiModule} from "./gen";
   imports: [
     BrowserModule,
     HttpClientModule,
-    ApiModule
+    ApiModule,
+    RouterModule.forRoot([
+      {
+        path: '',
+        component: InfoComponent
+      },
+      {
+        path: 'operation',
+        component: OperationComponent
+      }
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

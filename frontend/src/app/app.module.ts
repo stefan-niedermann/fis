@@ -15,6 +15,7 @@ import {OperationTopicComponent} from './operation/operation-topic/operation-top
 import {OperationVehiclesComponent} from './operation/operation-vehicles/operation-vehicles.component'
 import {OperationLocationComponent} from './operation/operation-location/operation-location.component'
 import {ApiModule} from "./gen";
+import {OperationProcessingComponent} from './operation-processing/operation-processing.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import {ApiModule} from "./gen";
     OperationKeywordPipe,
     OperationTopicComponent,
     OperationVehiclesComponent,
-    OperationLocationComponent
+    OperationLocationComponent,
+    OperationProcessingComponent
   ],
   imports: [
     BrowserModule,
@@ -37,11 +39,22 @@ import {ApiModule} from "./gen";
     RouterModule.forRoot([
       {
         path: '',
-        component: InfoComponent
+        component: InfoComponent,
+        pathMatch: 'full'
       },
       {
         path: 'operation',
-        component: OperationComponent
+        component: OperationComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: 'operation-processing',
+        component: OperationProcessingComponent,
+        pathMatch: 'full'
+      },
+      {
+        path: '*',
+        redirectTo: '/'
       }
     ])
   ],

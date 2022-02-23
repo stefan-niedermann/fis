@@ -57,13 +57,16 @@ export class OperationService {
 
   public isActiveOperation() {
     return combineLatest([this.activeOperation$, this.processing$])
-      .pipe(map(([operation, processing]) => {
-        return processing
-          ? OperationState.PROCESSING
-          : operation === null
-            ? OperationState.VOID
+      .pipe(
+        map(([operation, processing]) => {
+          return operation === null
+            ? processing
+              ? OperationState.PROCESSING
+              : OperationState.VOID
             : OperationState.ACTIVE
-      }))
+        }),
+        distinctUntilChanged()
+      )
   }
 
   public isProcessing() {

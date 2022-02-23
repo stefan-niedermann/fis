@@ -82,6 +82,30 @@ java -jar fis.jar
 
 Then start a web browser at [`http://localhost:8080`](http://localhost:8080).
 
+### Run as service
+
+To run JarFIS as a `systemd` service, put the below file as `fis.service` into `/etc/systemd/system`, replace `User` with the user that should run the service and `ExecStart` with the path to your `jar` file:
+
+```systemd
+[Unit]
+Description=JarFIS
+After=syslog.target
+Wants=network-online.target
+After=network.target network-online.target
+
+[Service]
+User=sampleuser
+ExecStart=/opt/jarfis/fis.jar
+SuccessExitStatus=143 
+
+[Install] 
+WantedBy=multi-user.target
+```
+
+Call `sudo systemctl daemon-reload` to make `systemd` aware of the new service and `systemctl enable fis.service` to run JarFIS automatically when booting your server.
+
+See the Spring Boot documentation to learn how to configure JarFIS as [`init.d`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.nix-services.init-d) service or on [`Windows`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.windows-services). 
+
 ## Maintainer
 
 [![Niedermann IT logo](https://www.niedermann.it/assets/www.niedermann.it.svg)](https://www.niedermann.it)

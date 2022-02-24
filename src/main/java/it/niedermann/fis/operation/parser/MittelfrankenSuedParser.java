@@ -9,7 +9,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("SpellCheckingInspection")
-class MittelfrankenSuedParser implements OperationFaxParser {
+class MittelfrankenSuedParser implements OperationParser {
 
     private static final Logger logger = LoggerFactory.getLogger(MittelfrankenSuedParser.class);
 

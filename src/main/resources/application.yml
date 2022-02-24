@@ -15,8 +15,6 @@ fis:
     duration: 1800000
 
 logging:
-  level:
-    org.springframework.web.socket.config.WebSocketMessageBrokerStats: ERROR
   pattern:
     console:
   file:

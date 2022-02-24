@@ -23,7 +23,7 @@ export class ParameterService {
   private readonly parameter$ = interval(60_000).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
-    concatMap(lastETag => this.apiService.parameterGet(lastETag, 'response')
+    concatMap(lastETag => this.apiService.getParameter(lastETag, 'response')
       .pipe(
         catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
         tap(resp => this.lastETag$.next(resp.headers.get('ETag') || undefined)),

@@ -8,6 +8,7 @@ import org.springframework.util.ObjectUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("SpellCheckingInspection")
 class MittelfrankenSuedParser implements OperationFaxParser {
 
     private static final Logger logger = LoggerFactory.getLogger(MittelfrankenSuedParser.class);

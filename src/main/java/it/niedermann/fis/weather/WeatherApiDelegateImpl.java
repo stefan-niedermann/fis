@@ -32,7 +32,7 @@ public class WeatherApiDelegateImpl implements WeatherApiDelegate {
     }
 
     @Override
-    public ResponseEntity<WeatherDto> weatherGet(String ifNoneMatch) {
+    public ResponseEntity<WeatherDto> getWeather(String ifNoneMatch) {
         try {
             if (weather == null) {
                 this.weather = weatherProvider.fetchWeather();

@@ -8,12 +8,14 @@ import {InfoComponent} from './info/info.component'
 import {OperationComponent} from './operation/operation.component'
 import {EMPTY} from 'rxjs'
 import {OperationService} from './operation/operation.service'
+import {RouterTestingModule} from "@angular/router/testing";
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         HttpClientTestingModule,
+        RouterTestingModule
       ],
       declarations: [
         AppComponent,

@@ -7,6 +7,7 @@ import {ClockPipe} from "./clock.pipe";
 import {TemperaturePipe} from "./temperature.pipe";
 import {MockProvider} from 'ng-mocks';
 import {InfoService} from './info.service';
+import {EMPTY} from "rxjs";
 
 describe('InfoComponent', () => {
   let component: InfoComponent
@@ -18,7 +19,9 @@ describe('InfoComponent', () => {
         HttpClientTestingModule,
       ],
       providers: [
-        MockProvider(InfoService)
+        MockProvider(InfoService, {
+          getWeather: () => EMPTY
+        })
       ],
       declarations: [
         InfoComponent,

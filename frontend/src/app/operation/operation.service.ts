@@ -26,7 +26,7 @@ export class OperationService {
   private readonly activeOperation$: Observable<Operation | null> = interval(2_000).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
-    concatMap(lastETag => this.apiService.operationGet(lastETag, 'response')
+    concatMap(lastETag => this.apiService.getOperation(lastETag, 'response')
       .pipe(
         catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
         filter(resp => resp.status !== 304),

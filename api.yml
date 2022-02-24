@@ -22,6 +22,7 @@ paths:
     get:
       summary: "Get Parameter"
       description: "Returns environment specific variables for the consumer"
+      operationId: "getParameter"
       parameters:
         - name: "If-None-Match"
           type: "string"
@@ -38,6 +39,7 @@ paths:
   /weather:
     get:
       description: "Returns information about the current weather"
+      operationId: "getWeather"
       parameters:
         - name: "If-None-Match"
           type: "string"
@@ -51,9 +53,12 @@ paths:
             $ref: "#/definitions/Weather"
         "304":
           description: "If-None-Match"
+        "500":
+          description: "In case the weather could not be fetched"
   /operation:
     get:
       description: "Information about currently active operations"
+      operationId: "getOperation"
       parameters:
         - name: "If-None-Match"
           type: "string"

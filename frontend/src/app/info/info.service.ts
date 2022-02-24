@@ -24,7 +24,7 @@ export class InfoService {
   private readonly weather$ = interval(30_000).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
-    concatMap(lastETag => this.apiService.weatherGet(lastETag, 'response')
+    concatMap(lastETag => this.apiService.getWeather(lastETag, 'response')
       .pipe(
         catchError(resp => resp.status === 304 ? of(resp) : EMPTY),
         tap(resp => this.lastETag$.next(resp.headers.get('ETag') || undefined)),

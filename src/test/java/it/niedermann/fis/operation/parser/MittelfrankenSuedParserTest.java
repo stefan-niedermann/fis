@@ -1,7 +1,7 @@
-package it.niedermann.fis;
+package it.niedermann.fis.operation.parser;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import it.niedermann.fis.operation.parser.OperationFaxParser;
+import it.niedermann.fis.main.model.OperationDto;
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,18 +10,20 @@ import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 
+import static it.niedermann.fis.operation.parser.OperationParserFactory.Parser.MITTELFRANKEN_SUED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
+@SuppressWarnings("SpellCheckingInspection")
 public class MittelfrankenSuedParserTest {
 
     private OperationFaxParser parser;
 
     @BeforeEach
     public void setup() {
-        this.parser = OperationFaxParser.create("mittelfranken-sued");
+        this.parser = new OperationParserFactory().createParser(MITTELFRANKEN_SUED);
     }
 
     @Test

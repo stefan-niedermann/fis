@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 import java.util.Optional;
 
-import static it.niedermann.fis.operation.parser.OperationParserFactory.Parser.MITTELFRANKEN_SUED;
+import static it.niedermann.fis.operation.parser.OperationParserType.MITTELFRANKEN_SUED;
 
 @SuppressWarnings("SpellCheckingInspection")
 @Service
@@ -20,7 +20,7 @@ public class OperationParserRepository {
     private static final Logger logger = LoggerFactory.getLogger(OperationParserRepository.class);
 
     private final ITesseract tesseract;
-    private final OperationFaxParser parser;
+    private final OperationParser parser;
 
     public OperationParserRepository(
             FisConfiguration config,
@@ -32,8 +32,9 @@ public class OperationParserRepository {
     }
 
     public Optional<OperationDto> parse(File source) {
+        logger.info("🚒 Start parsing operation \"" + source.getName() + "\"…");
         try {
-            logger.info("🚒 → Start OCR for \"" + source.getName() + "\"…");
+            logger.debug("→ Start OCR for \"" + source.getName());
             final var ocrText = tesseract.doOCR(source);
             logger.debug("→ Finished OCR");
 
@@ -41,15 +42,12 @@ public class OperationParserRepository {
             final var dto = parser.parse(ocrText);
             logger.debug("→ Finished parsing");
 
+            logger.info("🚒 Finished parsing operation \"" + dto.getKeyword() + " from \"" + source.getName() + "\"");
             return Optional.of(dto);
         } catch (TesseractException e) {
-            logger.error("🚒 → Could not parse", e);
+            logger.error("Could not parse", e);
         } catch (IllegalArgumentException e) {
-            logger.info("🚒 → The given file could not be validated as an operation fax.");
-        } finally {
-            if (!source.delete()) {
-                logger.warn("🚒 → Could not delete downloaded FTP file: " + source.getName());
-            }
+            logger.info("The given file could not be validated as an operation fax.");
         }
         return Optional.empty();
     }

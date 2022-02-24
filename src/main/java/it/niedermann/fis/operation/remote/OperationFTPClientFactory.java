@@ -19,7 +19,7 @@ class OperationFTPClientFactory {
         if (!ftpClient.login(config.getFtp().getUsername(), config.getFtp().getPassword())) {
             throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.getFtp().getHost() + ". Please check FTP credentials.");
         }
-        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", palling each " + config.getFtp().getPollInterval() / 1_000 + " seconds.");
+        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", polling each " + config.getFtp().getPollInterval() / 1_000 + " seconds.");
         return ftpClient;
     }
 }

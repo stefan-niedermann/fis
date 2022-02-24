@@ -10,20 +10,19 @@ import org.springframework.util.StopWatch;
 
 import java.io.IOException;
 
-import static it.niedermann.fis.operation.parser.OperationParserFactory.Parser.MITTELFRANKEN_SUED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class MittelfrankenSuedParserTest {
+public class MittelfrankenSuedOperationParserTest {
 
-    private OperationFaxParser parser;
+    private OperationParser parser;
 
     @BeforeEach
     public void setup() {
-        this.parser = new OperationParserFactory().createParser(MITTELFRANKEN_SUED);
+        this.parser = new MittelfrankenSuedParser();
     }
 
     @Test

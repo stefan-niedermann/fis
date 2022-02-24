@@ -21,20 +21,17 @@ import static org.mockito.Mockito.when;
 public class OperationRemoteRepositoryTest {
 
     private OperationRemoteRepository repository;
-    private FisConfiguration config;
-    private FisConfiguration.FtpConfiguration ftpConfig;
     private FTPClient ftpClient;
-    private OperationFTPClientFactory ftpClientFactory;
 
     @BeforeEach
     public void setup() throws IOException {
-        ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
+        final var ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
         when(ftpConfig.getFileSuffix()).thenReturn(".pdf");
-        config = mock(FisConfiguration.class);
+        final var config = mock(FisConfiguration.class);
         when(config.getFtp()).thenReturn(ftpConfig);
         ftpClient = mock(FTPClient.class);
         when(ftpClient.login(any(), any())).thenReturn(true);
-        ftpClientFactory = mock(OperationFTPClientFactory.class);
+        final var ftpClientFactory = mock(OperationFTPClientFactory.class);
         when(ftpClientFactory.createFTPClient(config)).thenReturn(ftpClient);
         this.repository = new OperationRemoteRepository(
                 config,
@@ -144,6 +141,24 @@ public class OperationRemoteRepositoryTest {
         final var ftpFile2 = repository.poll();
         assertTrue(ftpFile2.isPresent());
         assertEquals("Bar.pdf", ftpFile2.get().getName());
+    }
+
+    @Test
+    public void downloadShouldReturnEmptyWhenRetrievingFileThrowsIOException() throws IOException {
+        when(ftpClient.retrieveFile(any(), any())).thenThrow(IOException.class);
+        assertTrue(repository.download(new FTPFile()).isEmpty());
+    }
+
+    @Test
+    public void downloadShouldReturnEmptyWhenRetrievingFileFails() throws IOException {
+        when(ftpClient.retrieveFile(any(), any())).thenReturn(false);
+        assertTrue(repository.download(new FTPFile()).isEmpty());
+    }
+
+    @Test
+    public void downloadShouldReturnLocalFile() throws IOException {
+        when(ftpClient.retrieveFile(any(), any())).thenReturn(true);
+        assertTrue(repository.download(new FTPFile()).isPresent());
     }
 
     private void doFirstPoll() throws IOException {

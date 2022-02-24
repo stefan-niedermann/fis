@@ -5,14 +5,13 @@ import it.niedermann.fis.main.api.OperationApiDelegate;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.OperationRemoteRepository;
-import org.apache.commons.net.ftp.FTPFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.io.File;
 
 @Service
 public class OperationApiDelegateImpl implements OperationApiDelegate {
@@ -20,8 +19,8 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     private static final Logger logger = LoggerFactory.getLogger(OperationApiDelegateImpl.class);
 
     private final FisConfiguration config;
-    private final OperationRemoteRepository operationRemoteRepository;
-    private final OperationParserRepository operationParserRepository;
+    private final OperationRemoteRepository remoteRepository;
+    private final OperationParserRepository parserRepository;
 
     private Thread cancelCurrentOperation;
     private OperationDto currentOperation;
@@ -29,12 +28,12 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     public OperationApiDelegateImpl(
             FisConfiguration config,
-            OperationRemoteRepository operationRemoteRepository,
-            OperationParserRepository operationParserRepository
+            OperationRemoteRepository remoteRepository,
+            OperationParserRepository parserRepository
     ) {
         this.config = config;
-        this.operationRemoteRepository = operationRemoteRepository;
-        this.operationParserRepository = operationParserRepository;
+        this.remoteRepository = remoteRepository;
+        this.parserRepository = parserRepository;
     }
 
     @Override
@@ -48,38 +47,27 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
 
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
     public void pollOperations() {
-        checkForNewFTPFile().ifPresent(this::downloadAndProcessFTPFile);
+        remoteRepository.poll()
+                .flatMap(remoteRepository::download)
+                .ifPresent(this::parseAndApplyOperation);
     }
 
-    private Optional<FTPFile> checkForNewFTPFile() {
-        final var optionalFtpFile = operationRemoteRepository.poll();
+    private void parseAndApplyOperation(File operationFile) {
+        this.processing = true;
 
-        optionalFtpFile.ifPresentOrElse(
-                ftpFile -> logger.info("🚒 New incoming PDF detected: " + ftpFile.getName()),
-                () -> logger.debug("→ No new file with suffix \"" + config.getFtp().getFileSuffix() + "\" is present at the server.")
-        );
+        this.parserRepository.parse(operationFile).ifPresent(operationDto -> {
+            logger.debug("Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
+            this.currentOperation = operationDto;
 
-        return optionalFtpFile;
-    }
-
-    private void downloadAndProcessFTPFile(FTPFile ftpFile) {
-        operationRemoteRepository.download(ftpFile).ifPresent(localFile -> {
-            this.processing = true;
-
-            this.operationParserRepository.parse(localFile).ifPresent(dto -> {
-                logger.trace("→ Saving operation as currently active operation: \"" + dto.getKeyword() + "\"…");
-                this.currentOperation = dto;
-
-                logger.trace("→ Planning cancellation of currently active operation: \"" + dto.getKeyword() + "\"…");
-                scheduleOperationCancellation(dto);
-            });
-
-            if (!localFile.delete()) {
-                logger.warn("🚒 → Could not delete downloaded FTP file: " + localFile.getName());
-            }
-
-            this.processing = false;
+            logger.debug("Planning cancellation of currently active operation: \"" + operationDto.getKeyword() + "\"…");
+            scheduleOperationCancellation(operationDto);
         });
+
+        if (!operationFile.delete()) {
+            logger.warn("Could not delete downloaded FTP file: " + operationFile.getName());
+        }
+
+        this.processing = false;
     }
 
     private void scheduleOperationCancellation(OperationDto dto) {

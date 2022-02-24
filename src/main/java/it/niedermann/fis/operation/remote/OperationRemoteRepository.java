@@ -51,8 +51,16 @@ public class OperationRemoteRepository {
             match.ifPresent(ftpFile -> alreadyExistingFileName = ftpFile.getName());
             if (firstPoll) {
                 firstPoll = false;
+                match.ifPresentOrElse(
+                        ftpFile -> logger.info("Ignoring existing operation when polling the first time: " + ftpFile.getName()),
+                        () -> logger.info("No operation was present when polling the first time.")
+                );
                 return empty();
             }
+            match.ifPresentOrElse(
+                    ftpFile -> logger.info("🚒 New incoming operation detected: " + ftpFile.getName()),
+                    () -> logger.debug("→ No new file with suffix \"" + config.getFtp().getFileSuffix() + "\" is present at the server.")
+            );
             return match;
         } catch (IOException e) {
             logger.error("Could not list files", e);
@@ -61,23 +69,23 @@ public class OperationRemoteRepository {
     }
 
     public Optional<File> download(FTPFile source) {
+        logger.debug("Start downloading \"" + source.getName() + "\" into temporary file");
         final File target;
         try {
             target = File.createTempFile("operation-", ".pdf");
-            logger.debug("→ Created temporary file: " + target.getName());
+            logger.trace("→ Created temporary file: " + target.getName());
 
             try (final var outputStream = new BufferedOutputStream(new FileOutputStream(target))) {
                 if (ftpClient.retrieveFile(config.getFtp().getPath() + "/" + source.getName(), outputStream)) {
+                    logger.debug("→ Download successful: " + target.getName());
                     return Optional.of(target);
                 } else {
-                    logger.warn("🚒 → Could not download new FTP file!");
-                    if (!target.delete()) {
-                        logger.warn("🚒 → Could not delete downloaded FTP file: " + target.getName());
-                    }
+                    throw new IOException("Retrieving file failed");
                 }
             } catch (IOException e) {
+                logger.error(e.getMessage(), e);
                 if (!target.delete()) {
-                    logger.warn("🚒 → Could not delete downloaded FTP file: " + target.getName(), e);
+                    logger.warn("Could not delete downloaded file: " + target.getName(), e);
                 }
             }
         } catch (IOException e) {

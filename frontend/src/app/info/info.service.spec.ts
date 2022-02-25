@@ -1,6 +1,6 @@
 import {TestBed} from '@angular/core/testing';
 
-import {InfoService} from './info.service';
+import {InfoService, POLL_INTERVAL_WEATHER} from './info.service';
 import {HttpClientTestingModule} from "@angular/common/http/testing";
 
 describe('InfoService', () => {
@@ -11,6 +11,9 @@ describe('InfoService', () => {
       imports: [
         HttpClientTestingModule
       ],
+      providers: [
+        {provide: POLL_INTERVAL_WEATHER, useValue: 1}
+      ]
     })
     service = TestBed.inject(InfoService)
   })

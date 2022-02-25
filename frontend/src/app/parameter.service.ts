@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core'
+import {Inject, Injectable, InjectionToken} from '@angular/core'
 import {
   BehaviorSubject,
   catchError,
@@ -20,7 +20,7 @@ import {DefaultService} from "./gen";
 export class ParameterService {
 
   private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
-  private readonly parameter$ = interval(60_000).pipe(
+  private readonly parameter$ = interval(this.pollInterval).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
     concatMap(lastETag => this.apiService.getParameter(lastETag, 'response')
@@ -36,7 +36,9 @@ export class ParameterService {
   )
 
   constructor(
-    private apiService: DefaultService
+    @Inject(POLL_INTERVAL_PARAMETER)
+    private readonly pollInterval: number,
+    private readonly apiService: DefaultService
   ) {
   }
 
@@ -44,3 +46,5 @@ export class ParameterService {
     return this.parameter$
   }
 }
+
+export const POLL_INTERVAL_PARAMETER = new InjectionToken<number>('POLL_INTERVAL_PARAMETER')

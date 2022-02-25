@@ -1,88 +1,53 @@
-import {TestBed} from '@angular/core/testing'
-
 import {OperationService} from './operation.service'
-import {HttpClientTestingModule, HttpTestingController, TestRequest} from '@angular/common/http/testing'
 
-import {environment} from '../../environments/environment'
+import {of, take} from "rxjs";
+import {HttpHeaders, HttpResponse} from "@angular/common/http";
 
-xdescribe('OperationService', () => {
+describe('OperationService', () => {
   let service: OperationService
-  let httpMock: HttpTestingController
-  let firstRequest: TestRequest
+  let getOperation = jest.fn((ifNoneMatch) => {
+    return ifNoneMatch === 'XYZ'
+      ? of(new HttpResponse({
+        status: 304,
+        headers: new HttpHeaders('ETag: XYZ')
+      }))
+      : of(new HttpResponse({
+        status: 200,
+        headers: new HttpHeaders('ETag: XYZ'),
+        body: {
+          keyword: 'B 1',
+          number: '5',
+          street: 'samplestreet',
+          location: 'Samplecity',
+          obj: '',
+          tags: '',
+          vehicles: '',
+          note: ''
+        }
+      }))
+  })
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule,
-      ],
+  beforeEach(() => service = new OperationService(1, {getOperation} as any))
+
+  it('should be created', () => expect(service).toBeTruthy())
+
+  it('should fetch operations on startup', (done) => {
+    service.getActiveOperation().pipe(take(1)).subscribe(() => {
+      expect(getOperation).toHaveBeenCalled()
+      done()
     })
-    service = TestBed.inject(OperationService)
-    httpMock = TestBed.inject(HttpTestingController)
   })
 
-  beforeEach(() => {
-    firstRequest = httpMock.expectOne({
-      url: `${environment.hostUrl}/operation`,
-      method: 'get'
+  xit('should send received ETags as If-None-Match header with the second request', (done) => {
+    let firstRequest = true
+    service.getActiveOperation().pipe(take(2)).subscribe(() => {
+      if (firstRequest) {
+        expect(getOperation).toHaveBeenCalledWith(undefined, 'response')
+        firstRequest = false
+      } else {
+        expect(getOperation).toHaveBeenLastCalledWith('XYZ', 'response')
+        done()
+      }
     })
-  })
-
-  afterEach(() => {
-    httpMock.verify()
-  })
-
-  it('should be created', () => {
-    expect(service).toBeTruthy()
-  })
-
-  it('should expose the active operation state', (done) => {
-    firstRequest.flush({
-      keyword: 'B 1',
-      number: '5',
-      street: 'samplestreet',
-      location: 'Samplecity',
-      obj: '',
-      tags: '',
-      vehicles: '',
-      note: ''
-    })
-
-    service
-      .isActiveOperation()
-      .subscribe({
-        next: (active) => {
-          expect(active).toBeTruthy()
-          done()
-        },
-        error: error => fail(error),
-        complete: () => fail()
-      })
-  })
-
-  it('should expose any active operation', (done) => {
-    firstRequest.flush({
-      keyword: 'B 1',
-      number: '5',
-      street: 'samplestreet',
-      location: 'Samplecity',
-      obj: '',
-      tags: '',
-      vehicles: '',
-      note: ''
-    })
-
-    service
-      .getActiveOperation()
-      .subscribe({
-        next: (operation) => {
-          expect(operation?.keyword).toEqual('B 1')
-          expect(operation?.number).toEqual('5')
-          expect(operation?.street).toEqual('samplestreet')
-          expect(operation?.location).toEqual('Samplecity')
-          done()
-        },
-        error: error => console.error(error),
-        complete: () => fail()
-      })
   })
 })

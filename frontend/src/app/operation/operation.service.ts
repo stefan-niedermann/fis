@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core'
+import {Inject, Injectable, InjectionToken} from '@angular/core'
 import {
   BehaviorSubject,
   catchError,
@@ -23,7 +23,7 @@ export class OperationService {
 
   private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
   private readonly processing$ = new BehaviorSubject(false)
-  private readonly activeOperation$: Observable<Operation | null> = interval(2_000).pipe(
+  private readonly activeOperation$: Observable<Operation | null> = interval(this.pollInterval).pipe(
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
     concatMap(lastETag => this.apiService.getOperation(lastETag, 'response')
@@ -47,7 +47,9 @@ export class OperationService {
   )
 
   constructor(
-    private readonly apiService: DefaultService
+    @Inject(POLL_INTERVAL_OPERATION)
+    private readonly pollInterval: number,
+    private readonly apiService: DefaultService,
   ) {
   }
 
@@ -79,3 +81,5 @@ export enum OperationState {
   ACTIVE,
   PROCESSING
 }
+
+export const POLL_INTERVAL_OPERATION = new InjectionToken<number>('POLL_INTERVAL_OPERATION')

@@ -2,6 +2,7 @@ import {OperationService} from './operation.service'
 
 import {of, take} from "rxjs";
 import {HttpHeaders, HttpResponse} from "@angular/common/http";
+import {ParameterService} from "../parameter.service";
 
 describe('OperationService', () => {
   let service: OperationService
@@ -27,7 +28,7 @@ describe('OperationService', () => {
       }))
   })
 
-  beforeEach(() => service = new OperationService(1, {getOperation} as any))
+  beforeEach(() => service = new OperationService({getParameter: () => of(1)} as ParameterService, {getOperation} as any))
 
   it('should be created', () => expect(service).toBeTruthy())
 

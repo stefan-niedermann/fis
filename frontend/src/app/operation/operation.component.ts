@@ -20,7 +20,7 @@ export class OperationComponent {
       map(keyword => this.keywords.find(k => keyword.toUpperCase().startsWith(k)) || ''),
       map(keyword => keyword.toLowerCase())
     )
-  readonly highlightTerm$ = this.parameterService.getParameter()
+  readonly highlightTerm$ = this.parameterService.getParameter().pipe(map(parameter => parameter.highlight))
     .pipe(map(parameter => parameter.highlight))
   readonly highlight$ = this.highlightTerm$
     .pipe(map(term => !!term))

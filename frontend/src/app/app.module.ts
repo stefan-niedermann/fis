@@ -17,8 +17,6 @@ import {OperationLocationComponent} from './operation/operation-location/operati
 import {ApiModule} from "./gen";
 import {OperationProcessingComponent} from './operation-processing/operation-processing.component';
 import {POLL_INTERVAL_PARAMETER} from "./parameter.service";
-import {POLL_INTERVAL_WEATHER} from "./info/info.service";
-import {POLL_INTERVAL_OPERATION} from "./operation/operation.service";
 
 @NgModule({
   declarations: [
@@ -62,9 +60,7 @@ import {POLL_INTERVAL_OPERATION} from "./operation/operation.service";
     ])
   ],
   providers: [
-    {provide: POLL_INTERVAL_PARAMETER, useValue: 60_000},
-    {provide: POLL_INTERVAL_WEATHER, useValue: 30_000},
-    {provide: POLL_INTERVAL_OPERATION, useValue: 2_000}
+    {provide: POLL_INTERVAL_PARAMETER, useValue: 60_000}
   ],
   bootstrap: [AppComponent]
 })

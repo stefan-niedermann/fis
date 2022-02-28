@@ -1,5 +1,6 @@
 package it.niedermann.fis;
 
+import it.niedermann.fis.main.model.ClientConfigurationDto;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
@@ -16,6 +17,7 @@ public class FisConfiguration {
     private WeatherConfiguration weather = new WeatherConfiguration();
     private FtpConfiguration ftp = new FtpConfiguration();
     private OperationConfiguration operation = new OperationConfiguration();
+    private ClientConfigurationDto client = new ClientConfigurationDto();
 
     public TesseractConfiguration getTesseract() {
         return tesseract;
@@ -47,6 +49,14 @@ public class FisConfiguration {
 
     public void setOperation(OperationConfiguration operation) {
         this.operation = operation;
+    }
+
+    public ClientConfigurationDto getClient() {
+        return client;
+    }
+
+    public void setClient(ClientConfigurationDto client) {
+        this.client = client;
     }
 
     public static class TesseractConfiguration {
@@ -191,7 +201,6 @@ public class FisConfiguration {
 
     public static class OperationConfiguration {
         private long duration;
-        private String highlight;
 
         public long getDuration() {
             return duration;
@@ -199,14 +208,6 @@ public class FisConfiguration {
 
         public void setDuration(long duration) {
             this.duration = duration;
-        }
-
-        public String getHighlight() {
-            return highlight;
-        }
-
-        public void setHighlight(String highlight) {
-            this.highlight = highlight;
         }
     }
 }

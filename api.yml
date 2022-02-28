@@ -33,7 +33,7 @@ paths:
         "200":
           description: "Configuration parameters"
           schema:
-            $ref: "#/definitions/Parameter"
+            $ref: "#/definitions/ClientConfiguration"
         "304":
           description: "If-None-Match"
   /weather:
@@ -77,11 +77,21 @@ paths:
         "304":
           description: "If-None-Match"
 definitions:
-  Parameter:
+  ClientConfiguration:
     type: "object"
     required:
+      - "weatherPollInterval"
+      - "operationPollInterval"
       - "highlight"
     properties:
+      weatherPollInterval:
+        type: "number"
+        format: "long"
+        description: "Clients should poll for new weather information in this interval"
+      operationPollInterval:
+        type: "number"
+        format: "long"
+        description: "Clients should poll for new operations in this interval"
       highlight:
         type: "string"
         description: "This term should be highlighted by the consumer, e. g. the name of the firefighter station"

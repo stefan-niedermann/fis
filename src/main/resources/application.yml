@@ -13,6 +13,10 @@ fis:
     pollInterval: 60000
   operation:
     duration: 1800000
+  client:
+    weatherPollInterval: 30000
+    operationPollInterval: 2000
+    highlight: ""
 
 logging:
   pattern:

@@ -48,6 +48,7 @@ configurations.all {
 }
 
 bootJar {
+    mainClassName = 'it.niedermann.fis.FisApplication'
     launchScript()
 }
 

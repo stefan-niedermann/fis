@@ -60,7 +60,6 @@ openApiGenerate {
     inputSpec = "$rootDir/api.yml".toString()
     outputDir = "$buildDir/gen"
     apiPackage = "it.niedermann.fis.main.api"
-    invokerPackage = "it.niedermann.fis.main.invoker"
     modelPackage = "it.niedermann.fis.main.model"
     modelNameSuffix = "Dto"
     configOptions = [

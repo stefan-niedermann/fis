@@ -1,5 +1,5 @@
 plugins {
-    id 'org.springframework.boot' version '2.6.4'
+    id 'org.springframework.boot' version '2.5.3'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
     id 'org.openapi.generator' version '5.2.0'
     id 'java'
@@ -60,6 +60,7 @@ openApiGenerate {
     inputSpec = "$rootDir/api.yml".toString()
     outputDir = "$buildDir/gen"
     apiPackage = "it.niedermann.fis.main.api"
+    invokerPackage = "it.niedermann.fis.main.invoker"
     modelPackage = "it.niedermann.fis.main.model"
     modelNameSuffix = "Dto"
     configOptions = [

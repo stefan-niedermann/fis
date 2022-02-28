@@ -86,11 +86,11 @@ definitions:
     properties:
       weatherPollInterval:
         type: "number"
-        format: "long"
+        format: "int64"
         description: "Clients should poll for new weather information in this interval"
       operationPollInterval:
         type: "number"
-        format: "long"
+        format: "int64"
         description: "Clients should poll for new operations in this interval"
       highlight:
         type: "string"

@@ -4,9 +4,9 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.api.ParameterApi;
 import it.niedermann.fis.main.model.ClientConfigurationDto;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
-@Service
+@Controller
 public class ParameterApiImpl implements ParameterApi {
 
     private final ClientConfigurationDto dto;

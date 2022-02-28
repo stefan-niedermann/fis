@@ -9,11 +9,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Controller;
 
 import java.io.File;
 
-@Service
+@Controller
 public class OperationApiImpl implements OperationApi {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);

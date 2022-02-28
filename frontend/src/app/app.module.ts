@@ -61,7 +61,7 @@ import {environment} from "../environments/environment";
     ])
   ],
   providers: [
-    {provide: BASE_PATH, useValue: environment.hostUrl},
+    {provide: BASE_PATH, useValue: environment.apiUrl},
     {provide: POLL_INTERVAL_PARAMETER, useValue: environment.pollInterval}
   ],
   bootstrap: [AppComponent]

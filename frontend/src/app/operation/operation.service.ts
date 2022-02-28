@@ -1,4 +1,4 @@
-import {Inject, Injectable, InjectionToken} from '@angular/core'
+import {Injectable} from '@angular/core'
 import {
   BehaviorSubject,
   catchError,
@@ -15,6 +15,7 @@ import {
 } from 'rxjs'
 import {map, switchMap, tap} from 'rxjs/operators'
 import {DefaultService, Operation} from "../gen";
+import {ParameterService} from "../parameter.service";
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,8 @@ export class OperationService {
 
   private readonly lastETag$ = new BehaviorSubject<string | undefined>(undefined)
   private readonly processing$ = new BehaviorSubject(false)
-  private readonly activeOperation$: Observable<Operation | null> = interval(this.pollInterval).pipe(
+  private readonly activeOperation$: Observable<Operation | null> = this.paramService.getParameter('operationPollInterval').pipe(
+    switchMap(pollInterval => interval(pollInterval as number)),
     startWith(0),
     switchMap(() => this.lastETag$.pipe(distinctUntilChanged())),
     concatMap(lastETag => this.apiService.getOperation(lastETag, 'response')
@@ -47,8 +49,7 @@ export class OperationService {
   )
 
   constructor(
-    @Inject(POLL_INTERVAL_OPERATION)
-    private readonly pollInterval: number,
+    private readonly paramService: ParameterService,
     private readonly apiService: DefaultService,
   ) {
   }
@@ -81,5 +82,3 @@ export enum OperationState {
   ACTIVE,
   PROCESSING
 }
-
-export const POLL_INTERVAL_OPERATION = new InjectionToken<number>('POLL_INTERVAL_OPERATION')

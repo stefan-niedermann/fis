@@ -12,7 +12,7 @@ import {
   startWith
 } from 'rxjs'
 import {map, switchMap, tap} from 'rxjs/operators'
-import {DefaultService} from "./gen";
+import {ClientConfiguration, DefaultService} from "./gen";
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +32,7 @@ export class ParameterService {
       )
     ),
     tap(parameter => console.info('⚙️ Parameter:', parameter)),
+    distinctUntilChanged(),
     shareReplay(1)
   )
 
@@ -42,8 +43,13 @@ export class ParameterService {
   ) {
   }
 
-  public getParameter() {
-    return this.parameter$
+  public getParameter(property?: keyof ClientConfiguration) {
+    return property
+      ? this.parameter$.pipe(
+        map(parameter => parameter[property]),
+        distinctUntilChanged()
+      )
+      : this.parameter$
   }
 }
 

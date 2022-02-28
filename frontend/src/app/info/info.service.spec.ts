@@ -1,21 +1,12 @@
-import {TestBed} from '@angular/core/testing';
-
-import {InfoService, POLL_INTERVAL_WEATHER} from './info.service';
-import {HttpClientTestingModule} from "@angular/common/http/testing";
+import {InfoService} from "./info.service";
+import {EMPTY, of} from "rxjs";
+import {ParameterService} from "../parameter.service";
 
 describe('InfoService', () => {
   let service: InfoService
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        HttpClientTestingModule
-      ],
-      providers: [
-        {provide: POLL_INTERVAL_WEATHER, useValue: 1}
-      ]
-    })
-    service = TestBed.inject(InfoService)
+    service = new InfoService({getParameter: () => of(1)} as ParameterService, {getWeather: () => EMPTY} as any)
   })
 
   it('should be created', () => {

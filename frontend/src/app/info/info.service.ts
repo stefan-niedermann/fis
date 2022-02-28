@@ -40,6 +40,7 @@ export class InfoService {
 
   private readonly isDarkTheme$ = this.weather$.pipe(
     map(weather => !weather.isDay),
+    distinctUntilChanged(),
     shareReplay(1)
   )
 

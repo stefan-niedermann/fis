@@ -1,32 +1,33 @@
 describe('JarFIS main screen', () => {
 
   beforeEach(() => {
-    cy.intercept('/operation', '')
-    cy.intercept('/weather', sampleWeather)
-    cy.intercept('/parameter', sampleParameter)
-    cy.intercept('/socket/*', {})
-  });
+    cy.intercept('/api/operation', '')
+    cy.intercept('/api/weather', sampleWeather)
+    cy.intercept('/api/parameter', sampleParameter)
+    cy.intercept('/api/socket/*', {})
+  })
 
 
   it('Visits the initial project page', () => {
-    cy.visit('/');
-    verifyInfo();
+    cy.visit('/')
+    verifyInfo()
   })
 
   it('Should fetch and display running operations on startup', () => {
-    cy.intercept('/operation', sampleOperation)
-    cy.visit('/');
-    verifyOperation();
+    cy.intercept('/api/operation', sampleOperation)
+    cy.visit('/')
+    verifyOperation()
   })
 
-  // FIXME how to mock the websocket connection?
   xit('Gets an operation pushed', () => {
-    cy.visit('/');
-    verifyInfo();
-    // mockSocket.send(JSON.stringify(sampleOperation));
-    verifyOperation();
+    cy.visit('/')
+    verifyInfo()
     cy.wait(500)
-    verifyInfo();
+    cy.intercept('/api/operation', sampleOperation)
+    cy.wait(500)
+    verifyOperation()
+    cy.wait(500)
+    verifyInfo()
   })
 
   const sampleWeather = {
@@ -36,11 +37,9 @@ describe('JarFIS main screen', () => {
   }
 
   const sampleParameter = {
-    language: 'de',
-    operation: {
-      duration: 5,
-      highlight: 'land'
-    }
+    highlight: 'muster',
+    weatherPollInterval: 1_000,
+    operationPollInterval: 1_000
   }
 
   const sampleOperation = {

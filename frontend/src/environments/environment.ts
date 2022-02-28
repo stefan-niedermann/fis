@@ -14,6 +14,7 @@ import 'zone.js/plugins/zone-error'; // Included with Angular CLI.
 
 export const environment = {
   ...prodEnvironment,
+  pollInterval: 5_000,
   production: false
 };
 

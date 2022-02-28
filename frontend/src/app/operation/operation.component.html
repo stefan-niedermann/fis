@@ -2,7 +2,7 @@
   <app-operation-topic [ngClass]="operationClass$ | async" [operation]="operation$ | async"></app-operation-topic>
   <div>
     <app-operation-location [operation]="(operation$ | async)"></app-operation-location>
-    <app-operation-vehicles [class.dark-theme]="darkThemeClass" [class.highlight]="highlight$ | async"
+    <app-operation-vehicles [class.highlight]="highlight$ | async"
                             [vehicles]="(operation$ | async).vehicles"
                             [highlightTerm]="highlightTerm$ | async"></app-operation-vehicles>
   </div>

@@ -6,10 +6,14 @@ html {
 body {
   --main-bg-color: white;
   --main-fg-color: black;
+  --secondary-bg-color: #ddd;
+  --secondary-fg-color: #333;
 
   &.dark-theme {
     --main-bg-color: black;
     --main-fg-color: white;
+    --secondary-bg-color: #222;
+    --secondary-fg-color: #ccc;
   }
 
   margin: 0;

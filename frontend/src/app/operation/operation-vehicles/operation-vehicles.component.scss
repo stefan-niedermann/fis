@@ -1,19 +1,10 @@
 :host {
-  --vehicles-bg-color: #ddd;
-  --vehicles-fg-color: #333;
-  --vehicles-highlight-fg-color: var(--main-fg-color);
-
   font-size: 3vw;
-  background-color: var(--vehicles-bg-color);
-  color: var(--vehicles-fg-color);
+  background-color: var(--secondary-bg-color);
+  color: var(--main-fg-color);
 
-  &:not(.highlight) {
-    --vehicles-fg-color: var(--main-fg-color);
-  }
-
-  &.dark-theme {
-    --vehicles-bg-color: #222;
-    --vehicles-fg-color: #ccc;
+  &.highlight {
+    color: var(--secondary-fg-color);
   }
 }
 
@@ -30,5 +21,5 @@ li {
 }
 
 strong {
-  color: var(--vehicles-highlight-fg-color);
+  color: var(--main-fg-color);
 }

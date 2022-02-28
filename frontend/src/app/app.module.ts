@@ -14,7 +14,7 @@ import {OperationKeywordPipe} from './operation/operation-topic/operation-keywor
 import {OperationTopicComponent} from './operation/operation-topic/operation-topic.component'
 import {OperationVehiclesComponent} from './operation/operation-vehicles/operation-vehicles.component'
 import {OperationLocationComponent} from './operation/operation-location/operation-location.component'
-import {ApiModule} from "./gen";
+import {ApiModule, BASE_PATH} from "./gen";
 import {OperationProcessingComponent} from './operation-processing/operation-processing.component';
 import {POLL_INTERVAL_PARAMETER} from "./parameter.service";
 import {environment} from "../environments/environment";
@@ -61,6 +61,7 @@ import {environment} from "../environments/environment";
     ])
   ],
   providers: [
+    {provide: BASE_PATH, useValue: environment.hostUrl},
     {provide: POLL_INTERVAL_PARAMETER, useValue: environment.pollInterval}
   ],
   bootstrap: [AppComponent]

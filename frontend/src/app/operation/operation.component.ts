@@ -11,7 +11,6 @@ import {map} from 'rxjs/operators'
 export class OperationComponent {
   private readonly keywords = ['DEKON', 'THL', 'ABC', 'INF', 'SON', 'RD', 'B']
 
-  readonly darkThemeClass = 'dark-theme'
   readonly operation$ = this.operationService.getActiveOperation()
   readonly operationKeyword$ = this.operation$
     .pipe(map(operation => operation ? operation.keyword : ''))
@@ -20,8 +19,7 @@ export class OperationComponent {
       map(keyword => this.keywords.find(k => keyword.toUpperCase().startsWith(k)) || ''),
       map(keyword => keyword.toLowerCase())
     )
-  readonly highlightTerm$ = this.parameterService.getParameter().pipe(map(parameter => parameter.highlight))
-    .pipe(map(parameter => parameter.highlight))
+  readonly highlightTerm$ = this.parameterService.getParameter('highlight')
   readonly highlight$ = this.highlightTerm$
     .pipe(map(term => !!term))
 

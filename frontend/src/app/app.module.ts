@@ -17,6 +17,7 @@ import {OperationLocationComponent} from './operation/operation-location/operati
 import {ApiModule} from "./gen";
 import {OperationProcessingComponent} from './operation-processing/operation-processing.component';
 import {POLL_INTERVAL_PARAMETER} from "./parameter.service";
+import {environment} from "../environments/environment";
 
 @NgModule({
   declarations: [
@@ -60,7 +61,7 @@ import {POLL_INTERVAL_PARAMETER} from "./parameter.service";
     ])
   ],
   providers: [
-    {provide: POLL_INTERVAL_PARAMETER, useValue: 60_000}
+    {provide: POLL_INTERVAL_PARAMETER, useValue: environment.pollInterval}
   ],
   bootstrap: [AppComponent]
 })

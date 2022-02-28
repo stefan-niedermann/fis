@@ -19,9 +19,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.util.AssertionErrors.*;
 
-public class OperationApiDelegateImplTest {
+public class OperationApiImplTest {
 
-    private OperationApiDelegateImpl api;
+    private OperationApiImpl api;
     private FisConfiguration config;
     private OperationRemoteRepository operationRemoteRepository;
     private OperationParserRepository operationParserRepository;
@@ -34,7 +34,7 @@ public class OperationApiDelegateImplTest {
         when(config.getOperation().getDuration()).thenReturn(500L);
         operationRemoteRepository = mock(OperationRemoteRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
-        this.api = new OperationApiDelegateImpl(
+        this.api = new OperationApiImpl(
                 config,
                 operationRemoteRepository,
                 operationParserRepository

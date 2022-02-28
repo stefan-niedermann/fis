@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation;
 
 import it.niedermann.fis.FisConfiguration;
-import it.niedermann.fis.main.api.OperationApiDelegate;
+import it.niedermann.fis.main.api.OperationApi;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.OperationRemoteRepository;
@@ -14,9 +14,9 @@ import org.springframework.stereotype.Service;
 import java.io.File;
 
 @Service
-public class OperationApiDelegateImpl implements OperationApiDelegate {
+public class OperationApiImpl implements OperationApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationApiDelegateImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);
 
     private final FisConfiguration config;
     private final OperationRemoteRepository remoteRepository;
@@ -26,7 +26,7 @@ public class OperationApiDelegateImpl implements OperationApiDelegate {
     private OperationDto currentOperation;
     private boolean processing = false;
 
-    public OperationApiDelegateImpl(
+    public OperationApiImpl(
             FisConfiguration config,
             OperationRemoteRepository remoteRepository,
             OperationParserRepository parserRepository

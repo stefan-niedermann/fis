@@ -1,7 +1,7 @@
 package it.niedermann.fis.weather;
 
 import it.niedermann.fis.FisConfiguration;
-import it.niedermann.fis.main.api.WeatherApiDelegate;
+import it.niedermann.fis.main.api.WeatherApi;
 import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
 import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
@@ -15,14 +15,14 @@ import java.io.IOException;
 import java.util.Objects;
 
 @Service
-public class WeatherApiDelegateImpl implements WeatherApiDelegate {
+public class WeatherApiImpl implements WeatherApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApiDelegateImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeatherApiImpl.class);
 
     private final WeatherProvider weatherProvider;
     private WeatherDto weather;
 
-    public WeatherApiDelegateImpl(
+    public WeatherApiImpl(
             FisConfiguration config
     ) {
         this.weatherProvider = new OpenWeatherMapProvider(config.getWeather().getLang(),

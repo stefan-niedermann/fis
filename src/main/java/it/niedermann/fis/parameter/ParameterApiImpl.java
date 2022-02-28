@@ -1,17 +1,17 @@
 package it.niedermann.fis.parameter;
 
 import it.niedermann.fis.FisConfiguration;
-import it.niedermann.fis.main.api.ParameterApiDelegate;
+import it.niedermann.fis.main.api.ParameterApi;
 import it.niedermann.fis.main.model.ClientConfigurationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
-public class ParameterApiDelegateImpl implements ParameterApiDelegate {
+public class ParameterApiImpl implements ParameterApi {
 
     private final ClientConfigurationDto dto;
 
-    public ParameterApiDelegateImpl(FisConfiguration config) {
+    public ParameterApiImpl(FisConfiguration config) {
         this.dto = config.getClient();
     }
 

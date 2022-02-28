@@ -35,11 +35,7 @@
             "buildOptimizer": false,
             "sourceMap": true,
             "optimization": false,
-            "namedChunks": true,
-            "allowedCommonJsDependencies": [
-              "sockjs-client",
-              "stompjs"
-            ]
+            "namedChunks": true
           },
           "configurations": {
             "production": {

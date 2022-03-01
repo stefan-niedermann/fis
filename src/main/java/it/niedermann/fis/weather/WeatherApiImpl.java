@@ -19,7 +19,7 @@ import java.util.Objects;
 @RequestMapping("/api")
 public class WeatherApiImpl implements WeatherApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(WeatherApiImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(WeatherApiImpl.class);
 
     private final WeatherProvider weatherProvider;
     private WeatherDto weather;
@@ -37,11 +37,11 @@ public class WeatherApiImpl implements WeatherApi {
     public ResponseEntity<WeatherDto> getWeather(String ifNoneMatch) {
         try {
             if (weather == null) {
-                this.weather = weatherProvider.fetchWeather();
+                pollWeather();
             }
             return ResponseEntity.ok(weather);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             return ResponseEntity.internalServerError().build();
         }
     }

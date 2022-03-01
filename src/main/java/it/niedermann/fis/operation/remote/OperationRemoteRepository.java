@@ -21,7 +21,7 @@ import static java.util.Optional.empty;
 @Service
 public class OperationRemoteRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationRemoteRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(OperationRemoteRepository.class);
 
     private final FisConfiguration config;
     private final FTPClient ftpClient;

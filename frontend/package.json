@@ -9,7 +9,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e --headless --watch=false",
     "postinstall": "npm run gen",
-    "gen": "npx @openapitools/openapi-generator-cli generate -i ../api.yml -g typescript-angular -o src/app/gen"
+    "gen": "npx @openapitools/openapi-generator-cli generate -i ../api.yml -g typescript-angular -o src/app/gen --additional-properties=supportsES6=true"
   },
   "private": true,
   "dependencies": {
@@ -21,7 +21,6 @@
     "@angular/router": "~13.2.3",
     "@angular/platform-browser": "~13.2.3",
     "@angular/platform-browser-dynamic": "~13.2.3",
-    "net": "^1.0.2",
     "rxjs": "~7.5.4",
     "tslib": "^2.3.1",
     "zone.js": "~0.11.4"

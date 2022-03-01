@@ -4,7 +4,7 @@
 [![CI pipeline](https://github.com/stefan-niedermann/fis/workflows/CI%20pipeline/badge.svg)](https://github.com/stefan-niedermann/fis/actions)
 [![GitHub issues](https://img.shields.io/github/issues/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/issues)
 [![GitHub stars](https://img.shields.io/github/stars/stefan-niedermann/fis.svg)](https://github.com/stefan-niedermann/nextcloud-fis/stargazers)
-[![latest release](https://img.shields.io/github/v/tag/stefan-niedermann/fis?label=latest+release&sort=semver)](https://github.com/stefan-niedermann/fis/releases)
+[![latest release](https://img.shields.io/github/v/tag/stefan-niedermann/fis?label=latest+release&sort=semver)](https://github.com/stefan-niedermann/fis/tags)
 [![license: AGPL v3+](https://img.shields.io/badge/license-AGPL%20v3+-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
 
 **J**ava **ar**chive **F**irefighter **I**nformation **S**ystem

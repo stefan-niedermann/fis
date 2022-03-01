@@ -10,10 +10,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.File;
 
 @Controller
+@RequestMapping("/api")
 public class OperationApiImpl implements OperationApi {
 
     private static final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);

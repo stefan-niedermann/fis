@@ -6,7 +6,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.ObjectUtils;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static java.util.function.Predicate.not;
 
 @SuppressWarnings("SpellCheckingInspection")
 class MittelfrankenSuedParser implements OperationParser {
@@ -46,12 +47,12 @@ class MittelfrankenSuedParser implements OperationParser {
         final var lines = input.split("\n");
 
         runSafe("keyword", () -> dto.setKeyword(findKeyword(lines)));
-        runSafe("tags", () -> dto.setTags(Arrays.asList(findTags(lines))));
+        runSafe("tags", () -> dto.setTags(findTags(lines)));
         runSafe("street", () -> dto.setStreet(findValue("Straße", lines)));
         runSafe("number", () -> dto.setNumber(findValue("Haus-Nr.", lines)));
         runSafe("location", () -> dto.setLocation(findLocation(lines)));
         runSafe("object", () -> dto.setObj(findObject(lines)));
-        runSafe("vehicles", () -> dto.setVehicles(Arrays.asList(findVehicles(lines))));
+        runSafe("vehicles", () -> dto.setVehicles(findVehicles(lines)));
         runSafe("note", () -> dto.setNote(findNote(lines)));
 
         return dto;
@@ -127,11 +128,11 @@ class MittelfrankenSuedParser implements OperationParser {
         return value;
     }
 
-    private String[] findTags(String[] lines) {
+    private List<String> findTags(String[] lines) {
         return Arrays.stream(findValue("Schlagw.", lines).split("#"))
                 .map(this::trimSpecialCharacters)
-                .filter(potentialTag -> !potentialTag.isEmpty())
-                .toArray(String[]::new);
+                .filter(not(String::isBlank))
+                .toList();
     }
 
     private String findLocation(String[] lines) {
@@ -139,25 +140,20 @@ class MittelfrankenSuedParser implements OperationParser {
         return String.join(" ", new LinkedHashSet<>(Arrays.asList(location.split(" "))));
     }
 
-    private String[] findVehicles(String[] lines) {
+    private List<String> findVehicles(String[] lines) {
         final var term = "NAME";
-        final var hits = new LinkedList<String>();
-        for (var line : lines) {
-            final var cleanedLine = trimSpecialCharacters(line);
-            if (cleanedLine.toUpperCase(Locale.ROOT).startsWith(term)) {
-                final var value = cleanedLine.trim().substring(term.length());
-                hits.add(value);
-            }
-        }
-        return hits.stream()
+        return Arrays.stream(lines)
+                .map(this::trimSpecialCharacters)
+                .filter(line -> line.toUpperCase(Locale.ROOT).startsWith(term))
+                .map(String::trim)
+                .map(line -> line.substring(term.length()))
                 .map(vehicle -> vehicle.replace("Florian", ""))
                 .map(this::trimSpecialCharacters)
                 .map(vehicle -> vehicle.replace("änd", "and"))
                 .map(vehicle -> vehicle.replace(".RH", "RH"))
                 .map(vehicle -> vehicle.replaceAll("\\s+", " "))
-                .filter(potentialVehicle -> !potentialVehicle.isEmpty())
-                .collect(Collectors.toCollection(LinkedHashSet::new))
-                .toArray(String[]::new);
+                .filter(not(String::isBlank))
+                .toList();
     }
 
     private String findValue(String term, String[] lines) {

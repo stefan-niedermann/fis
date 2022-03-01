@@ -13,8 +13,8 @@ import {
   timer
 } from 'rxjs'
 import {map, switchMap, tap} from 'rxjs/operators'
-import {DefaultService} from "../gen";
-import {ParameterService} from "../parameter.service";
+import {DefaultService, Weather} from '../gen';
+import {ParameterService} from '../parameter.service';
 
 @Injectable({
   providedIn: 'root'
@@ -55,8 +55,13 @@ export class InfoService {
   ) {
   }
 
-  public getWeather() {
-    return this.weather$
+  public getWeather(property?: keyof Weather) {
+    return property
+      ? this.weather$.pipe(
+        map(weather => weather[property]),
+        distinctUntilChanged()
+      )
+      : this.weather$
   }
 
   public isDarkTheme() {

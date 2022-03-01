@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class IconUrlPipe implements PipeTransform {
 
-  transform(icon: string, ...args: unknown[]): unknown {
+  transform(icon: string): string {
     return icon
       ? `assets/weather-icons/${icon}.svg`
       : ''

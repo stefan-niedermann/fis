@@ -1,6 +1,5 @@
 import {Component} from '@angular/core';
 import {InfoService} from "./info.service";
-import {map} from "rxjs/operators";
 
 @Component({
   selector: 'app-info',
@@ -9,8 +8,8 @@ import {map} from "rxjs/operators";
 })
 export class InfoComponent {
 
-  readonly iconUrl$ = this.infoService.getWeather().pipe(map(weather => weather.icon))
-  readonly temperature$ = this.infoService.getWeather().pipe(map(weather => weather.temperature))
+  readonly iconUrl$ = this.infoService.getWeather('icon')
+  readonly temperature$ = this.infoService.getWeather('temperature')
   readonly time$ = this.infoService.getCurrentTime()
 
   constructor(

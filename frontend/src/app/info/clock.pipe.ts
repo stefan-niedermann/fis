@@ -5,7 +5,7 @@ import {Pipe, PipeTransform} from '@angular/core';
 })
 export class ClockPipe implements PipeTransform {
 
-  transform(date: Date, ...args: unknown[]): unknown {
+  transform(date: Date): string {
     if (!(date instanceof Date)) {
       return ''
     }

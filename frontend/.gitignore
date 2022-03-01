@@ -6,6 +6,8 @@
 /out-tsc
 /.angular
 /cypress/videos
+/cypress/screenshots
+/cypress/downloads
 /src/app/gen
 openapitools.json
 # Only exists if Bazel was run

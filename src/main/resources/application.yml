@@ -16,7 +16,7 @@ fis:
   client:
     weatherPollInterval: 30000
     operationPollInterval: 2000
-    highlight: ""
+    highlight:
 
 logging:
   pattern:

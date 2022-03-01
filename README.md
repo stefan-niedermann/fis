@@ -78,7 +78,7 @@ fis:
   # client:
     # weatherPollInterval: 30000
     # operationPollInterval: 2000
-    # highlight: ""
+    # highlight: 
 ```
 
 For more information about advanced configuration (e.g. passing arguments from the command line, …) see

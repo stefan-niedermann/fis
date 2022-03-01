@@ -2,13 +2,12 @@ openapi: 3.0.1
 info:
   title: JarFIS
   description: API for JarFIS
-  termsOfService: http://swagger.io/terms/
   contact:
     name: Niedermann IT-Dienstleistungen
     email: info@niedermann.it
     url: https://www.niedermann.it
   license:
-    name: MIT
+    name: AGPL
   version: 1.0.0
 paths:
   /parameter:

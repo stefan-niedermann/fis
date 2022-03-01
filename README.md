@@ -30,7 +30,7 @@ optical character recognition, parse the text to a machine-readable JSON file an
 
 ## Setup
 
-- You will need at least a [Java Runtime Environment 11 or higher](https://java.com)
+- You will need at least a [Java Runtime Environment 17 or higher](https://java.com)
 - Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
 - Install [`Tesseract ≥ 4.0.0`](https://tesseract-ocr.github.io/tessdoc/Installation.html), on Debian / Ubuntu based systems, this is usually done with
   ```sh

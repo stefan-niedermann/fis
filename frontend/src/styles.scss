@@ -4,20 +4,20 @@ html {
 }
 
 body {
-  --main-bg-color: white;
-  --main-fg-color: black;
-  --secondary-bg-color: #ddd;
-  --secondary-fg-color: #333;
+  --bg-color-primary: white;
+  --fg-color-primary: black;
+  --bg-color-secondary: #ddd;
+  --fg-color-secondary: #333;
 
   &.dark-theme {
-    --main-bg-color: black;
-    --main-fg-color: white;
-    --secondary-bg-color: #222;
-    --secondary-fg-color: #ccc;
+    --bg-color-primary: black;
+    --fg-color-primary: white;
+    --bg-color-secondary: #222;
+    --fg-color-secondary: #ccc;
   }
 
   margin: 0;
-  color: var(--main-fg-color);
-  background: var(--main-bg-color);
+  color: var(--fg-color-primary);
+  background: var(--bg-color-primary);
   font-family: sans-serif;
 }

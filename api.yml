@@ -4,12 +4,12 @@ info:
   description: API for JarFIS
   termsOfService: http://swagger.io/terms/
   contact:
-    name: Swagger API Team
+    name: Niedermann IT-Dienstleistungen
+    email: info@niedermann.it
+    url: https://www.niedermann.it
   license:
     name: MIT
   version: 1.0.0
-servers:
-  - url: http://localhost:4200/api
 paths:
   /parameter:
     get:
@@ -29,8 +29,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ClientConfiguration'
         304:
-          description: If-None-Match
-          content: {}
+          description: Nothing has changed in case If-None-Match matches last ETag
   /weather:
     get:
       description: Returns information about the current weather
@@ -48,11 +47,9 @@ paths:
               schema:
                 $ref: '#/components/schemas/Weather'
         304:
-          description: If-None-Match
-          content: {}
+          description: Nothing has changed in case If-None-Match matches last ETag
         500:
           description: In case the weather could not be fetched
-          content: {}
   /operation:
     get:
       description: Information about currently active operations
@@ -71,13 +68,10 @@ paths:
                 $ref: '#/components/schemas/Operation'
         202:
           description: Operation parsing is processing
-          content: {}
         204:
           description: Currently no operation is active
-          content: {}
         304:
-          description: If-None-Match
-          content: {}
+          description: Nothing has changed in case If-None-Match matches last ETag
 components:
   schemas:
     ClientConfiguration:

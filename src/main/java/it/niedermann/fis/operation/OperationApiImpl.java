@@ -18,7 +18,7 @@ import java.io.File;
 @RequestMapping("/api")
 public class OperationApiImpl implements OperationApi {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);
+    private final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);
 
     private final FisConfiguration config;
     private final OperationRemoteRepository remoteRepository;

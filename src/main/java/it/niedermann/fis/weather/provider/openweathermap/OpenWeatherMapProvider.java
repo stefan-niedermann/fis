@@ -12,7 +12,7 @@ import java.time.Instant;
 
 public class OpenWeatherMapProvider implements WeatherProvider {
 
-    private static final Logger logger = LoggerFactory.getLogger(OpenWeatherMapProvider.class);
+    private final Logger logger = LoggerFactory.getLogger(OpenWeatherMapProvider.class);
 
     private final String lang;
     private final String location;

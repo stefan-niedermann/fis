@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.util.AssertionErrors.assertEquals;
 
 @SuppressWarnings("SpellCheckingInspection")
-public class MittelfrankenSuedOperationParserTest {
+public class MittelfrankenSuedParserTest {
 
     private OperationParser parser;
 

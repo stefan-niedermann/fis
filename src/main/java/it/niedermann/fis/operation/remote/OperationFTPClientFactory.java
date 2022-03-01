@@ -11,7 +11,7 @@ import java.io.IOException;
 @Service
 class OperationFTPClientFactory {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationFTPClientFactory.class);
+    private final Logger logger = LoggerFactory.getLogger(OperationFTPClientFactory.class);
 
     public FTPClient createFTPClient(FisConfiguration config) throws IOException {
         final var ftpClient = new FTPClient();

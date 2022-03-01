@@ -17,7 +17,7 @@ import static it.niedermann.fis.operation.parser.OperationParserType.MITTELFRANK
 @Service
 public class OperationParserRepository {
 
-    private static final Logger logger = LoggerFactory.getLogger(OperationParserRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(OperationParserRepository.class);
 
     private final ITesseract tesseract;
     private final OperationParser parser;

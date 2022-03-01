@@ -5,8 +5,10 @@ import it.niedermann.fis.main.api.ParameterApi;
 import it.niedermann.fis.main.model.ClientConfigurationDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
+@RequestMapping("/api")
 public class ParameterApiImpl implements ParameterApi {
 
     private final ClientConfigurationDto dto;

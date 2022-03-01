@@ -27,7 +27,3 @@ logging:
     rollingpolicy:
       file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
       max-history: 30
-
-server:
-  servlet:
-    context-path: /api

@@ -10,11 +10,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.util.Objects;
 
 @Controller
+@RequestMapping("/api")
 public class WeatherApiImpl implements WeatherApi {
 
     private static final Logger logger = LoggerFactory.getLogger(WeatherApiImpl.class);

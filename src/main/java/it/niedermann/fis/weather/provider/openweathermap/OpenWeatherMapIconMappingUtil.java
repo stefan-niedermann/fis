@@ -69,6 +69,6 @@ public class OpenWeatherMapIconMappingUtil {
     }});
 
     public static WeatherIconDto get(String key, boolean isDay) {
-        return isDay ? ICON_MAPPING.get(key).getDay() : ICON_MAPPING.get(key).getNight();
+        return isDay ? ICON_MAPPING.get(key).day() : ICON_MAPPING.get(key).night();
     }
 }

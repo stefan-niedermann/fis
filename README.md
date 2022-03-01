@@ -32,13 +32,9 @@ optical character recognition, parse the text to a machine-readable JSON file an
 
 - You will need at least a [Java Runtime Environment 11 or higher](https://java.com)
 - Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
-- Install `Tesseract`, on Ubuntu based systems, this is usually done with
+- Install [`Tesseract ≥ 4.0.0`](https://tesseract-ocr.github.io/tessdoc/Installation.html), on Debian / Ubuntu based systems, this is usually done with
   ```sh
   sudo apt install tesseract-ocr
-  ```
-- `Tesseract ≤ 4.0.x` expects the following environment variable to be set:
-  ```sh
-  export LC_ALL=C
   ```
 
 ## Run
@@ -103,6 +99,12 @@ SuccessExitStatus=143
 
 [Install] 
 WantedBy=multi-user.target
+```
+
+Mark the `.jar` file as `executable`:
+
+```sh
+chmod +x fis.jar
 ```
 
 Call `sudo systemctl daemon-reload` to make `systemd` aware of the new service and `systemctl enable fis.service` to run JarFIS automatically when booting your server.

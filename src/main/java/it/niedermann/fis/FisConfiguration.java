@@ -9,7 +9,6 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-@SuppressWarnings("SpellCheckingInspection")
 @ConfigurationProperties("fis")
 @Validated
 public class FisConfiguration {

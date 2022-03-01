@@ -5,13 +5,11 @@ import org.springframework.stereotype.Service;
 @Service
 class OperationParserFactory {
 
-    @SuppressWarnings("SwitchStatementWithTooFewBranches")
+    @SuppressWarnings({"SwitchStatementWithTooFewBranches", "UnnecessaryDefault"})
     public OperationParser createParser(OperationParserType type) {
-        switch (type) {
-            case MITTELFRANKEN_SUED:
-                return new MittelfrankenSuedParser();
-            default:
-                throw new IllegalArgumentException("Could not find a " + OperationParser.class.getSimpleName() + " for type \"" + type + "\"");
-        }
+        return switch (type) {
+            case MITTELFRANKEN_SUED -> new MittelfrankenSuedParser();
+            default -> throw new IllegalArgumentException("Could not find a " + OperationParser.class.getSimpleName() + " for type \"" + type + "\"");
+        };
     }
 }

@@ -17,7 +17,7 @@ repositories {
 
 dependencies {
     // OpenAPI
-    implementation 'org.openapitools:openapi-generator-gradle-plugin:5.2.0'
+    implementation 'org.openapitools:openapi-generator-gradle-plugin:5.4.0'
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
     implementation 'com.google.guava:guava:23.0'

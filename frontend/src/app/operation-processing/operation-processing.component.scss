@@ -6,8 +6,8 @@
   justify-content: center;
   align-items: center;
   gap: 2rem;
-  background-color: var(--main-bg-color);
-  color: var(--main-fg-color);
+  background-color: var(--bg-color-primary);
+  color: var(--fg-color-primary);
 
   --ring-size: 40vh;
   --fill: .1;
@@ -32,10 +32,10 @@
   width: calc(var(--ring-size) * .8);
   height: calc(var(--ring-size) * .8);
   margin: calc(var(--ring-size) * .1);
-  border: calc((var(--ring-size) - calc(var(--ring-size) * .2)) * var(--fill)) solid var(--main-fg-color);
+  border: calc((var(--ring-size) - calc(var(--ring-size) * .2)) * var(--fill)) solid var(--fg-color-primary);
   border-radius: 50%;
   animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
-  border-color: var(--main-fg-color) transparent transparent transparent;
+  border-color: var(--fg-color-primary) transparent transparent transparent;
 }
 
 .lds-ring div:nth-child(1) {

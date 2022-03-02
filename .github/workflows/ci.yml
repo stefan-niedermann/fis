@@ -148,7 +148,7 @@ jobs:
         working-directory: frontend
         run: |
           cp frontend/cypress/assets/application.yml .
-          java -jar *.jar &
+          java -jar fis.jar &
           sleep 5
           sudo apt install lftp
           npm run e2e:prod

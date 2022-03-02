@@ -143,11 +143,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar
-          path: ./frontend
+          path: frontend
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: java -jar fis.jar
+          start: java -jar fis*.jar
           wait-on: 'http://localhost:8080'
           working-directory: frontend
           spec: cypress/integration/prod.spec.ts

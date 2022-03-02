@@ -151,7 +151,7 @@ jobs:
           java -jar fis.jar &
           sleep 5
           cat fis.log
-          wget -O - http://localhost:8080
+          wget -O - http://localhost:8081
           sudo apt-get install lftp
           cd frontend
           npm run e2e:prod

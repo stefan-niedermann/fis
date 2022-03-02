@@ -4,7 +4,7 @@ fis:
     path: ./
     username: ftp
     password: ftp
-    pollInterval: 500
+    pollInterval: 1000
   weather:
     key:
   operation:

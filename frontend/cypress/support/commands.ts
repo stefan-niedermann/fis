@@ -23,7 +23,7 @@ Cypress.Commands.add('sendFaxToFtpServer', (type) => {
   //   console.log(result.stdout)
   //   console.log(result.stderr)
   // })
-  ftp(`mirror --reverse cypress/assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
+  ftp(`put cypress/assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {

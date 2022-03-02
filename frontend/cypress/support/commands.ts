@@ -1,5 +1,5 @@
-const ftp_user = 'ftp'
-const ftp_password = 'ftp'
+const ftp_user = 'testuser'
+const ftp_password = 'testuser'
 const ftp_host = 'localhost'
 
 Cypress.Commands.add('clearFtpServer', () => {

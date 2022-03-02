@@ -135,8 +135,8 @@ jobs:
       - name: Setup local FTP server
         run: |
           sudo apt install vsftpd tesseract-ocr
-          sudo useradd -m ftp
-          sudo echo 'ftp' | passwd testuser --stdin
+          sudo useradd -m testuser
+          sudo echo 'testuser' | passwd testuser --stdin
           sudo systemctl start vsftpd
           sleep 5
       - name: Setup Java

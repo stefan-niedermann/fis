@@ -1,9 +1,13 @@
 declare namespace Cypress {
   interface Chainable<Subject = any> {
     clearFtpServer(): Chainable<null>;
+
     sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
+
     verifyClockShown(): Chainable<null>;
+
     verifyProcessingScreenShown(): Chainable<null>;
+
     verifyOperationShown(operation: any): Chainable<null>;
   }
 }
@@ -35,7 +39,7 @@ Cypress.Commands.add('verifyProcessingScreenShown', () => {
 })
 
 Cypress.Commands.add('verifyOperationShown', (operation: any) => {
-  cy.contains(operation.street)
+  cy.contains(operation.street, {timeout: 120000})
 })
 
 function ftp(command: string) {

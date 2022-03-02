@@ -17,13 +17,3 @@ fis:
     weatherPollInterval: 30000
     operationPollInterval: 2000
     highlight:
-
-logging:
-  pattern:
-    console:
-  file:
-    name: fis.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
-      max-history: 30

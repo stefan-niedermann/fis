@@ -13,5 +13,3 @@ fis:
     weatherPollInterval: 60000
     operationPollInterval: 500
     highlight: foo
-server:
-  port: 8080

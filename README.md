@@ -79,6 +79,18 @@ fis:
     # weatherPollInterval: 30000
     # operationPollInterval: 2000
     # highlight: 
+
+# Recommended log settings:
+
+# logging:
+#   pattern:
+#     console:
+#   file:
+#     name: fis.log
+#   logback:
+#     rollingpolicy:
+#       file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
+#       max-history: 30
 ```
 
 For more information about advanced configuration (e.g. passing arguments from the command line, …) see

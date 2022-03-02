@@ -152,7 +152,8 @@ jobs:
         with:
           start: java -jar frontend/fis.jar
           wait-on: 'http://localhost:8080'
-          spec: frontend/cypress/integration/prod.spec.ts
+          working-directory: frontend
+          spec: cypress/integration/prod.spec.ts
           config: baseUrl=http://localhost:8080
           browser: chrome
           headless: true

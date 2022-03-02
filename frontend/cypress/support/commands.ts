@@ -9,11 +9,12 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; rm -r ${Cypress.env('FTP_DIR')}/*; quit;" ${Cypress.env('FTP_HOST')}`)
+  ftp('ls')
+  // ftp(`rm -r ${Cypress.env('FTP_DIR')}/*`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose; quit;" ${Cypress.env('FTP_HOST')}`)
+  ftp(`mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {
@@ -27,3 +28,7 @@ Cypress.Commands.add('verifyProcessingScreenShown', () => {
 Cypress.Commands.add('verifyOperationShown', (operation: any) => {
   cy.contains(operation.street)
 })
+
+function ftp(command: string) {
+  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`)
+}

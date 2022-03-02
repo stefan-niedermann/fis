@@ -118,7 +118,7 @@ jobs:
 
   e2e-prod:
     name: Production End to End tests
-    needs: jar
+#    needs: jar
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

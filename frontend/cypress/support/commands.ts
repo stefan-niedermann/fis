@@ -9,21 +9,21 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ftp('ls -all').then((result) => {
-    console.log(result.code)
-    console.log(result.stdout)
-    console.log(result.stderr)
-  })
+  // ftp('ls -all').then((result) => {
+  //   console.log(result.code)
+  //   console.log(result.stdout)
+  //   console.log(result.stderr)
+  // })
   // ftp(`rm -r ${Cypress.env('FTP_DIR')}/*`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  cy.exec('ls -all').then((result) => {
-    console.log(result.code)
-    console.log(result.stdout)
-    console.log(result.stderr)
-  })
-  // ftp(`mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
+  // cy.exec('ls -all').then((result) => {
+  //   console.log(result.code)
+  //   console.log(result.stdout)
+  //   console.log(result.stderr)
+  // })
+  ftp(`mirror --reverse cypress/assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {

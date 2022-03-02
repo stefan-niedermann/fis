@@ -144,6 +144,7 @@ jobs:
         run: |
           wget -O fis.jar https://www.niedermann.it/fis-2.1.2.jar || true
           cp cypress/assets/application.yml .
+          ls -all
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:

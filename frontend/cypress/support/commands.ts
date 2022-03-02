@@ -13,7 +13,7 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ftp(`mrm ${Cypress.env('FTP_DIR')}/*.pdf`)
+  ['thl', 'invalid', 'brand'].forEach(type => ftp(`rm ${Cypress.env('FTP_DIR')}/${type}.pdf`, false))
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
@@ -32,6 +32,6 @@ Cypress.Commands.add('verifyOperationShown', (keyword: string) => {
   cy.contains(keyword, {timeout: 120_000})
 })
 
-function ftp(command: string) {
-  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`)
+function ftp(command: string, failOnNonZeroExit = true) {
+  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`, {failOnNonZeroExit})
 }

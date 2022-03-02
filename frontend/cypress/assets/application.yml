@@ -2,8 +2,8 @@ fis:
   ftp:
     host: localhost
     path: ./
-    username: ftp
-    password: ftp
+    username: testuser
+    password: testuser
     pollInterval: 1000
   weather:
     key: a012345678901234567890123456789b

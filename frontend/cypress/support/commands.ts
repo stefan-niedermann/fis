@@ -9,7 +9,7 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; rm -r ./; quit;" ${Cypress.env('FTP_HOST')}`)
+  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; rm -r *; quit;" ${Cypress.env('FTP_HOST')}`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {

@@ -35,11 +35,11 @@ Cypress.Commands.add('verifyClockShown', () => {
 })
 
 Cypress.Commands.add('verifyProcessingScreenShown', () => {
-  cy.contains('wird verarbeitet')
+  cy.contains('wird verarbeitet', {timeout: 20_000})
 })
 
 Cypress.Commands.add('verifyOperationShown', (operation: any) => {
-  cy.contains(operation.street, {timeout: 120000})
+  cy.contains(operation.street, {timeout: 120_000})
 })
 
 function ftp(command: string) {

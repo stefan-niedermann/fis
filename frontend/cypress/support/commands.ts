@@ -13,7 +13,7 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ftp(`glob rm ${Cypress.env('FTP_DIR')}/*.pdf`)
+  ftp(`mrm ${Cypress.env('FTP_DIR')}/*.pdf`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {

@@ -8,12 +8,12 @@ declare namespace Cypress {
 
     verifyProcessingScreenShown(): Chainable<null>;
 
-    verifyOperationShown(operation: any): Chainable<null>;
+    verifyOperationShown(operation: string): Chainable<null>;
   }
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ftp(`mrm ${Cypress.env('FTP_DIR')}/*`)
+  ftp(`glob rm ${Cypress.env('FTP_DIR')}/*.pdf`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
@@ -28,8 +28,8 @@ Cypress.Commands.add('verifyProcessingScreenShown', () => {
   cy.contains('wird verarbeitet', {timeout: 20_000})
 })
 
-Cypress.Commands.add('verifyOperationShown', (operation: any) => {
-  cy.contains(operation.street, {timeout: 120_000})
+Cypress.Commands.add('verifyOperationShown', (keyword: string) => {
+  cy.contains(keyword, {timeout: 120_000})
 })
 
 function ftp(command: string) {

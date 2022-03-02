@@ -10,24 +10,24 @@ describe('JarFIS main screen (mocked backend)', () => {
 
   it('Visits the initial project page', () => {
     cy.visit('/')
-    verifyInfo()
+    cy.verifyClockShown()
   })
 
   it('Should fetch and display running operations on startup', () => {
     cy.intercept('/api/operation', sampleOperation)
     cy.visit('/')
-    verifyOperation()
+    cy.verifyOperationShown(sampleOperation)
   })
 
   xit('Gets an operation pushed', () => {
     cy.visit('/')
-    verifyInfo()
+    cy.verifyClockShown()
     cy.wait(500)
     cy.intercept('/api/operation', sampleOperation)
     cy.wait(500)
-    verifyOperation()
+    cy.verifyOperationShown(sampleOperation)
     cy.wait(500)
-    verifyInfo()
+    cy.verifyClockShown()
   })
 
   const sampleWeather = {
@@ -61,14 +61,6 @@ describe('JarFIS main screen (mocked backend)', () => {
       "Mustergemeinde 14/5"
     ],
     "note": "Container qualmt leicht - vmtl. heiße Asche (sichtbar)\nim Gelände ehem. Brennerei"
-  }
-
-  const verifyInfo = () => {
-    cy.contains('Uhr')
-  }
-
-  const verifyOperation = () => {
-    cy.contains(sampleOperation.street)
   }
 
 })

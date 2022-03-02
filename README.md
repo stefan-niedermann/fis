@@ -79,18 +79,6 @@ fis:
     # weatherPollInterval: 30000
     # operationPollInterval: 2000
     # highlight: 
-
-# Recommended log settings:
-
-# logging:
-#   pattern:
-#     console:
-#   file:
-#     name: fis.log
-#   logback:
-#     rollingpolicy:
-#       file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
-#       max-history: 30
 ```
 
 For more information about advanced configuration (e.g. passing arguments from the command line, …) see
@@ -133,6 +121,20 @@ chmod +x fis.jar
 Call `sudo systemctl daemon-reload` to make `systemd` aware of the new service and `systemctl enable fis.service` to run JarFIS automatically when booting your server.
 
 See the Spring Boot documentation to learn how to configure JarFIS as [`init.d`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.nix-services.init-d) service or on [`Windows`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.windows-services). 
+
+It is highly recommended providing a proper logging strategy in your `application.yml` by appending:
+
+```yml
+logging:
+  pattern:
+    console:
+  file:
+    name: fis.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
+      max-history: 30
+```
 
 ## Maintainer
 

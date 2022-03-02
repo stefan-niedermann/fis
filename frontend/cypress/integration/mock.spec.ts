@@ -16,7 +16,7 @@ describe('JarFIS main screen (mocked backend)', () => {
   it('Should fetch and display running operations on startup', () => {
     cy.intercept('/api/operation', sampleOperation)
     cy.visit('/')
-    cy.verifyOperationShown(sampleOperation)
+    cy.verifyOperationShown(sampleOperation.keyword)
   })
 
   xit('Gets an operation pushed', () => {
@@ -25,7 +25,7 @@ describe('JarFIS main screen (mocked backend)', () => {
     cy.wait(500)
     cy.intercept('/api/operation', sampleOperation)
     cy.wait(500)
-    cy.verifyOperationShown(sampleOperation)
+    cy.verifyOperationShown(sampleOperation.keyword)
     cy.wait(500)
     cy.verifyClockShown()
   })

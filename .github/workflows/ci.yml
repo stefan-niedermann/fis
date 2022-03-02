@@ -144,14 +144,12 @@ jobs:
         with:
           distribution: 'zulu'
           java-version: 17
-      - name: Run JarFIS
+      - name: Run JarFIS and execute frontend End to End tests
+        working-directory: frontend
         run: |
           cp frontend/cypress/assets/application.yml .
           java -jar *.jar &
           sleep 5
-      - name: Run frontend End to End tests
-        working-directory: frontend
-        run: |
           sudo apt install lftp
           npm run e2e:prod
       - name: Upload videos

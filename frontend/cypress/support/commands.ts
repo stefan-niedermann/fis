@@ -8,9 +8,9 @@ declare namespace Cypress {
   }
 }
 
-const ftp_host = process.env.FTP_HOST
-const ftp_user = process.env.FTP_USER
-const ftp_pass = process.env.FTP_PASS
+const ftp_host = Cypress.env('FTP_HOST')
+const ftp_user = Cypress.env('FTP_USER')
+const ftp_pass = Cypress.env('FTP_PASS')
 
 Cypress.Commands.add('clearFtpServer', () => {
   cy.exec(`lftp -u ${ftp_user},${ftp_pass} -e "set ssl:verify-certificate no; rm -r ./; quit;" ${ftp_host}`)

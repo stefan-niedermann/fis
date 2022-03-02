@@ -127,7 +127,7 @@ jobs:
         working-directory: frontend
         run: npm ci
       - name: Unstash JarFIS
-        run: wget fis.jar https://www.niedermann.it/fis-2.1.2.jar
+        run: wget fis.jar https://www.niedermann.it/fis-2.1.2.jar || true
 #        uses: actions/download-artifact@v2
 #        with:
 #          name: jar

@@ -8,16 +8,12 @@ declare namespace Cypress {
   }
 }
 
-const ftp_host = Cypress.env('FTP_HOST')
-const ftp_user = Cypress.env('FTP_USER')
-const ftp_pass = Cypress.env('FTP_PASS')
-
 Cypress.Commands.add('clearFtpServer', () => {
-  cy.exec(`lftp -u ${ftp_user},${ftp_pass} -e "set ssl:verify-certificate no; rm -r ./; quit;" ${ftp_host}`)
+  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; rm -r ./; quit;" ${Cypress.env('FTP_HOST')}`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  cy.exec(`lftp -u ${ftp_user},${ftp_pass} -e "set ssl:verify-certificate no; mirror --reverse ../assets/${type}.pdf ./ --verbose; quit;" ${ftp_host}`)
+  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; mirror --reverse ../assets/${type}.pdf ./ --verbose; quit;" ${Cypress.env('FTP_HOST')}`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {

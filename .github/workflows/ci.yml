@@ -134,7 +134,7 @@ jobs:
           sudo useradd -m testuser
           echo 'testuser:testuser' | sudo chpasswd
           sudo sed -i 's/#write_enable/write_enable/g' /etc/vsftpd.conf
-          sudo systemctl start vsftpd
+          sudo systemctl restart vsftpd
           sleep 3
       - name: Unstash JarFIS
         working-directory: frontend

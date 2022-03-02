@@ -164,6 +164,7 @@ jobs:
           FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
           FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
           FIS_CLIENT_HIGHLIGHT: Foo
+          LOGGING_LEVEL_IT_NIEDERMANN: TRACE
           CYPRESS_FTP_HOST: localhost
           CYPRESS_FTP_DIR: /home/testuser
           CYPRESS_FTP_USER: testuser

@@ -1,0 +1,15 @@
+fis:
+  ftp:
+    host: localhost
+    path: ./
+    username: ftp
+    password: ftp
+    pollInterval: 500
+  weather:
+    key:
+  operation:
+    duration: 5000
+  client:
+    weatherPollInterval: 60000
+    operationPollInterval: 500
+    highlight: foo

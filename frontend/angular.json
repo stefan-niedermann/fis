@@ -113,11 +113,14 @@
           "options": {
             "devServerTarget": "frontend:serve",
             "watch": true,
-            "headless": false
+            "headless": false,
+            "spec": "cypress/integration/mock.spec.ts"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "frontend:serve:production"
+              "devServerTarget": "",
+              "spec": "cypress/integration/prod.spec.ts",
+              "baseUrl": "http://localhost:8080"
             }
           }
         },

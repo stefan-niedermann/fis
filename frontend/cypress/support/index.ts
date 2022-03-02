@@ -15,3 +15,11 @@
 
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 // import './commands';
+/// <reference types="cypress" />
+
+declare namespace Cypress {
+  interface Chainable<Subject = any> {
+    clearFtpServer(): Chainable<null>;
+    sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
+  }
+}

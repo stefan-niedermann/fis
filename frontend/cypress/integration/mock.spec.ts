@@ -1,4 +1,4 @@
-describe('JarFIS main screen', () => {
+describe('JarFIS main screen (mocked backend)', () => {
 
   beforeEach(() => {
     cy.intercept('/api/operation', '')

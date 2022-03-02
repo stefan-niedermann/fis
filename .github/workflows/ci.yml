@@ -141,10 +141,7 @@ jobs:
 #        with:
 #          name: jar
 #          path: ./
-        run: |
-          wget -O fis.jar https://www.niedermann.it/gh.jar || true
-          cp cypress/assets/application.yml .
-          ls -all
+        run: wget -O fis.jar https://www.niedermann.it/gh.jar || true
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -155,16 +152,20 @@ jobs:
           config: baseUrl=http://localhost:8080
           browser: chrome
           headless: true
-#      - name: Run JarFIS and execute frontend End to End tests
-#        run: |
-#          cp frontend/cypress/assets/application.yml .
-#          java -jar fis.jar &
-#          sleep 5
-#          cat fis.log
-#          wget -O - http://localhost:8080
-#          sudo apt-get install lftp
-#          cd frontend
-#          npm run e2e:prod
+        env:
+          FIS_FTP_HOST: localhost
+          FIS_FTP_USERNAME: testuser
+          FIS_FTP_PASSWORD: testuser
+          FIS_FTP_PATH: ./
+          FIS_FTP_POLL_INTERVAL: 1000
+          FIS_WEATHER_KEY: a012345678901234567890123456789b
+          FIS_OPERATION_DURATION: 5000
+          FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
+          FIS_CLIENT_OPERATION_POLL_INTERVAL: 60000
+          FIS_CLIENT_HIGHLIGHT: Foo
+          CYPRESS_FTP_HOST: locahost
+          CYPRESS_FTP_USER: testuser
+          CYPRESS_FTP_PASS: testuser
       - name: Upload videos
         uses: actions/upload-artifact@v2
         with:

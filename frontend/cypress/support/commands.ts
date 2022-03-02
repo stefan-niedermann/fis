@@ -9,12 +9,13 @@ declare namespace Cypress {
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ftp('ls')
+  ftp('ls -all')
   // ftp(`rm -r ${Cypress.env('FTP_DIR')}/*`)
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  ftp(`mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
+  cy.exec('ls -all')
+  // ftp(`mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {

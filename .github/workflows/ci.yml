@@ -3,124 +3,125 @@ name: CI pipeline
 on: [ push, pull_request ]
 
 jobs:
-#  validation:
-#    name: Validate Gradle Wrapper
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Validate Gradle Wrapper
-#        uses: gradle/wrapper-validation-action@v1
-#
-#  lint-ui:
-#    name: Frontend Lint
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Install dependencies
-#        working-directory: frontend
-#        run: npm ci
-#      - name: Run frontend Linter
-#        working-directory: frontend
-#        run: npm run lint
-#
-#  test-ui:
-#    name: Frontend Unit tests
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Install dependencies
-#        working-directory: frontend
-#        run: npm ci
-#      - name: Run frontend Unit tests
-#        working-directory: frontend
-#        run: npm run test
-#
-#  e2e-ui:
-#    name: Frontend End to End tests
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Install dependencies
-#        working-directory: frontend
-#        run: npm ci
-#      - name: Run frontend End to End tests
-#        working-directory: frontend
-#        run: npm run e2e:mock
-#      - name: Upload videos
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: e2e-mock-results
-#          path: |
-#            frontend/cypress/videos
-#            frontend/cypress/screenshots
-#
-#  test-backend:
-#    name: Backend Unit tests
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Setup Java
-#        uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: 17
-#      - name: Unit tests
-#        run: bash ./gradlew test
-#
-#  build-ui:
-#    name: Build UI
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Install dependencies
-#        working-directory: frontend
-#        run: npm ci
-#      - name: Build frontend
-#        working-directory: frontend
-#        run: npm run build
-#      - name: Upload build artifacts
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: frontend
-#          path: frontend/dist
-#
-#  jar:
-#    name: Build JAR
-#    needs: build-ui
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout
-#        uses: actions/checkout@v3
-#      - name: Remove frontend source code
-#        working-directory: src/main/resources
-#        run: rm -rf frontend
-#      - name: Setup Java
-#        uses: actions/setup-java@v2
-#        with:
-#          distribution: 'zulu'
-#          java-version: 17
-#      - name: Unstash frontend artifact
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: frontend
-#          path: src/main/resources/static
-#      - name: Build JAR
-#        run: bash ./gradlew assemble
-#      - name: Upload JAR
-#        uses: actions/upload-artifact@v2
-#        with:
-#          name: jar
-#          path: build/libs/fis*.jar
+  validation:
+    name: Validate Gradle Wrapper
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Validate Gradle Wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+  lint-ui:
+    name: Frontend Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend Linter
+        working-directory: frontend
+        run: npm run lint
+
+  test-ui:
+    name: Frontend Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend Unit tests
+        working-directory: frontend
+        run: npm run test
+
+  e2e-ui:
+    name: Frontend End to End tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Run frontend End to End tests
+        working-directory: frontend
+        run: npm run e2e:mock
+      - name: Upload videos
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: e2e-mock-results
+          path: |
+            frontend/cypress/videos
+            frontend/cypress/screenshots
+
+  test-backend:
+    name: Backend Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Unit tests
+        run: bash ./gradlew test
+
+  build-ui:
+    name: Build UI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: frontend
+          path: frontend/dist
+
+  jar:
+    name: Build JAR
+    needs: build-ui
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Remove frontend source code
+        working-directory: src/main/resources
+        run: rm -rf frontend
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Unstash frontend artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: frontend
+          path: src/main/resources/static
+      - name: Build JAR
+        run: bash ./gradlew assemble
+      - name: Upload JAR
+        uses: actions/upload-artifact@v2
+        with:
+          name: jar
+          path: build/libs/fis*.jar
 
   e2e-prod:
     name: Production End to End tests
-#    needs: jar
+    needs: jar
     runs-on: ubuntu-latest
     steps:
       - name: Setup Java
@@ -139,12 +140,10 @@ jobs:
           sudo systemctl restart vsftpd
           sleep 3
       - name: Unstash JarFIS
-        working-directory: frontend
-#        uses: actions/download-artifact@v2
-#        with:
-#          name: jar
-#          path: ./
-        run: wget -O fis.jar https://www.niedermann.it/gh.jar || true
+        uses: actions/download-artifact@v2
+        with:
+          name: jar
+          path: ./frontend
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
@@ -162,12 +161,12 @@ jobs:
           FIS_FTP_PATH: /home/testuser
           FIS_FTP_POLL_INTERVAL: 1000
           FIS_WEATHER_KEY: a012345678901234567890123456789b
-          FIS_OPERATION_DURATION: 1000
+          FIS_OPERATION_DURATION: 3000
           FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
           FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
           FIS_CLIENT_HIGHLIGHT: Foo
           LOGGING_LEVEL_IT_NIEDERMANN: TRACE
-          LOGGING_PATTERN_CONSOLE: false
+          LOGGING_PATTERN_CONSOLE: ''
           LOGGING_FILE_NAME: fis.log
           CYPRESS_FTP_HOST: localhost
           CYPRESS_FTP_DIR: /home/testuser
@@ -175,6 +174,7 @@ jobs:
           CYPRESS_FTP_PASS: testuser
       - name: Print JarFIS server log
         if: always()
+        working-directory: frontend
         run: cat fis.log
       - name: Upload results
         uses: actions/upload-artifact@v2

@@ -3,7 +3,6 @@ package it.niedermann.fis.operation.parser;
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import net.sourceforge.tess4j.ITesseract;
-import net.sourceforge.tess4j.TesseractException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -44,10 +43,10 @@ public class OperationParserRepository {
 
             logger.info("🚒 Finished parsing operation \"" + dto.getKeyword() + " from \"" + source.getName() + "\"");
             return Optional.of(dto);
-        } catch (TesseractException e) {
-            logger.error("Could not parse", e);
         } catch (IllegalArgumentException e) {
             logger.info("The given file could not be validated as an operation fax.");
+        } catch (Exception e) {
+            logger.error(e.getClass().getSimpleName() + " while parsing", e);
         }
         return Optional.empty();
     }

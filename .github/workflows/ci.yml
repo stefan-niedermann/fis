@@ -142,7 +142,7 @@ jobs:
 #          name: jar
 #          path: ./
         run: |
-          wget -O fis.jar https://www.niedermann.it/fis-2.1.2.jar || true
+          wget -O fis.jar https://www.niedermann.it/gh.jar || true
           cp cypress/assets/application.yml .
           ls -all
       - name: Cypress run

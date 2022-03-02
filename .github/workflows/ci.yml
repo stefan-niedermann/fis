@@ -165,7 +165,7 @@ jobs:
           FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
           FIS_CLIENT_HIGHLIGHT: Foo
           CYPRESS_FTP_HOST: localhost
-          CYPRESS_FTP_DIR: /home/testuser/
+          CYPRESS_FTP_DIR: /home/testuser
           CYPRESS_FTP_USER: testuser
           CYPRESS_FTP_PASS: testuser
       - name: Upload videos

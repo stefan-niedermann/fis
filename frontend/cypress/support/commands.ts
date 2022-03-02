@@ -13,7 +13,7 @@ Cypress.Commands.add('clearFtpServer', () => {
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; mirror --reverse ../assets/${type}.pdf ./ --verbose; quit;" ${Cypress.env('FTP_HOST')}`)
+  cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; mirror --reverse ../assets/${type}.pdf ${Cypress.env('FTP_DIR')} --verbose; quit;" ${Cypress.env('FTP_HOST')}`)
 })
 
 Cypress.Commands.add('verifyClockShown', () => {

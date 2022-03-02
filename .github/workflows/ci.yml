@@ -135,6 +135,8 @@ jobs:
           echo 'testuser:testuser' | sudo chpasswd
           sudo systemctl start vsftpd
           sleep 3
+          cat /etc/vsftpd.conf
+          sudo sed -i 's/#write_enable/write_enable/g' /etc/vsftpd.conf
       - name: Unstash JarFIS
         working-directory: frontend
 #        uses: actions/download-artifact@v2

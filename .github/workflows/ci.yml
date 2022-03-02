@@ -127,7 +127,9 @@ jobs:
         working-directory: frontend
         run: npm ci
       - name: Unstash JarFIS
-        run: wget fis.jar https://www.niedermann.it/fis-2.1.2.jar || true
+        run: |
+          wget fis.jar https://www.niedermann.it/fis-2.1.2.jar || true
+          ls -all
 #        uses: actions/download-artifact@v2
 #        with:
 #          name: jar
@@ -146,7 +148,9 @@ jobs:
           java-version: 17
       - name: Run JarFIS and execute frontend End to End tests
         run: |
+          ls -all
           cp frontend/cypress/assets/application.yml .
+          ls -all
           java -jar fis.jar &
           sleep 5
           sudo apt install lftp

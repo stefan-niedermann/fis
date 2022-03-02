@@ -53,8 +53,10 @@ jobs:
 #      - name: Upload videos
 #        uses: actions/upload-artifact@v2
 #        with:
-#          name: e2e-mock-videos
-#          path: frontend/cypress/videos
+#          name: e2e-mock-results
+#          path: |
+#            frontend/cypress/videos
+#            frontend/cypress/screenshots
 #
 #  test-backend:
 #    name: Backend Unit tests
@@ -165,12 +167,21 @@ jobs:
           FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
           FIS_CLIENT_HIGHLIGHT: Foo
           LOGGING_LEVEL_IT_NIEDERMANN: TRACE
+          LOGGING_PATTERN_CONSOLE: false
+          LOGGING_FILE_NAME: fis.log
           CYPRESS_FTP_HOST: localhost
           CYPRESS_FTP_DIR: /home/testuser
           CYPRESS_FTP_USER: testuser
           CYPRESS_FTP_PASS: testuser
-      - name: Upload videos
+      - name: Print JarFIS server log
+        if: always()
+        run: cat fis.log
+      - name: Upload results
         uses: actions/upload-artifact@v2
+        if: always()
         with:
-          name: e2e-prod-videos
-          path: frontend/cypress/videos
+          name: e2e-prod-results
+          path: |
+            frontend/cypress/videos
+            frontend/cypress/screenshots
+            frontend/fis.log

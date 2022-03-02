@@ -161,11 +161,11 @@ jobs:
           FIS_WEATHER_KEY: a012345678901234567890123456789b
           FIS_OPERATION_DURATION: 5000
           FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
-          FIS_CLIENT_OPERATION_POLL_INTERVAL: 60000
+          FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
           FIS_CLIENT_HIGHLIGHT: Foo
-          CYPRESS_FTP_HOST: locahost
-          CYPRESS_FTP_USER: testuser
-          CYPRESS_FTP_PASS: testuser
+          FTP_HOST: locahost
+          FTP_USER: testuser
+          FTP_PASS: testuser
       - name: Upload videos
         uses: actions/upload-artifact@v2
         with:

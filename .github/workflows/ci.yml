@@ -150,10 +150,12 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: java -jar fis.jar
+          start: java -jar frontend/fis.jar
           wait-on: 'http://localhost:8080'
-          spec: cypress/integration/prod.spec.ts
+          spec: frontend/cypress/integration/prod.spec.ts
           config: baseUrl=http://localhost:8080
+          browser: chrome
+          headless: true
 #      - name: Run JarFIS and execute frontend End to End tests
 #        run: |
 #          cp frontend/cypress/assets/application.yml .

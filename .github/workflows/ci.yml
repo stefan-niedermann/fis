@@ -136,7 +136,7 @@ jobs:
         run: |
           sudo apt install vsftpd tesseract-ocr
           sudo useradd -m testuser
-          sudo echo 'testuser' | passwd testuser --stdin
+          echo 'testuser:testuser' | sudo chpasswd
           sudo systemctl start vsftpd
           sleep 5
       - name: Setup Java

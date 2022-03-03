@@ -144,6 +144,7 @@ jobs:
         with:
           name: jar
           path: frontend
+      - name: Prepare fis.jar
         run: |
           ls -all
           chmod +x fis.jar

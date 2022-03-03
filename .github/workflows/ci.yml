@@ -147,7 +147,7 @@ jobs:
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: java -jar $(find *.jar)
+          start: java -jar $(find "*.jar")
           wait-on: 'http://localhost:8080'
           working-directory: frontend
           spec: cypress/integration/prod.spec.ts

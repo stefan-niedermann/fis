@@ -154,7 +154,7 @@ jobs:
         with:
           start: |
             ls -all
-            java -jar fis*.jar
+            java -jar *fis*.jar*
           wait-on: 'http://localhost:8080'
           working-directory: frontend
           spec: cypress/integration/prod.spec.ts
@@ -182,7 +182,7 @@ jobs:
       - name: Print JarFIS server log
         if: always()
         working-directory: frontend
-        run: cat fis.log
+        run: touch fis.log && cat fis.log
       - name: Upload results
         uses: actions/upload-artifact@v2
         if: always()

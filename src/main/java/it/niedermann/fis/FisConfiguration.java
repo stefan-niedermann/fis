@@ -85,7 +85,6 @@ public class FisConfiguration {
 
     public static class WeatherConfiguration {
         @Length(min = 32, max = 32)
-        @NotBlank
         private String key;
         @Length(min = 2, max = 2)
         @NotBlank

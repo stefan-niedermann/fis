@@ -12,12 +12,12 @@ import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 class OperationTesseractFactory {
 
     public Tesseract createTesseract(FisConfiguration config) {
-        if (ObjectUtils.isEmpty(config.getTesseract().getTessdata())) {
-            config.getTesseract().setTessdata(extractTessResources("tessdata").getAbsolutePath());
-        }
+        final var tessdata = ObjectUtils.isEmpty(config.getTesseract().getTessdata())
+                ? extractTessResources("tessdata").getAbsolutePath()
+                : config.getTesseract().getTessdata();
         final var tesseract = new Tesseract();
         tesseract.setVariable("LC_ALL", "C");
-        tesseract.setDatapath(config.getTesseract().getTessdata());
+        tesseract.setDatapath(tessdata);
         tesseract.setLanguage(config.getTesseract().getLang());
         return tesseract;
     }

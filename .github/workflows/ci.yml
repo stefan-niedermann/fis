@@ -144,17 +144,14 @@ jobs:
         with:
           name: jar
           path: frontend
-      - name: List directory
         run: |
           ls -all
-          cd frontend
+          chmod +x fis.jar
           ls -all
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: |
-            ls -all
-            java -jar *fis*.jar*
+          start: java -jar *fis*.jar*
           wait-on: 'http://localhost:8080'
           working-directory: frontend
           spec: cypress/integration/prod.spec.ts
@@ -181,7 +178,9 @@ jobs:
       - name: Print JarFIS server log
         if: always()
         working-directory: frontend
-        run: touch fis.log && cat fis.log
+        run: |
+          touch fis.log
+          cat fis.log
       - name: Upload results
         uses: actions/upload-artifact@v2
         if: always()

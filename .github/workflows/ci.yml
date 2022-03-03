@@ -144,6 +144,11 @@ jobs:
         with:
           name: jar
           path: frontend
+      - name: List directory
+        run: |
+          ls -all
+          cd frontend
+          ls -all
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:

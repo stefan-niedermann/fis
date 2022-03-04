@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 @Service
 public class OperationRemoteRepository {
@@ -75,21 +76,25 @@ public class OperationRemoteRepository {
             long lastSize;
             long newSize = ftpFile.getSize();
             do {
-                if (attempt > config.ftp().checkUploadCompleteMaxAttempts()) {
-                    throw new InterruptedException("Exceeded " + config.ftp().checkUploadCompleteMaxAttempts() + "attempts");
+                if (attempt >= config.ftp().checkUploadCompleteMaxAttempts()) {
+                    throw new InterruptedException("Exceeded " + config.ftp().checkUploadCompleteMaxAttempts() + " attempts");
                 }
                 attempt++;
                 Thread.sleep(config.ftp().checkUploadCompleteInterval());
                 lastSize = newSize;
-                final var polledFile = Arrays.stream(ftpClient.listFiles(config.ftp().path(), fetchedFtpFile -> Objects.equals(fetchedFtpFile.getName(), ftpFile.getName()))).findFirst();
-                if (polledFile.isPresent()) {
-                    logger.trace("→ [" + attempt + " / " + config.ftp().checkUploadCompleteMaxAttempts() + "] Last file size: " + lastSize + ", New file size: " + polledFile.get().getSize());
-                    newSize = polledFile.get().getSize();
+                final var polledFileOptional = Arrays.stream(ftpClient.listFiles(config.ftp().path(), fetchedFtpFile -> Objects.equals(fetchedFtpFile.getName(), ftpFile.getName()))).findFirst();
+                if (polledFileOptional.isPresent()) {
+                    final var polledFile = polledFileOptional.get();
+                    if (polledFile.getSize() == lastSize) {
+                        break;
+                    }
+                    logger.debug("→ [" + attempt + " / " + config.ftp().checkUploadCompleteMaxAttempts() + "] File size changed: " + byteCountToDisplaySize(lastSize) + " → " + byteCountToDisplaySize(polledFile.getSize()));
+                    newSize = polledFile.getSize();
                 } else {
                     return empty();
                 }
             } while (newSize > lastSize);
-            logger.debug("File size didn't change anymore.");
+            logger.debug("→ Upload complete, total file size: " + byteCountToDisplaySize(lastSize));
             return Optional.of(ftpFile);
         } catch (IOException | InterruptedException e) {
             logger.error(e.getMessage(), e);

@@ -176,6 +176,17 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
+    public void uploadAlreadyCompletedTotalSizeZero() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 0)}
+        );
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(0);
+        assertTrue(repository.waitForUploadCompletion(file).isPresent());
+    }
+
+    @Test
     public void uploadInProgress() throws IOException {
         when(ftpClient.listFiles(any(), any())).thenReturn(
                 new FTPFile[]{createFTPFile("Foo.pdf", now(), 333)},
@@ -189,11 +200,24 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
-    public void waitForUploadCompletionShouldStopAfterSomeAttempts() throws IOException {
+    public void uploadInProgressStartingWithZero() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 333)},
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 444)},
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 555)}
+        );
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(0);
+        assertTrue(repository.waitForUploadCompletion(file).isPresent());
+    }
+
+    @Test
+    public void waitForUploadCompletionShouldStopAfterConfiguredAttempts() throws IOException {
         when(ftpClient.listFiles(any(), any())).thenReturn(
                 new FTPFile[]{createFTPFile("Foo.pdf", now(), 20)},
                 IntStream
-                        .rangeClosed(3, 15)
+                        .rangeClosed(3, 15) // Bigger than the configured count of attempts
                         .boxed()
                         .map(val -> val * 10)
                         .map(size -> new FTPFile[]{createFTPFile("Foo.pdf", now(), size)})
@@ -204,8 +228,6 @@ public class OperationRemoteRepositoryTest {
         file.setSize(10);
         assertTrue(repository.waitForUploadCompletion(file).isEmpty());
     }
-
-    // TODO Test file size 0 at beginning
 
     @Test
     public void waitForUploadCompletionShouldGracefullyHandleErrors() throws IOException {

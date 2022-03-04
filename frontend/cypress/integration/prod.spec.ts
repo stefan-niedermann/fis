@@ -39,34 +39,34 @@ describe('JarFIS main screen (production backend)', () => {
       cy.verifyProcessingScreenShown()
       cy.verifyOperationShown('thl')
     })
+
+    xit('should not display invalid faxes', () => {
+      cy.sendFaxToFtpServer('invalid')
+      cy.verifyClockPresent()
+      cy.verifyProcessingScreenShown().should('not.exist')
+      cy.verifyOperationShown('thl').should('not.exist')
+      cy.verifyOperationShown('brand').should('not.exist')
+    })
   })
 
   describe('Integration', () => {
-    it('should display a second operation fax incoming after a first operation fax has been displayed', () => {
-      cy.sendFaxToFtpServer('thl')
-      cy.verifyProcessingScreenShown()
-      cy.verifyOperationShown('thl')
-
-      cy.verifyClockPresent()
-
+    it('Info → Processing → Operation (Brand) → Info → Processing → Operation (THL) → Info', () => {
       cy.sendFaxToFtpServer('brand')
       cy.verifyProcessingScreenShown()
       cy.verifyOperationShown('brand')
+
+      cy.verifyClockPresent()
+
+      cy.sendFaxToFtpServer('thl')
+      cy.verifyProcessingScreenShown()
+      cy.verifyOperationShown('thl')
     })
 
-    it('should display a second operation fax incoming immediately while first operation fax is being processed', () => {
+    it('Info → Processing → Send another fax → Processing → Operation (THL) → Info', () => {
       cy.sendFaxToFtpServer('brand')
       cy.verifyProcessingScreenShown()
       cy.sendFaxToFtpServer('thl')
       cy.verifyOperationShown('thl')
     })
-  })
-
-  xit('should not display invalid faxes', () => {
-    cy.sendFaxToFtpServer('invalid')
-    cy.verifyClockPresent()
-    cy.verifyProcessingScreenShown().should('not.exist')
-    cy.verifyOperationShown('thl').should('not.exist')
-    cy.verifyOperationShown('brand').should('not.exist')
   })
 })

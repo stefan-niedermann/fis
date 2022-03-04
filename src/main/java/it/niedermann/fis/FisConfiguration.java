@@ -93,7 +93,7 @@ public class FisConfiguration {
         private String units;
         @NotBlank
         private String location;
-        @Min(1_000)
+        @Min(100)
         private long pollInterval;
 
         public String getKey() {

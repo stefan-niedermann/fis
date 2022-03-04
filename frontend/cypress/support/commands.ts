@@ -4,25 +4,50 @@ declare namespace Cypress {
 
     sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
 
-    verifyClockShown(): Chainable<null>;
+    verifyInfoScreen(temperature?: number): Chainable<null>;
+
+    verifyClockPresent(): Chainable<null>;
 
     verifyWeatherPresent(temperature?: number): Chainable<null>;
 
     verifyProcessingScreenShown(): Chainable<null>;
 
-    verifyOperationShown(operation: string): Chainable<null>;
+    verifyOperationShown(type: 'thl' | 'brand'): Chainable<null>;
   }
 }
 
 Cypress.Commands.add('clearFtpServer', () => {
-  ['thl', 'invalid', 'brand'].forEach(type => ftp(`rm ${Cypress.env('FTP_DIR')}/${type}.pdf`, false))
+  if (Cypress.env('FTP_HOST')) {
+    ['thl', 'invalid', 'brand'].forEach(type => ftp(`rm ${Cypress.env('FTP_DIR')}/${type}.pdf`, false))
+  } else {
+    cy.intercept('/api/operation', {statusCode: 204})
+  }
 })
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
-  ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf`)
+  if (Cypress.env('FTP_HOST')) {
+    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf`)
+  } else {
+    switch (type) {
+      case 'brand':
+        cy.intercept('/api/operation', SAMPLE_OPERATION_BRAND)
+        break;
+      case 'thl':
+        cy.intercept('/api/operation', SAMPLE_OPERATION_THL)
+        break;
+      case 'invalid':
+        cy.intercept('/api/operation', {statusCode: 204})
+        break;
+    }
+  }
 })
 
-Cypress.Commands.add('verifyClockShown', () => {
+Cypress.Commands.add('verifyInfoScreen', (temperature?: number) => {
+  cy.verifyClockPresent()
+  cy.verifyWeatherPresent(temperature)
+})
+
+Cypress.Commands.add('verifyClockPresent', () => {
   cy.contains('Uhr')
 })
 
@@ -34,10 +59,57 @@ Cypress.Commands.add('verifyProcessingScreenShown', () => {
   cy.contains('wird verarbeitet', {timeout: 20_000})
 })
 
-Cypress.Commands.add('verifyOperationShown', (keyword: string) => {
-  cy.contains(keyword, {timeout: 120_000})
+Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {
+  switch (type) {
+    case 'brand':
+      cy.contains('B1', {timeout: 120_000})
+      break;
+    case 'thl':
+      cy.contains('THL', {timeout: 120_000})
+      break;
+  }
 })
 
 function ftp(command: string, failOnNonZeroExit = true) {
   return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`, {failOnNonZeroExit})
+}
+
+const SAMPLE_OPERATION_THL = {
+  "keyword": "THL UNWETTER",
+  "number": "",
+  "street": "Muster Straße",
+  "location": "99999 Musterdorf - Mustergemeinde",
+  "obj": "",
+  "tags": [
+    "T3523",
+    "Unwetter",
+    "Fahrzeug / sonstiger Gegenstand sichern"
+  ],
+  "vehicles": [
+    "FF Musterdorf",
+    "Musterdorf 48/1",
+    "Musterkreis Land 3/1"
+  ],
+  "note": "XY MARKE farbe\nA BC 123\nFahrzeug steht in der Musterbach // PPerson sitzt im Fahrzeug ist aber nicht in Gefahr"
+}
+
+const SAMPLE_OPERATION_BRAND = {
+  "keyword": "B 1",
+  "number": "",
+  "street": "Musterstraße",
+  "location": "99999 Musterdorf - Mustergemeinde",
+  "obj": "",
+  "tags": [
+    "B1014",
+    "im Freien",
+    "Abfall-, Müll-, Papiercontainer"
+  ],
+  "vehicles": [
+    "9.8.7 RH FF Musterwehr",
+    "Musterwehr 24/1",
+    "Musterkreis Land 7/8",
+    "Musterkreis Land 9/5",
+    "Mustergemeinde 14/5"
+  ],
+  "note": "Container qualmt leicht - vmtl. heiße Asche (sichtbar)\nim Gelände ehem. Brennerei"
 }

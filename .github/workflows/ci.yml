@@ -169,31 +169,17 @@ jobs:
           FIS_CLIENT_HIGHLIGHT: Foo
           LOGGING_LEVEL_IT_NIEDERMANN: TRACE
           LOGGING_PATTERN_CONSOLE: ''
-          LOGGING_FILE_NAME: fis.log
+          LOGGING_FILE_NAME: cypress/fis.log
           CYPRESS_FTP_HOST: localhost
           CYPRESS_FTP_DIR: /home/testuser
           CYPRESS_FTP_USER: testuser
           CYPRESS_FTP_PASS: testuser
-      - name: Print JarFIS server log
-        if: always()
-        working-directory: frontend
-        run: |
-          touch fis.log
-          cat fis.log
-      - name: Fetch FTP content
-        if: always()
-        working-directory: frontend
-        run: |
-          mkdir ftpcontent
-          cd ftpcontent
-          lftp -u testuser,testuser -e "set ssl:verify-certificate no; mirror -c; quit;" localhost
       - name: Upload results
         uses: actions/upload-artifact@v2
         if: always()
         with:
           name: e2e-prod-results
           path: |
-            frontend/ftpcontent
             frontend/cypress/videos
             frontend/cypress/screenshots
-            frontend/fis.log
+            frontend/cypress/fis.log

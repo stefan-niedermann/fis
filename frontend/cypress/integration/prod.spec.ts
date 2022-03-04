@@ -42,7 +42,7 @@ describe('JarFIS main screen (production backend)', () => {
     })
   })
 
-  xdescribe('Integration', () => {
+  describe('Integration', () => {
     it('should display a second operation fax incoming after a first operation fax has been displayed', () => {
       cy.sendFaxToFtpServer('thl')
       cy.verifyProcessingScreenShown()

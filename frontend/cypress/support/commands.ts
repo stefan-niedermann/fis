@@ -18,7 +18,7 @@ let faxNumber = 0;
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
   if (Cypress.env('FTP_HOST')) {
-    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}-${faxNumber++}.pdf`)
+    ftp(`put -o ${type}-${faxNumber}.pdf -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf`)
   } else {
     switch (type) {
       case 'brand':

@@ -18,7 +18,7 @@ let faxNumber = 0;
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
   if (Cypress.env('FTP_HOST')) {
-    ftp(`put -o ${type}-${faxNumber}.pdf -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf`)
+    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf -o ${type}-${++faxNumber}.pdf`)
   } else {
     switch (type) {
       case 'brand':
@@ -66,8 +66,8 @@ Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {
   }
 })
 
-function ftp(command: string, failOnNonZeroExit = true) {
-  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`, {failOnNonZeroExit})
+function ftp(command: string) {
+  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`)
 }
 
 const SAMPLE_OPERATION_THL = {

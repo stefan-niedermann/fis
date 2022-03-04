@@ -56,6 +56,7 @@ describe('JarFIS main screen (production backend)', () => {
       cy.verifyOperationShown('brand')
 
       cy.verifyClockPresent()
+      cy.wait(3_000)
 
       cy.sendFaxToFtpServer('thl')
       cy.verifyProcessingScreenShown()

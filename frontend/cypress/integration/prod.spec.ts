@@ -1,3 +1,14 @@
+/*
+ * Prerequisites:
+ * - JarFIS instance must be up and running
+ * - lftp needs to be installed
+ * - Following environment variables must be present:
+ *   - FTP_HOST
+ *   - FTP_DIR
+ *   - FTP_USER
+ *   - FTP_PASS
+ */
+
 describe('JarFIS main screen (production backend)', () => {
 
   describe('Given no file is present at the FTP server on startup', () => {

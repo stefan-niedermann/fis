@@ -93,7 +93,7 @@ public class FisConfiguration {
         private String units;
         @NotBlank
         private String location;
-        @Min(100)
+        @Min(1_000)
         private long pollInterval;
 
         public String getKey() {
@@ -147,7 +147,7 @@ public class FisConfiguration {
         private String path;
         @NotNull
         private String fileSuffix;
-        @Min(1_000)
+        @Min(100)
         private long pollInterval;
 
         public String getHost() {

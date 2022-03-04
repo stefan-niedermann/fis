@@ -27,14 +27,14 @@ public class WeatherApiImpl implements WeatherApi {
     public WeatherApiImpl(
             FisConfiguration config
     ) {
-        if (config.getWeather().getKey() == null) {
+        if (config.weather().key() == null) {
             weatherProvider = null;
             logger.info("Weather information is not available because no API key has been specified");
         } else {
-            weatherProvider = new OpenWeatherMapProvider(config.getWeather().getLang(),
-                    config.getWeather().getLocation(),
-                    config.getWeather().getUnits(),
-                    config.getWeather().getKey());
+            weatherProvider = new OpenWeatherMapProvider(config.weather().lang(),
+                    config.weather().location(),
+                    config.weather().units(),
+                    config.weather().key());
         }
     }
 

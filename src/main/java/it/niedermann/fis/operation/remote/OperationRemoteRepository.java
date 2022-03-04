@@ -39,9 +39,9 @@ public class OperationRemoteRepository {
     public Optional<FTPFile> poll() {
         logger.debug("Checking FTP server for incoming operations");
         try {
-            final var match = Arrays.stream(ftpClient.listFiles(config.getFtp().getPath()))
+            final var match = Arrays.stream(ftpClient.listFiles(config.ftp().path()))
                     .filter(FTPFile::isFile)
-                    .filter(file -> file.getName().endsWith(config.getFtp().getFileSuffix()))
+                    .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
                     .sorted(Comparator
                             .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                             .reversed())
@@ -59,7 +59,7 @@ public class OperationRemoteRepository {
             }
             match.ifPresentOrElse(
                     ftpFile -> logger.info("🚒 New incoming operation detected: " + ftpFile.getName()),
-                    () -> logger.debug("→ No new file with suffix \"" + config.getFtp().getFileSuffix() + "\" is present at the server.")
+                    () -> logger.debug("→ No new file with suffix \"" + config.ftp().fileSuffix() + "\" is present at the server.")
             );
             return match;
         } catch (IOException e) {
@@ -76,7 +76,7 @@ public class OperationRemoteRepository {
             logger.trace("→ Created temporary file: " + target.getName());
 
             try (final var outputStream = new BufferedOutputStream(new FileOutputStream(target))) {
-                if (ftpClient.retrieveFile(config.getFtp().getPath() + "/" + source.getName(), outputStream)) {
+                if (ftpClient.retrieveFile(config.ftp().path() + "/" + source.getName(), outputStream)) {
                     logger.debug("→ Download successful: " + target.getName());
                     return Optional.of(target);
                 } else {

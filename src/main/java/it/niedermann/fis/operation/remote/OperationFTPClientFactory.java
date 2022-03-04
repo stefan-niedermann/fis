@@ -15,11 +15,11 @@ class OperationFTPClientFactory {
 
     public FTPClient createFTPClient(FisConfiguration config) throws IOException {
         final var ftpClient = new FTPClient();
-        ftpClient.connect(config.getFtp().getHost());
-        if (!ftpClient.login(config.getFtp().getUsername(), config.getFtp().getPassword())) {
-            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.getFtp().getHost() + ". Please check FTP credentials.");
+        ftpClient.connect(config.ftp().host());
+        if (!ftpClient.login(config.ftp().username(), config.ftp().password())) {
+            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.ftp().host() + ". Please check FTP credentials.");
         }
-        logger.info("🚒 Connected to FTP server " + config.getFtp().getHost() + ", polling each " + config.getFtp().getPollInterval() / 1_000 + " seconds.");
+        logger.info("🚒 Connected to FTP server " + config.ftp().host() + ", polling each " + config.ftp().pollInterval() / 1_000 + " seconds.");
         return ftpClient;
     }
 }

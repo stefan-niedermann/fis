@@ -29,9 +29,9 @@ public class OperationApiImplTest {
     @BeforeEach
     public void setup() {
         config = mock(FisConfiguration.class);
-        when(config.getFtp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
-        when(config.getOperation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
-        when(config.getOperation().getDuration()).thenReturn(500L);
+        when(config.ftp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
+        when(config.operation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
+        when(config.operation().duration()).thenReturn(500L);
         operationRemoteRepository = mock(OperationRemoteRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
         this.api = new OperationApiImpl(
@@ -109,7 +109,7 @@ public class OperationApiImplTest {
         assertEquals("Should return an active operation when available", HttpStatus.OK, resp1.getStatusCode());
         assertNotNull("Should return an active operation when available", resp1.getBody());
 
-        Thread.sleep(config.getOperation().getDuration() + 500L);
+        Thread.sleep(config.operation().duration() + 500L);
 
         final var resp2 = api.getOperation("");
         assertEquals("Should return an active operation when available", HttpStatus.NO_CONTENT, resp2.getStatusCode());

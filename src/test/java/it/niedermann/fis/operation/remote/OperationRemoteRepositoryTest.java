@@ -26,9 +26,9 @@ public class OperationRemoteRepositoryTest {
     @BeforeEach
     public void setup() throws IOException {
         final var ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
-        when(ftpConfig.getFileSuffix()).thenReturn(".pdf");
+        when(ftpConfig.fileSuffix()).thenReturn(".pdf");
         final var config = mock(FisConfiguration.class);
-        when(config.getFtp()).thenReturn(ftpConfig);
+        when(config.ftp()).thenReturn(ftpConfig);
         ftpClient = mock(FTPClient.class);
         when(ftpClient.login(any(), any())).thenReturn(true);
         final var ftpClientFactory = mock(OperationFTPClientFactory.class);

@@ -6,7 +6,7 @@ declare namespace Cypress {
 
     verifyInfoScreen(temperature?: number): Chainable<null>;
 
-    verifyClockPresent(): Chainable<null>;
+    verifyClockPresent(timeout?: number): Chainable<null>;
 
     verifyWeatherPresent(temperature?: number): Chainable<null>;
 
@@ -47,8 +47,12 @@ Cypress.Commands.add('verifyInfoScreen', (temperature?: number) => {
   cy.verifyWeatherPresent(temperature)
 })
 
-Cypress.Commands.add('verifyClockPresent', () => {
-  cy.contains('Uhr')
+Cypress.Commands.add('verifyClockPresent', (timeout?: number) => {
+  if(timeout === undefined) {
+    cy.contains('Uhr')
+  } else {
+    cy.contains('Uhr', {timeout: 4_000})
+  }
 })
 
 Cypress.Commands.add('verifyWeatherPresent', (temperature?: number) => {

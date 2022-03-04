@@ -80,8 +80,8 @@ public class OperationApiImpl implements OperationApi {
 
         cancelCurrentOperation = new Thread(() -> {
             try {
-                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.getOperation().getDuration() / 1_000 + "s");
-                Thread.sleep(config.getOperation().getDuration());
+                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.operation().duration() / 1_000 + "s");
+                Thread.sleep(config.operation().duration());
                 if (Thread.currentThread().isInterrupted()) {
                     throw new InterruptedException();
                 }

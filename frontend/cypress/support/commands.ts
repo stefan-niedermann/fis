@@ -16,7 +16,7 @@ declare namespace Cypress {
 
 let faxNumber = 0;
 
-Cypress.Commands.add('sendFaxToFtpServer', (type) => {
+Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand') => {
   if (Cypress.env('FTP_HOST')) {
     ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf -o ${type}-${++faxNumber}.pdf`)
   } else {

@@ -58,7 +58,7 @@ Cypress.Commands.add('verifyProcessingScreenShown', () => {
 Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {
   switch (type) {
     case 'brand':
-      cy.contains('B1', {timeout: 120_000})
+      cy.contains('B3', {timeout: 120_000})
       break;
     case 'thl':
       cy.contains('THL', {timeout: 120_000})
@@ -90,7 +90,7 @@ const SAMPLE_OPERATION_THL = {
 }
 
 const SAMPLE_OPERATION_BRAND = {
-  "keyword": "B 1",
+  "keyword": "B 3",
   "number": "",
   "street": "Musterstraße",
   "location": "99999 Musterdorf - Mustergemeinde",

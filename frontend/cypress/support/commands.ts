@@ -6,6 +6,8 @@ declare namespace Cypress {
 
     verifyClockShown(): Chainable<null>;
 
+    verifyWeatherPresent(temperature?: number): Chainable<null>;
+
     verifyProcessingScreenShown(): Chainable<null>;
 
     verifyOperationShown(operation: string): Chainable<null>;
@@ -22,6 +24,10 @@ Cypress.Commands.add('sendFaxToFtpServer', (type) => {
 
 Cypress.Commands.add('verifyClockShown', () => {
   cy.contains('Uhr')
+})
+
+Cypress.Commands.add('verifyWeatherPresent', (temperature?: number) => {
+  cy.contains(temperature === undefined ? '°' : `${temperature}°`)
 })
 
 Cypress.Commands.add('verifyProcessingScreenShown', () => {

@@ -4,6 +4,7 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.OperationRemoteRepository;
+import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -87,6 +88,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldReturnAnActiveOperation_whenAvailable() {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -100,6 +102,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldResetActiveOperations_afterGivenTime() throws InterruptedException {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -125,6 +128,7 @@ public class OperationApiImplTest {
         when(operation2.getKeyword()).thenReturn("Bar");
 
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(operation1));
 

@@ -162,7 +162,7 @@ jobs:
           FIS_FTP_USERNAME: testuser
           FIS_FTP_PASSWORD: testuser
           FIS_FTP_PATH: /home/testuser
-          FIS_FTP_POLL_INTERVAL: 1000
+          FIS_FTP_POLL_INTERVAL: 100
           FIS_OPERATION_DURATION: 3000
           FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
           FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000

@@ -68,6 +68,36 @@ public class OperationRemoteRepository {
         }
     }
 
+    public Optional<FTPFile> waitForUploadCompletion(FTPFile ftpFile) {
+        logger.debug("Waiting for " + ftpFile.getName() + " being uploaded completely");
+        final var MAX_ATTEMPTS = 5;
+        try {
+            int attempt = 0;
+            long lastSize;
+            long newSize = ftpFile.getSize();
+            do {
+                if (attempt > MAX_ATTEMPTS) {
+                    throw new InterruptedException("Exceeded " + MAX_ATTEMPTS + "attempts");
+                }
+                attempt++;
+                Thread.sleep(500);
+                lastSize = newSize;
+                final var polledFile = Arrays.stream(ftpClient.listFiles(config.ftp().path(), fetchedFtpFile -> Objects.equals(fetchedFtpFile.getName(), ftpFile.getName()))).findFirst();
+                if (polledFile.isPresent()) {
+                    logger.trace("→ Last file size: " + lastSize + ", New file size: " + polledFile.get().getSize());
+                    newSize = polledFile.get().getSize();
+                } else {
+                    return empty();
+                }
+            } while (newSize > lastSize);
+            logger.debug("File size didn't change anymore.");
+            return Optional.of(ftpFile);
+        } catch (IOException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
+            return empty();
+        }
+    }
+
     public Optional<File> download(FTPFile source) {
         logger.debug("Start downloading \"" + source.getName() + "\" into temporary file");
         final File target;

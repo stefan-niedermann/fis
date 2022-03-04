@@ -50,6 +50,7 @@ public class OperationApiImpl implements OperationApi {
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
     public void pollOperations() {
         remoteRepository.poll()
+                .flatMap(remoteRepository::waitForUploadCompletion)
                 .flatMap(remoteRepository::download)
                 .ifPresent(this::parseAndApplyOperation);
     }

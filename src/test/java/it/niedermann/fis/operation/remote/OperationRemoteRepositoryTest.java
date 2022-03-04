@@ -161,6 +161,64 @@ public class OperationRemoteRepositoryTest {
         assertTrue(repository.download(new FTPFile()).isPresent());
     }
 
+    @Test
+    public void uploadAlreadyCompleted() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
+                createFTPFile("Foo.pdf", now(), 444)
+        ).toArray(FTPFile[]::new));
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(444);
+        assertTrue(repository.waitForUploadCompletion(file).isPresent());
+    }
+
+    @Test
+    public void uploadInProgress() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
+                createFTPFile("Foo.pdf", now(), 333)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 444)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 555)
+        ).toArray(FTPFile[]::new));
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(111);
+        assertTrue(repository.waitForUploadCompletion(file).isPresent());
+    }
+
+    @Test
+    public void waitForUploadCompletionShouldStopAfterSomeAttempts() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
+                createFTPFile("Foo.pdf", now(), 333)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 444)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 555)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 666)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 777)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 888)
+        ).toArray(FTPFile[]::new), List.of(
+                createFTPFile("Foo.pdf", now(), 999)
+        ).toArray(FTPFile[]::new));
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(111);
+        assertTrue(repository.waitForUploadCompletion(file).isEmpty());
+    }
+
+    @Test
+    public void waitForUploadCompletionShouldGracefullyHandleErrors() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenThrow(new IOException());
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(111);
+        assertTrue(repository.waitForUploadCompletion(file).isEmpty());
+    }
+
     private void doFirstPoll() throws IOException {
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[0]);
         repository.poll();

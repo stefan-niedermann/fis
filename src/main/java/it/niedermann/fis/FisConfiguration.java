@@ -41,7 +41,9 @@ public record FisConfiguration(
             @NotBlank String password,
             String path,
             @NotNull String fileSuffix,
-            @Min(100) long pollInterval
+            @Min(100) long pollInterval,
+            @Min(100) long checkUploadCompleteInterval,
+            @Min(0) int checkUploadCompleteMaxAttempts
     ) {
     }
 

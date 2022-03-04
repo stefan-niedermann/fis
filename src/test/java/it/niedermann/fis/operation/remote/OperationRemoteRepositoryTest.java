@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static it.niedermann.fis.operation.OperationTestUtil.createFTPFile;
 import static it.niedermann.fis.operation.OperationTestUtil.createFTPObject;
@@ -27,6 +28,8 @@ public class OperationRemoteRepositoryTest {
     public void setup() throws IOException {
         final var ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
         when(ftpConfig.fileSuffix()).thenReturn(".pdf");
+        when(ftpConfig.checkUploadCompleteInterval()).thenReturn(0L);
+        when(ftpConfig.checkUploadCompleteMaxAttempts()).thenReturn(10);
         final var config = mock(FisConfiguration.class);
         when(config.ftp()).thenReturn(ftpConfig);
         ftpClient = mock(FTPClient.class);
@@ -78,9 +81,9 @@ public class OperationRemoteRepositoryTest {
     public void shouldNotReturnTheSameFileMultipleTimesAfterFirstPoll() throws IOException {
         doFirstPoll();
 
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now())
-        ).toArray(FTPFile[]::new));
+        });
 
         assertTrue(repository.poll().isPresent());
         assertTrue(repository.poll().isEmpty());
@@ -88,9 +91,9 @@ public class OperationRemoteRepositoryTest {
 
     @Test
     public void shouldNotReturnAlreadyExistingFilesWhenPollingMultipleTimes() throws IOException {
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now())
-        ).toArray(FTPFile[]::new));
+        });
 
         assertTrue(repository.poll().isEmpty());
         assertTrue(repository.poll().isEmpty());
@@ -98,15 +101,15 @@ public class OperationRemoteRepositoryTest {
 
     @Test
     public void shouldReturnOnlyFilesWhichHaveBeenAddedAfterPollingStart() throws IOException {
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now().minus(3, ChronoUnit.MINUTES))
-        ).toArray(FTPFile[]::new));
+        });
         final var existingFtpFile = repository.poll();
         assertTrue(existingFtpFile.isEmpty());
 
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Bar.pdf", now())
-        ).toArray(FTPFile[]::new));
+        });
         final var addedFtpFile = repository.poll();
         assertTrue(addedFtpFile.isPresent());
         assertEquals("Bar.pdf", addedFtpFile.get().getName());
@@ -116,9 +119,9 @@ public class OperationRemoteRepositoryTest {
     public void shouldFilterBySuffix() throws IOException {
         doFirstPoll();
 
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.doc", now().minus(3, ChronoUnit.MINUTES))
-        ).toArray(FTPFile[]::new));
+        });
         assertTrue(repository.poll().isEmpty());
     }
 
@@ -126,18 +129,18 @@ public class OperationRemoteRepositoryTest {
     public void shouldReturnTheMostCurrentFile() throws IOException {
         doFirstPoll();
 
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now()),
                 createFTPFile("Bar.pdf", now().minus(3, ChronoUnit.MINUTES))
-        ).toArray(FTPFile[]::new));
+        });
         final var ftpFile1 = repository.poll();
         assertTrue(ftpFile1.isPresent());
         assertEquals("Foo.pdf", ftpFile1.get().getName());
 
-        when(ftpClient.listFiles(any())).thenReturn(List.of(
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now().minus(3, ChronoUnit.MINUTES)),
                 createFTPFile("Bar.pdf", now())
-        ).toArray(FTPFile[]::new));
+        });
         final var ftpFile2 = repository.poll();
         assertTrue(ftpFile2.isPresent());
         assertEquals("Bar.pdf", ftpFile2.get().getName());
@@ -163,9 +166,9 @@ public class OperationRemoteRepositoryTest {
 
     @Test
     public void uploadAlreadyCompleted() throws IOException {
-        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
-                createFTPFile("Foo.pdf", now(), 444)
-        ).toArray(FTPFile[]::new));
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 444)}
+        );
         final var file = new FTPFile();
         file.setName("Foo.pdf");
         file.setSize(444);
@@ -174,13 +177,11 @@ public class OperationRemoteRepositoryTest {
 
     @Test
     public void uploadInProgress() throws IOException {
-        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
-                createFTPFile("Foo.pdf", now(), 333)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 444)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 555)
-        ).toArray(FTPFile[]::new));
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 333)},
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 444)},
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 555)}
+        );
         final var file = new FTPFile();
         file.setName("Foo.pdf");
         file.setSize(111);
@@ -189,26 +190,22 @@ public class OperationRemoteRepositoryTest {
 
     @Test
     public void waitForUploadCompletionShouldStopAfterSomeAttempts() throws IOException {
-        when(ftpClient.listFiles(any(), any())).thenReturn(List.of(
-                createFTPFile("Foo.pdf", now(), 333)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 444)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 555)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 666)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 777)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 888)
-        ).toArray(FTPFile[]::new), List.of(
-                createFTPFile("Foo.pdf", now(), 999)
-        ).toArray(FTPFile[]::new));
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 20)},
+                IntStream
+                        .rangeClosed(3, 15)
+                        .boxed()
+                        .map(val -> val * 10)
+                        .map(size -> new FTPFile[]{createFTPFile("Foo.pdf", now(), size)})
+                        .toArray(FTPFile[][]::new)
+        );
         final var file = new FTPFile();
         file.setName("Foo.pdf");
-        file.setSize(111);
+        file.setSize(10);
         assertTrue(repository.waitForUploadCompletion(file).isEmpty());
     }
+
+    // TODO Test file size 0 at beginning
 
     @Test
     public void waitForUploadCompletionShouldGracefullyHandleErrors() throws IOException {

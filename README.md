@@ -64,6 +64,8 @@ fis:
     # path: /FRITZ/faxbox
     # fileSuffix: .pdf
     # pollInterval: 10000
+    # checkUploadCompleteInterval: 300
+    # checkUploadCompleteMaxAttempts: 10
   weather:
     # key: SECRET # Optional OpenWeatherMap API key
     # lang: de

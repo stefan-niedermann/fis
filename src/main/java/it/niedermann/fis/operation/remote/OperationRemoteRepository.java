@@ -70,21 +70,20 @@ public class OperationRemoteRepository {
 
     public Optional<FTPFile> waitForUploadCompletion(FTPFile ftpFile) {
         logger.debug("Waiting for " + ftpFile.getName() + " being uploaded completely");
-        final var MAX_ATTEMPTS = 5;
         try {
             int attempt = 0;
             long lastSize;
             long newSize = ftpFile.getSize();
             do {
-                if (attempt > MAX_ATTEMPTS) {
-                    throw new InterruptedException("Exceeded " + MAX_ATTEMPTS + "attempts");
+                if (attempt > config.ftp().checkUploadCompleteMaxAttempts()) {
+                    throw new InterruptedException("Exceeded " + config.ftp().checkUploadCompleteMaxAttempts() + "attempts");
                 }
                 attempt++;
-                Thread.sleep(500);
+                Thread.sleep(config.ftp().checkUploadCompleteInterval());
                 lastSize = newSize;
                 final var polledFile = Arrays.stream(ftpClient.listFiles(config.ftp().path(), fetchedFtpFile -> Objects.equals(fetchedFtpFile.getName(), ftpFile.getName()))).findFirst();
                 if (polledFile.isPresent()) {
-                    logger.trace("→ Last file size: " + lastSize + ", New file size: " + polledFile.get().getSize());
+                    logger.trace("→ [" + attempt + " / " + config.ftp().checkUploadCompleteMaxAttempts() + "] Last file size: " + lastSize + ", New file size: " + polledFile.get().getSize());
                     newSize = polledFile.get().getSize();
                 } else {
                     return empty();

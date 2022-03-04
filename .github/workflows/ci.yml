@@ -144,10 +144,13 @@ jobs:
         with:
           name: jar
           path: frontend
+      - name: Rename jar file
+        working-directory: frontend
+        run: mv fis*.jar fis.jar
       - name: Cypress run
         uses: cypress-io/github-action@v2
         with:
-          start: java -jar $(find "*.jar")
+          start: java -jar fis.jar
           wait-on: 'http://localhost:8080'
           working-directory: frontend
           spec: cypress/integration/prod.spec.ts

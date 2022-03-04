@@ -35,6 +35,7 @@ dependencies {
 
     // Tests
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.mockito:mockito-inline:2.13.0' // Needed for mocking records https://stackoverflow.com/a/14292888
 }
 
 configurations.all {

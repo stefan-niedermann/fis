@@ -1,7 +1,7 @@
 describe('JarFIS main screen (mocked backend)', () => {
 
   beforeEach(() => {
-    cy.clearFtpServer();
+    cy.intercept('/api/operation', {statusCode: 204})
     cy.intercept('/api/weather', sampleWeather)
     cy.intercept('/api/parameter', sampleParameter)
   })
@@ -61,7 +61,7 @@ describe('JarFIS main screen (mocked backend)', () => {
       cy.intercept('GET', '/api/operation', {statusCode: 304})
       cy.verifyOperationShown('brand')
 
-      cy.clearFtpServer()
+      cy.intercept('/api/operation', {statusCode: 204})
       cy.verifyInfoScreen()
     })
   })
@@ -77,7 +77,7 @@ describe('JarFIS main screen (mocked backend)', () => {
       cy.sendFaxToFtpServer('brand')
       cy.verifyOperationShown('brand')
 
-      cy.clearFtpServer()
+      cy.intercept('/api/operation', {statusCode: 204})
       cy.verifyInfoScreen()
 
       cy.intercept('GET', '/api/operation', {statusCode: 202})
@@ -86,7 +86,7 @@ describe('JarFIS main screen (mocked backend)', () => {
       cy.sendFaxToFtpServer('thl')
       cy.verifyOperationShown('thl')
 
-      cy.clearFtpServer()
+      cy.intercept('/api/operation', {statusCode: 204})
       cy.verifyInfoScreen()
     })
   })

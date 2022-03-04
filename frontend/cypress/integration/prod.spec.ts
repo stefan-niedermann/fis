@@ -12,7 +12,6 @@
 describe('JarFIS main screen (production backend)', () => {
 
   beforeEach(() => {
-    cy.clearFtpServer()
     cy.visit('/')
     cy.verifyClockPresent()
   })

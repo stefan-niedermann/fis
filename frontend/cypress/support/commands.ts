@@ -1,7 +1,5 @@
 declare namespace Cypress {
   interface Chainable<Subject = any> {
-    clearFtpServer(): Chainable<null>;
-
     sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
 
     verifyInfoScreen(temperature?: number): Chainable<null>;
@@ -16,17 +14,11 @@ declare namespace Cypress {
   }
 }
 
-Cypress.Commands.add('clearFtpServer', () => {
-  if (Cypress.env('FTP_HOST')) {
-    ['thl', 'invalid', 'brand'].forEach(type => ftp(`rm ${Cypress.env('FTP_DIR')}/${type}.pdf`, false))
-  } else {
-    cy.intercept('/api/operation', {statusCode: 204})
-  }
-})
+let faxNumber = 0;
 
 Cypress.Commands.add('sendFaxToFtpServer', (type) => {
   if (Cypress.env('FTP_HOST')) {
-    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf`)
+    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}-${faxNumber++}.pdf`)
   } else {
     switch (type) {
       case 'brand':

@@ -48,10 +48,10 @@ Cypress.Commands.add('verifyInfoScreen', (temperature?: number) => {
 })
 
 Cypress.Commands.add('verifyClockPresent', (timeout?: number) => {
-  if(timeout === undefined) {
+  if (timeout === undefined) {
     cy.contains('Uhr')
   } else {
-    cy.contains('Uhr', {timeout: 4_000})
+    cy.contains('Uhr', {timeout})
   }
 })
 

@@ -52,7 +52,7 @@ Cypress.Commands.add('verifyWeatherPresent', (temperature?: number) => {
 })
 
 Cypress.Commands.add('verifyProcessingScreenShown', () => {
-  cy.contains('wird verarbeitet', {timeout: 60_000})
+  cy.contains('wird verarbeitet', {timeout: 40_000})
 })
 
 Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {

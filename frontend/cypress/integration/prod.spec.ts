@@ -8,7 +8,6 @@
  *   - FTP_USER
  *   - FTP_PASS
  */
-
 describe('JarFIS main screen (production backend)', () => {
 
   beforeEach(() => {
@@ -56,17 +55,9 @@ describe('JarFIS main screen (production backend)', () => {
       cy.verifyOperationShown('brand')
 
       cy.verifyClockPresent()
-      cy.wait(3_000)
 
       cy.sendFaxToFtpServer('thl')
       cy.verifyProcessingScreenShown()
-      cy.verifyOperationShown('thl')
-    })
-
-    it('Info → Processing → Send another fax → Processing → Operation (THL) → Info', () => {
-      cy.sendFaxToFtpServer('brand')
-      cy.verifyProcessingScreenShown()
-      cy.sendFaxToFtpServer('thl')
       cy.verifyOperationShown('thl')
     })
   })

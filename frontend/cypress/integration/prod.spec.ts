@@ -39,7 +39,7 @@ describe('JarFIS main screen (production backend)', () => {
       cy.verifyOperationShown('thl')
     })
 
-    xit('should not display invalid faxes', () => {
+    it.skip('should not display invalid faxes', () => {
       cy.sendFaxToFtpServer('invalid')
       cy.verifyClockPresent()
       // TODO How to check for *NOT* present?

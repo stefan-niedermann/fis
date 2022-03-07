@@ -149,6 +149,48 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
+    public void shouldTakeTheAlphabeticallyHigherFileInCaseOfEqualTimestampsRespectingPastMatches() throws IOException {
+        doFirstPoll();
+
+        when(ftpClient.listFiles(any())).thenReturn(
+                new FTPFile[]{
+                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
+                },
+                new FTPFile[]{
+                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
+                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L))
+                },
+                new FTPFile[]{
+                        createFTPFile("brand-3.pdf", Instant.ofEpochMilli(1646654220000L)),
+                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
+                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L))
+                },
+                new FTPFile[]{
+                        createFTPFile("brand-3.pdf", Instant.ofEpochMilli(1646654220000L)),
+                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
+                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L)),
+                        createFTPFile("thl-4.pdf", Instant.ofEpochMilli(1646654220000L))
+                }
+        );
+
+        final var thl1 = repository.poll();
+        assertTrue(thl1.isPresent());
+        assertEquals("thl-1.pdf", thl1.get().getName());
+
+        final var thl2 = repository.poll();
+        assertTrue(thl2.isPresent());
+        assertEquals("thl-2.pdf", thl2.get().getName());
+
+        final var brand3 = repository.poll();
+        assertTrue(brand3.isPresent());
+        assertEquals("brand-3.pdf", brand3.get().getName());
+
+        final var thl4 = repository.poll();
+        assertTrue(thl4.isPresent());
+        assertEquals("thl-4.pdf", thl4.get().getName());
+    }
+
+    @Test
     public void shouldTakeTheAlphabeticallyHigherFileInCaseOfEqualTimestamps() throws IOException {
         doFirstPoll();
 

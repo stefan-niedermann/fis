@@ -49,6 +49,7 @@ public class OperationRemoteRepository {
             final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
+                    .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
                     .sorted(Comparator
                             .comparing(FTPFile::getName)
                             .reversed())
@@ -56,7 +57,6 @@ public class OperationRemoteRepository {
                             .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                             .reversed())
                     .limit(1)
-                    .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
                     .findFirst();
             match.ifPresent(ftpFile -> alreadyExistingFileName = ftpFile.getName());
             if (firstPoll) {

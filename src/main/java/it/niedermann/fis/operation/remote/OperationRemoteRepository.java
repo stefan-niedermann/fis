@@ -23,8 +23,8 @@ public class OperationRemoteRepository {
 
     private final FisConfiguration config;
     private final FTPClient ftpClient;
+    private final Collection<String> alreadyExistingFileNames = new LinkedList<>();
     private boolean firstPoll = true;
-    private Collection<String> alreadyExistingFileNames = new LinkedList<>();
 
     public OperationRemoteRepository(
             FisConfiguration config,
@@ -38,7 +38,7 @@ public class OperationRemoteRepository {
         if (alreadyExistingFileNames.size() == 0) {
             logger.debug("Checking FTP server for incoming operations");
         } else {
-            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileNames + "\")");
+            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileNames.size() + " known files\")");
         }
         try {
             final var files = ftpClient.listFiles(config.ftp().path());

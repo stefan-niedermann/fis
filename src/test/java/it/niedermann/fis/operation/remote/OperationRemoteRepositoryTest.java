@@ -92,6 +92,28 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
+    public void shouldNotReturnExistingFilesOnTheFirstPoll() throws IOException {
+        final var file1 = createFTPFile("Foo.pdf", now());
+        final var file2 = createFTPFile("Bar.pdf", now());
+        final var file3 = createFTPFile("Qux.pdf", now());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                file1, file2
+        });
+        assertTrue(repository.poll().isEmpty());
+        assertTrue(repository.poll().isEmpty());
+        assertTrue(repository.poll().isEmpty());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                file1, file3, file2
+        });
+
+        final var result = repository.poll();
+        assertTrue(result.isPresent());
+        assertEquals("Qux.pdf", result.get().getName());
+    }
+
+    @Test
     public void shouldNotReturnAlreadyExistingFilesWhenPollingMultipleTimes() throws IOException {
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
                 createFTPFile("Foo.pdf", now())

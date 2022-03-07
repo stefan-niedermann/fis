@@ -11,10 +11,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.Optional.empty;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
@@ -27,7 +24,7 @@ public class OperationRemoteRepository {
     private final FisConfiguration config;
     private final FTPClient ftpClient;
     private boolean firstPoll = true;
-    private String alreadyExistingFileName = "";
+    private Collection<String> alreadyExistingFileNames = new LinkedList<>();
 
     public OperationRemoteRepository(
             FisConfiguration config,
@@ -38,10 +35,10 @@ public class OperationRemoteRepository {
     }
 
     public Optional<FTPFile> poll() {
-        if ("".equals(alreadyExistingFileName)) {
+        if (alreadyExistingFileNames.size() == 0) {
             logger.debug("Checking FTP server for incoming operations");
         } else {
-            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileName + "\")");
+            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileNames + "\")");
         }
         try {
             final var files = ftpClient.listFiles(config.ftp().path());
@@ -50,7 +47,7 @@ public class OperationRemoteRepository {
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
                     .filter(file -> file.getSize() < config.ftp().maxFileSize())
-                    .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
+                    .filter(file -> !alreadyExistingFileNames.contains(file.getName()))
                     .sorted(Comparator
                             .comparing(FTPFile::getName)
                             .reversed())
@@ -59,9 +56,10 @@ public class OperationRemoteRepository {
                             .reversed())
                     .limit(1)
                     .findFirst();
-            match.ifPresent(ftpFile -> alreadyExistingFileName = ftpFile.getName());
+            match.ifPresent(ftpFile -> alreadyExistingFileNames.add(ftpFile.getName()));
             if (firstPoll) {
                 firstPoll = false;
+                alreadyExistingFileNames.addAll(Arrays.stream(files).map(FTPFile::getName).toList());
                 match.ifPresentOrElse(
                         ftpFile -> logger.info("Ignoring existing operation when polling the first time: " + ftpFile.getName()),
                         () -> logger.info("No operation was present when polling the first time.")

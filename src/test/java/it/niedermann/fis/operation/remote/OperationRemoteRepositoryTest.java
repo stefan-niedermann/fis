@@ -229,17 +229,16 @@ public class OperationRemoteRepositoryTest {
     @Test
     public void waitForUploadCompletionShouldStopAfterConfiguredAttempts() throws IOException {
         when(ftpClient.listFiles(any(), any())).thenReturn(
-                new FTPFile[]{createFTPFile("Foo.pdf", now(), 20)},
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 2)},
                 IntStream
-                        .rangeClosed(3, 15) // Bigger than the configured count of attempts
+                        .rangeClosed(3, 11) // Bigger than the configured count of attempts
                         .boxed()
-                        .map(val -> val * 10)
                         .map(size -> new FTPFile[]{createFTPFile("Foo.pdf", now(), size)})
                         .toArray(FTPFile[][]::new)
         );
         final var file = new FTPFile();
         file.setName("Foo.pdf");
-        file.setSize(10);
+        file.setSize(1);
         assertTrue(repository.waitForUploadCompletion(file).isEmpty());
     }
 

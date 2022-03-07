@@ -48,7 +48,7 @@ describe('JarFIS main screen (production backend)', () => {
     })
   })
 
-  xdescribe('Integration', () => {
+  describe('Integration', () => {
     it('Info → Processing → Operation (Brand) → Info → Processing → Operation (THL) → Info', () => {
       cy.sendFaxToFtpServer('brand')
       cy.verifyProcessingScreenShown()

@@ -46,6 +46,7 @@ public class OperationRemoteRepository {
                     .sorted(Comparator
                             .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                             .reversed())
+                    .peek(ftpFile -> logger.trace("- [" + ftpFile.getTimestamp() + "] " + ftpFile.getName()))
                     .limit(1)
                     .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
                     .findFirst();

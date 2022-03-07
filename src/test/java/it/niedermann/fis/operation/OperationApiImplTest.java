@@ -88,7 +88,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldReturnAnActiveOperation_whenAvailable() {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -102,7 +102,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldResetActiveOperations_afterGivenTime() throws InterruptedException {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -128,7 +128,7 @@ public class OperationApiImplTest {
         when(operation2.getKeyword()).thenReturn("Bar");
 
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(operation1));
 

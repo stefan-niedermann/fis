@@ -79,7 +79,7 @@ public class OperationRemoteRepository {
         }
     }
 
-    public Optional<FTPFile> waitForUploadCompletion(FTPFile ftpFile) {
+    public Optional<FTPFile> awaitUploadCompletion(FTPFile ftpFile) {
         logger.debug("Waiting for " + ftpFile.getName() + " being uploaded completely");
         try {
             int attempt = 0;

@@ -67,7 +67,7 @@ fis:
     # checkUploadCompleteInterval: 300
     # checkUploadCompleteMaxAttempts: 10
     # maxFileSize: 10000000
-  weather:
+  # weather:
     # key: SECRET # Optional OpenWeatherMap API key
     # lang: de
     # units: metric

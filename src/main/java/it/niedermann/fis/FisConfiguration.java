@@ -43,7 +43,8 @@ public record FisConfiguration(
             @NotNull String fileSuffix,
             @Min(100) long pollInterval,
             @Min(100) long checkUploadCompleteInterval,
-            @Min(0) int checkUploadCompleteMaxAttempts
+            @Min(0) int checkUploadCompleteMaxAttempts,
+            @Min(0) long maxFileSize
     ) {
     }
 

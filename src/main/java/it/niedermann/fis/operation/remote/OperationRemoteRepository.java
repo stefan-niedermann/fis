@@ -97,6 +97,9 @@ public class OperationRemoteRepository {
                     }
                     logger.debug("→ [" + attempt + " / " + config.ftp().checkUploadCompleteMaxAttempts() + "] File size changed: " + byteCountToDisplaySize(lastSize) + " → " + byteCountToDisplaySize(polledFile.getSize()));
                     newSize = polledFile.getSize();
+                    if (newSize > config.ftp().maxFileSize()) {
+                        throw new IOException("File size is bigger than an usual operation fax: " + newSize);
+                    }
                 } else {
                     return empty();
                 }

@@ -31,6 +31,7 @@ public class OperationRemoteRepositoryTest {
         when(ftpConfig.fileSuffix()).thenReturn(".pdf");
         when(ftpConfig.checkUploadCompleteInterval()).thenReturn(0L);
         when(ftpConfig.checkUploadCompleteMaxAttempts()).thenReturn(10);
+        when(ftpConfig.maxFileSize()).thenReturn(10_000_000L);
         final var config = mock(FisConfiguration.class);
         when(config.ftp()).thenReturn(ftpConfig);
         ftpClient = mock(FTPClient.class);
@@ -248,6 +249,17 @@ public class OperationRemoteRepositoryTest {
         final var file = new FTPFile();
         file.setName("Foo.pdf");
         file.setSize(111);
+        assertTrue(repository.waitForUploadCompletion(file).isEmpty());
+    }
+
+    @Test
+    public void waitForUploadCompletionShouldReturnEmptyForHugeFiles() throws IOException {
+        when(ftpClient.listFiles(any(), any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 10_000_001L)}
+        );
+        final var file = new FTPFile();
+        file.setName("Foo.pdf");
+        file.setSize(0);
         assertTrue(repository.waitForUploadCompletion(file).isEmpty());
     }
 

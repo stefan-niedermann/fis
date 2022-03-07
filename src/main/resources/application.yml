@@ -6,6 +6,7 @@ fis:
     pollInterval: 10000
     checkUploadCompleteInterval: 300
     checkUploadCompleteMaxAttempts: 10
+    maxFileSize: 10000000
   tesseract:
     lang: deu
   weather:

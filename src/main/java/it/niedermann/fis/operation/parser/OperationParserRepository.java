@@ -31,7 +31,7 @@ public class OperationParserRepository {
     }
 
     public Optional<OperationDto> parse(File source) {
-        logger.info("🚒 Start parsing operation \"" + source.getName() + "\"…");
+        logger.info("Start parsing operation \"" + source.getName() + "\"…");
         try {
             logger.debug("→ Start OCR for \"" + source.getName());
             final var ocrText = tesseract.doOCR(source);
@@ -41,7 +41,7 @@ public class OperationParserRepository {
             final var dto = parser.parse(ocrText);
             logger.debug("→ Finished parsing");
 
-            logger.info("🚒 Finished parsing operation \"" + dto.getKeyword() + " from \"" + source.getName() + "\"");
+            logger.info("Finished parsing operation \"" + dto.getKeyword() + " from \"" + source.getName() + "\"");
             return Optional.of(dto);
         } catch (IllegalArgumentException e) {
             logger.info("The given file could not be validated as an operation fax.");

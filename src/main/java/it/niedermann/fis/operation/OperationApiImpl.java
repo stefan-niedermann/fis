@@ -59,7 +59,7 @@ public class OperationApiImpl implements OperationApi {
         this.processing = true;
 
         this.parserRepository.parse(operationFile).ifPresent(operationDto -> {
-            logger.debug("Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
+            logger.debug("🚒 Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
             this.currentOperation = operationDto;
 
             logger.debug("Planning cancellation of currently active operation: \"" + operationDto.getKeyword() + "\"…");

@@ -16,23 +16,23 @@ describe('JarFIS main screen (production backend)', () => {
   })
 
   afterEach(() => {
-    cy.verifyClockPresent(120_000)
+    cy.verifyClockPresent(130_000)
   })
 
-  xdescribe('Info Screen', () => {
+  describe('Info Screen', () => {
     it('Should display the time', () => {
       cy.verifyClockPresent()
     })
   })
 
-  xdescribe('Processing Screen', () => {
-    it('Should display a processing screen after a fax has been send to the server', () => {
+  describe('Processing Screen', () => {
+    it('Should display a processing screen after a fax has been sent to the server', () => {
       cy.sendFaxToFtpServer('thl')
       cy.verifyProcessingScreenShown()
     })
   })
 
-  xdescribe('Operation Screen', () => {
+  describe('Operation Screen', () => {
     it('should display an incoming operation fax', () => {
       cy.sendFaxToFtpServer('thl')
       cy.verifyProcessingScreenShown()
@@ -48,7 +48,7 @@ describe('JarFIS main screen (production backend)', () => {
     })
   })
 
-  describe('Integration', () => {
+  xdescribe('Integration', () => {
     it('Info → Processing → Operation (Brand) → Info → Processing → Operation (THL) → Info', () => {
       cy.sendFaxToFtpServer('brand')
       cy.verifyProcessingScreenShown()

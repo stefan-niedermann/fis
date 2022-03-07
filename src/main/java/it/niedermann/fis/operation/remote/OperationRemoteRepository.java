@@ -38,14 +38,11 @@ public class OperationRemoteRepository {
     }
 
     public Optional<FTPFile> poll() {
-        final var logBuilder = new StringBuilder("Checking FTP server for incoming operations");
-        if (!"".equals(alreadyExistingFileName)) {
-            logBuilder
-                    .append(" (excluding \"")
-                    .append(alreadyExistingFileName)
-                    .append("\"");
+        if ("".equals(alreadyExistingFileName)) {
+            logger.debug("Checking FTP server for incoming operations");
+        } else {
+            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileName + "\")");
         }
-        logger.debug(logBuilder.toString());
         try {
             final var match = Arrays.stream(ftpClient.listFiles(config.ftp().path()))
                     .filter(FTPFile::isFile)

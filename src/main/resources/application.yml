@@ -3,7 +3,7 @@ fis:
     host: fritz.box
     path: /FRITZ/faxbox
     fileSuffix: .pdf
-    pollInterval: 10000
+    pollInterval: 5000
     checkUploadCompleteInterval: 300
     checkUploadCompleteMaxAttempts: 10
     maxFileSize: 10000000

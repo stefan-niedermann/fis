@@ -16,7 +16,7 @@ describe('JarFIS main screen (production backend)', () => {
   })
 
   afterEach(() => {
-    cy.verifyClockPresent(130_000)
+    cy.verifyClockPresent(123_000)
   })
 
   describe('Info Screen', () => {

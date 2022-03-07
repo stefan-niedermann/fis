@@ -47,7 +47,6 @@ public class OperationRemoteRepository {
         }
         logger.debug(logBuilder.toString());
         try {
-            Arrays.stream(ftpClient.listFiles(config.ftp().path())).forEach(file -> logger.trace("[" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
             final var match = Arrays.stream(ftpClient.listFiles(config.ftp().path()))
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))

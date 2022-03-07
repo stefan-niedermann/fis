@@ -42,6 +42,7 @@ describe('JarFIS main screen (production backend)', () => {
     xit('should not display invalid faxes', () => {
       cy.sendFaxToFtpServer('invalid')
       cy.verifyClockPresent()
+      // TODO How to check for *NOT* present?
       cy.verifyProcessingScreenShown().should('not.exist')
       cy.verifyOperationShown('thl').should('not.exist')
       cy.verifyOperationShown('brand').should('not.exist')

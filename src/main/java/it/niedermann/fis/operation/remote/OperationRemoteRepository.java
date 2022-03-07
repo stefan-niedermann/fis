@@ -41,10 +41,12 @@ public class OperationRemoteRepository {
         logger.debug("Checking FTP server for incoming operations");
         logger.trace("Exclude already existing file name: " + alreadyExistingFileName);
         try {
-            Arrays.stream(ftpClient.listFiles(config.ftp().path())).forEach(ftpFile -> logger.trace("- [" + ftpFile.getTimestamp().getTimeInMillis() + "] " + ftpFile.getName()));
             final var match = Arrays.stream(ftpClient.listFiles(config.ftp().path()))
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
+                    .sorted(Comparator
+                            .comparing(FTPFile::getName)
+                            .reversed())
                     .sorted(Comparator
                             .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                             .reversed())

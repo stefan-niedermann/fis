@@ -7,6 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -144,6 +145,19 @@ public class OperationRemoteRepositoryTest {
         final var ftpFile2 = repository.poll();
         assertTrue(ftpFile2.isPresent());
         assertEquals("Bar.pdf", ftpFile2.get().getName());
+    }
+
+    @Test
+    public void shouldTakeTheAlphabeticallyHigherFileInCaseOfEqualTimestamps() throws IOException {
+        doFirstPoll();
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                createFTPFile("brand.pdf", Instant.ofEpochMilli(1646641500000L)),
+                createFTPFile("thl.pdf", Instant.ofEpochMilli(1646641500000L))
+        });
+        final var ftpFile = repository.poll();
+        assertTrue(ftpFile.isPresent());
+        assertEquals("thl.pdf", ftpFile.get().getName());
     }
 
     @Test

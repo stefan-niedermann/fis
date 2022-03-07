@@ -44,8 +44,9 @@ public class OperationRemoteRepository {
             logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileName + "\")");
         }
         try {
-            Arrays.stream(ftpClient.listFiles(config.ftp().path())).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
-            final var match = Arrays.stream(ftpClient.listFiles(config.ftp().path()))
+            final var files = ftpClient.listFiles(config.ftp().path());
+            Arrays.stream(files).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
                     .sorted(Comparator

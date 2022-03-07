@@ -204,6 +204,16 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
+    public void pollingShouldIgnoreHugeFiles() throws IOException {
+        doFirstPoll();
+
+        when(ftpClient.listFiles(any())).thenReturn(
+                new FTPFile[]{createFTPFile("Foo.pdf", now(), 10_000_001L)}
+        );
+        assertTrue(repository.poll().isEmpty());
+    }
+
+    @Test
     public void downloadShouldReturnEmptyWhenRetrievingFileThrowsIOException() throws IOException {
         when(ftpClient.retrieveFile(any(), any())).thenThrow(IOException.class);
         assertTrue(repository.download(new FTPFile()).isEmpty());

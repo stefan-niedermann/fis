@@ -49,6 +49,7 @@ public class OperationRemoteRepository {
             final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
+                    .filter(file -> file.getSize() < config.ftp().maxFileSize())
                     .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
                     .sorted(Comparator
                             .comparing(FTPFile::getName)

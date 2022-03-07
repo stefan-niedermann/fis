@@ -7,7 +7,8 @@
     "build": "ng build --configuration production",
     "test": "ng test --silent",
     "lint": "ng lint",
-    "e2e": "ng e2e --headless --watch=false",
+    "e2e:mock": "ng e2e --headless --watch=false",
+    "e2e:prod": "ng e2e --headless --watch=false --configuration=production",
     "postinstall": "npm run gen",
     "gen": "npx @openapitools/openapi-generator-cli generate -i ../api.yml -g typescript-angular -o src/app/gen --additional-properties=supportsES6=true"
   },

@@ -47,6 +47,8 @@ paths:
                 $ref: '#/components/schemas/Weather'
         304:
           description: Nothing has changed in case If-None-Match matches last ETag
+        404:
+          description: Weather is not available, for example because no key has been specified
         500:
           description: In case the weather could not be fetched
   /operation:

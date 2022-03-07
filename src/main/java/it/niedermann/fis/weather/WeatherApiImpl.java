@@ -27,14 +27,22 @@ public class WeatherApiImpl implements WeatherApi {
     public WeatherApiImpl(
             FisConfiguration config
     ) {
-        this.weatherProvider = new OpenWeatherMapProvider(config.getWeather().getLang(),
-                config.getWeather().getLocation(),
-                config.getWeather().getUnits(),
-                config.getWeather().getKey());
+        if (config.weather().key() == null) {
+            weatherProvider = null;
+            logger.info("Weather information is not available because no API key has been specified");
+        } else {
+            weatherProvider = new OpenWeatherMapProvider(config.weather().lang(),
+                    config.weather().location(),
+                    config.weather().units(),
+                    config.weather().key());
+        }
     }
 
     @Override
     public ResponseEntity<WeatherDto> getWeather(String ifNoneMatch) {
+        if (weatherProvider == null) {
+            return ResponseEntity.notFound().build();
+        }
         try {
             if (weather == null) {
                 pollWeather();
@@ -48,6 +56,10 @@ public class WeatherApiImpl implements WeatherApi {
 
     @Scheduled(fixedDelayString = "${fis.weather.pollInterval}")
     public void pollWeather() throws IOException {
+        if (weatherProvider == null) {
+            return;
+        }
+
         final var newWeatherInformation = weatherProvider.fetchWeather();
 
         if (Objects.equals(newWeatherInformation, weather)) {

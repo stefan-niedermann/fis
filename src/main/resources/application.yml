@@ -3,7 +3,10 @@ fis:
     host: fritz.box
     path: /FRITZ/faxbox
     fileSuffix: .pdf
-    pollInterval: 10000
+    pollInterval: 5000
+    checkUploadCompleteInterval: 300
+    checkUploadCompleteMaxAttempts: 10
+    maxFileSize: 10000000
   tesseract:
     lang: deu
   weather:
@@ -17,13 +20,3 @@ fis:
     weatherPollInterval: 30000
     operationPollInterval: 2000
     highlight:
-
-logging:
-  pattern:
-    console:
-  file:
-    name: fis.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
-      max-history: 30

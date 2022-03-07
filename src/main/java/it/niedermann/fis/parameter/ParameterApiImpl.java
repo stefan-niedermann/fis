@@ -14,7 +14,7 @@ public class ParameterApiImpl implements ParameterApi {
     private final ClientConfigurationDto dto;
 
     public ParameterApiImpl(FisConfiguration config) {
-        this.dto = config.getClient();
+        this.dto = config.client();
     }
 
     @Override

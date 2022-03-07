@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Optional.empty;
+import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 @Service
 public class OperationRemoteRepository {
@@ -37,16 +38,26 @@ public class OperationRemoteRepository {
     }
 
     public Optional<FTPFile> poll() {
-        logger.debug("Checking FTP server for incoming operations");
+        if ("".equals(alreadyExistingFileName)) {
+            logger.debug("Checking FTP server for incoming operations");
+        } else {
+            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileName + "\")");
+        }
         try {
-            final var match = Arrays.stream(ftpClient.listFiles(config.getFtp().getPath()))
+            final var files = ftpClient.listFiles(config.ftp().path());
+            Arrays.stream(files).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
-                    .filter(file -> file.getName().endsWith(config.getFtp().getFileSuffix()))
+                    .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
+                    .filter(file -> file.getSize() < config.ftp().maxFileSize())
+                    .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
+                    .sorted(Comparator
+                            .comparing(FTPFile::getName)
+                            .reversed())
                     .sorted(Comparator
                             .<FTPFile>comparingLong(file -> file.getTimestamp().getTimeInMillis())
                             .reversed())
                     .limit(1)
-                    .filter(file -> !Objects.equals(alreadyExistingFileName, file.getName()))
                     .findFirst();
             match.ifPresent(ftpFile -> alreadyExistingFileName = ftpFile.getName());
             if (firstPoll) {
@@ -59,11 +70,47 @@ public class OperationRemoteRepository {
             }
             match.ifPresentOrElse(
                     ftpFile -> logger.info("🚒 New incoming operation detected: " + ftpFile.getName()),
-                    () -> logger.debug("→ No new file with suffix \"" + config.getFtp().getFileSuffix() + "\" is present at the server.")
+                    () -> logger.debug("→ No new file with suffix \"" + config.ftp().fileSuffix() + "\" is present at the server.")
             );
             return match;
         } catch (IOException e) {
             logger.error("Could not list files", e);
+            return empty();
+        }
+    }
+
+    public Optional<FTPFile> waitForUploadCompletion(FTPFile ftpFile) {
+        logger.debug("Waiting for " + ftpFile.getName() + " being uploaded completely");
+        try {
+            int attempt = 0;
+            long lastSize;
+            long newSize = ftpFile.getSize();
+            do {
+                if (attempt >= config.ftp().checkUploadCompleteMaxAttempts()) {
+                    throw new InterruptedException("Exceeded " + config.ftp().checkUploadCompleteMaxAttempts() + " attempts");
+                }
+                attempt++;
+                Thread.sleep(config.ftp().checkUploadCompleteInterval());
+                lastSize = newSize;
+                final var polledFileOptional = Arrays.stream(ftpClient.listFiles(config.ftp().path(), fetchedFtpFile -> Objects.equals(fetchedFtpFile.getName(), ftpFile.getName()))).findFirst();
+                if (polledFileOptional.isPresent()) {
+                    final var polledFile = polledFileOptional.get();
+                    if (polledFile.getSize() == lastSize) {
+                        break;
+                    }
+                    logger.debug("→ [" + attempt + " / " + config.ftp().checkUploadCompleteMaxAttempts() + "] File size changed: " + byteCountToDisplaySize(lastSize) + " → " + byteCountToDisplaySize(polledFile.getSize()));
+                    newSize = polledFile.getSize();
+                    if (newSize > config.ftp().maxFileSize()) {
+                        throw new IOException("File size is bigger than an usual operation fax: " + newSize);
+                    }
+                } else {
+                    return empty();
+                }
+            } while (newSize > lastSize);
+            logger.debug("→ Upload complete, total file size: " + byteCountToDisplaySize(lastSize));
+            return Optional.of(ftpFile);
+        } catch (IOException | InterruptedException e) {
+            logger.error(e.getMessage(), e);
             return empty();
         }
     }
@@ -76,7 +123,7 @@ public class OperationRemoteRepository {
             logger.trace("→ Created temporary file: " + target.getName());
 
             try (final var outputStream = new BufferedOutputStream(new FileOutputStream(target))) {
-                if (ftpClient.retrieveFile(config.getFtp().getPath() + "/" + source.getName(), outputStream)) {
+                if (ftpClient.retrieveFile(config.ftp().path() + "/" + source.getName(), outputStream)) {
                     logger.debug("→ Download successful: " + target.getName());
                     return Optional.of(target);
                 } else {

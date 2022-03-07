@@ -4,6 +4,7 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.OperationRemoteRepository;
+import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -29,9 +30,9 @@ public class OperationApiImplTest {
     @BeforeEach
     public void setup() {
         config = mock(FisConfiguration.class);
-        when(config.getFtp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
-        when(config.getOperation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
-        when(config.getOperation().getDuration()).thenReturn(500L);
+        when(config.ftp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
+        when(config.operation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
+        when(config.operation().duration()).thenReturn(500L);
         operationRemoteRepository = mock(OperationRemoteRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
         this.api = new OperationApiImpl(
@@ -87,6 +88,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldReturnAnActiveOperation_whenAvailable() {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -100,6 +102,7 @@ public class OperationApiImplTest {
     @Test
     public void shouldResetActiveOperations_afterGivenTime() throws InterruptedException {
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
@@ -109,7 +112,7 @@ public class OperationApiImplTest {
         assertEquals("Should return an active operation when available", HttpStatus.OK, resp1.getStatusCode());
         assertNotNull("Should return an active operation when available", resp1.getBody());
 
-        Thread.sleep(config.getOperation().getDuration() + 500L);
+        Thread.sleep(config.operation().duration() + 500L);
 
         final var resp2 = api.getOperation("");
         assertEquals("Should return an active operation when available", HttpStatus.NO_CONTENT, resp2.getStatusCode());
@@ -125,6 +128,7 @@ public class OperationApiImplTest {
         when(operation2.getKeyword()).thenReturn("Bar");
 
         when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationRemoteRepository.waitForUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
         when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(operation1));
 

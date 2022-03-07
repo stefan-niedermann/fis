@@ -44,11 +44,11 @@ optical character recognition, parse the text to a machine-readable JSON file an
 ### Prerequisites
 
 - You will need at least a [Java Runtime Environment 17 or higher](https://java.com)
-- Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
 - Install [`Tesseract ≥ 4.0.0`](https://tesseract-ocr.github.io/tessdoc/Installation.html), on Debian / Ubuntu based systems, this is usually done with
   ```sh
   sudo apt install tesseract-ocr
   ```
+- Optional: Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
 
 ### Configuration
 
@@ -64,8 +64,11 @@ fis:
     # path: /FRITZ/faxbox
     # fileSuffix: .pdf
     # pollInterval: 10000
+    # checkUploadCompleteInterval: 300
+    # checkUploadCompleteMaxAttempts: 10
+    # maxFileSize: 10000000
   weather:
-    key: SECRET # OpenWeatherMap API key
+    # key: SECRET # Optional OpenWeatherMap API key
     # lang: de
     # units: metric
     # location: 2921044
@@ -121,6 +124,20 @@ chmod +x fis.jar
 Call `sudo systemctl daemon-reload` to make `systemd` aware of the new service and `systemctl enable fis.service` to run JarFIS automatically when booting your server.
 
 See the Spring Boot documentation to learn how to configure JarFIS as [`init.d`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.nix-services.init-d) service or on [`Windows`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.windows-services). 
+
+It is highly recommended providing a proper logging strategy in your `application.yml` by appending:
+
+```yml
+logging:
+  pattern:
+    console:
+  file:
+    name: fis.log
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
+      max-history: 30
+```
 
 ## Maintainer
 

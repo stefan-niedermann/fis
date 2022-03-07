@@ -50,6 +50,7 @@ public class OperationApiImpl implements OperationApi {
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
     public void pollOperations() {
         remoteRepository.poll()
+                .flatMap(remoteRepository::waitForUploadCompletion)
                 .flatMap(remoteRepository::download)
                 .ifPresent(this::parseAndApplyOperation);
     }
@@ -58,7 +59,7 @@ public class OperationApiImpl implements OperationApi {
         this.processing = true;
 
         this.parserRepository.parse(operationFile).ifPresent(operationDto -> {
-            logger.debug("Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
+            logger.debug("🚒 Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
             this.currentOperation = operationDto;
 
             logger.debug("Planning cancellation of currently active operation: \"" + operationDto.getKeyword() + "\"…");
@@ -80,8 +81,8 @@ public class OperationApiImpl implements OperationApi {
 
         cancelCurrentOperation = new Thread(() -> {
             try {
-                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.getOperation().getDuration() / 1_000 + "s");
-                Thread.sleep(config.getOperation().getDuration());
+                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.operation().duration() / 1_000 + "s");
+                Thread.sleep(config.operation().duration());
                 if (Thread.currentThread().isInterrupted()) {
                     throw new InterruptedException();
                 }

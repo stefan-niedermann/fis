@@ -49,12 +49,15 @@ jobs:
         run: npm ci
       - name: Run frontend End to End tests
         working-directory: frontend
-        run: npm run e2e
+        run: npm run e2e:mock
       - name: Upload videos
         uses: actions/upload-artifact@v2
+        if: always()
         with:
-          name: e2e-videos
-          path: frontend/cypress/videos
+          name: e2e-mock-results
+          path: |
+            frontend/cypress/videos
+            frontend/cypress/screenshots
 
   test-backend:
     name: Backend Unit tests
@@ -115,3 +118,68 @@ jobs:
         with:
           name: jar
           path: build/libs/fis*.jar
+
+  e2e-prod:
+    name: Production End to End tests
+    needs: jar
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: 17
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup local FTP server
+        run: |
+          sudo apt-get install vsftpd lftp tesseract-ocr
+          sudo useradd -m testuser
+          echo 'testuser:testuser' | sudo chpasswd
+          sudo sed -i 's/#write_enable/write_enable/g' /etc/vsftpd.conf
+          sudo systemctl restart vsftpd
+          sleep 3
+      - name: Unstash JarFIS
+        uses: actions/download-artifact@v2
+        with:
+          name: jar
+          path: frontend
+      - name: Rename jar file
+        working-directory: frontend
+        run: mv fis*.jar fis.jar
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+        with:
+          start: java -jar fis.jar
+          wait-on: 'http://localhost:8080'
+          working-directory: frontend
+          spec: cypress/integration/prod.spec.ts
+          config: baseUrl=http://localhost:8080
+          browser: chrome
+          headless: true
+        env:
+          FIS_FTP_HOST: localhost
+          FIS_FTP_USERNAME: testuser
+          FIS_FTP_PASSWORD: testuser
+          FIS_FTP_PATH: /home/testuser
+          FIS_FTP_POLL_INTERVAL: 100
+          FIS_OPERATION_DURATION: 3000
+          FIS_CLIENT_WEATHER_POLL_INTERVAL: 60000
+          FIS_CLIENT_OPERATION_POLL_INTERVAL: 1000
+          FIS_CLIENT_HIGHLIGHT: Foo
+          LOGGING_LEVEL_IT_NIEDERMANN: TRACE
+          LOGGING_PATTERN_CONSOLE: ''
+          LOGGING_FILE_NAME: cypress/fis.log
+          CYPRESS_FTP_HOST: localhost
+          CYPRESS_FTP_DIR: /home/testuser
+          CYPRESS_FTP_USER: testuser
+          CYPRESS_FTP_PASS: testuser
+      - name: Upload results
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: e2e-prod-results
+          path: |
+            frontend/cypress/videos
+            frontend/cypress/screenshots
+            frontend/cypress/fis.log

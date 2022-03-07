@@ -12,13 +12,14 @@ import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 class OperationTesseractFactory {
 
     public Tesseract createTesseract(FisConfiguration config) {
-        if (ObjectUtils.isEmpty(config.getTesseract().getTessdata())) {
-            config.getTesseract().setTessdata(extractTessResources("tessdata").getAbsolutePath());
-        }
+        final var tessdata = ObjectUtils.isEmpty(config.tesseract().tessdata())
+                ? extractTessResources("tessdata").getAbsolutePath()
+                : config.tesseract().tessdata();
         final var tesseract = new Tesseract();
         tesseract.setVariable("LC_ALL", "C");
-        tesseract.setDatapath(config.getTesseract().getTessdata());
-        tesseract.setLanguage(config.getTesseract().getLang());
+        tesseract.setVariable("user_defined_dpi", "150"); // https://stackoverflow.com/a/58296472
+        tesseract.setDatapath(tessdata);
+        tesseract.setLanguage(config.tesseract().lang());
         return tesseract;
     }
 }

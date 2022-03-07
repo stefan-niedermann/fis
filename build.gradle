@@ -19,7 +19,7 @@ dependencies {
     implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
 
     // OCR
-    implementation 'net.sourceforge.tess4j:tess4j:5.1.1'
+    implementation 'net.sourceforge.tess4j:tess4j:5.2.0'
 
     // FTP
     implementation 'commons-net:commons-net:3.8.0'

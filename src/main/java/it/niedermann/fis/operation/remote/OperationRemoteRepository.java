@@ -11,7 +11,13 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.*;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Optional.empty;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
@@ -23,8 +29,7 @@ public class OperationRemoteRepository {
 
     private final FisConfiguration config;
     private final FTPClient ftpClient;
-    private final Collection<String> alreadyExistingFileNames = new LinkedList<>();
-    private boolean firstPoll = true;
+    private Instant pruneBefore = Instant.now();
 
     public OperationRemoteRepository(
             FisConfiguration config,
@@ -35,19 +40,15 @@ public class OperationRemoteRepository {
     }
 
     public Optional<FTPFile> poll() {
-        if (alreadyExistingFileNames.size() == 0) {
-            logger.debug("Checking FTP server for incoming operations");
-        } else {
-            logger.debug("Checking FTP server for incoming operations (excluding \"" + alreadyExistingFileNames.size() + " known files\")");
-        }
+        logger.debug("Checking FTP server for incoming operations since " + pruneBefore.atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
         try {
             final var files = ftpClient.listFiles(config.ftp().path());
-            Arrays.stream(files).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            Arrays.stream(files).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().toInstant().atZone(ZoneId.systemDefault()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME) + "] " + file.getName()));
             final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))
                     .filter(file -> file.getSize() < config.ftp().maxFileSize())
-                    .filter(file -> !alreadyExistingFileNames.contains(file.getName()))
+                    .filter(file -> file.getTimestamp().toInstant().isAfter(pruneBefore))
                     .sorted(Comparator
                             .comparing(FTPFile::getName)
                             .reversed())
@@ -56,18 +57,11 @@ public class OperationRemoteRepository {
                             .reversed())
                     .limit(1)
                     .findFirst();
-            match.ifPresent(ftpFile -> alreadyExistingFileNames.add(ftpFile.getName()));
-            if (firstPoll) {
-                firstPoll = false;
-                alreadyExistingFileNames.addAll(Arrays.stream(files).map(FTPFile::getName).toList());
-                match.ifPresentOrElse(
-                        ftpFile -> logger.info("Ignoring existing operation when polling the first time: " + ftpFile.getName()),
-                        () -> logger.info("No operation was present when polling the first time.")
-                );
-                return empty();
-            }
             match.ifPresentOrElse(
-                    ftpFile -> logger.info("🚒 New incoming operation detected: " + ftpFile.getName()),
+                    ftpFile -> {
+                        logger.info("🚒 New incoming operation detected: " + ftpFile.getName());
+                        pruneBefore = ftpFile.getTimestamp().toInstant();
+                    },
                     () -> logger.debug("→ No new file with suffix \"" + config.ftp().fileSuffix() + "\" is present at the server.")
             );
             return match;

@@ -24,9 +24,11 @@ public class OperationRemoteRepositoryTest {
 
     private OperationRemoteRepository repository;
     private FTPClient ftpClient;
+    private Instant beforeServerStart;
 
     @BeforeEach
     public void setup() throws IOException {
+        beforeServerStart = now();
         final var ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
         when(ftpConfig.fileSuffix()).thenReturn(".pdf");
         when(ftpConfig.checkUploadCompleteInterval()).thenReturn(0L);
@@ -45,15 +47,13 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
-    public void shouldReturnEmptyIfAnIORelatedErrorOccurs() throws IOException {
+    public void shouldSkipOnError() throws IOException {
         when(ftpClient.listFiles(any())).thenThrow(new IOException());
         assertTrue(repository.poll().isEmpty());
     }
 
     @Test
-    public void shouldReturnEmptyIfNoFileIsPresent() throws IOException {
-        doFirstPoll();
-
+    public void shouldSkipOtherTypesThanFiles() {
         List.of(
                 FTPFile.DIRECTORY_TYPE,
                 FTPFile.UNKNOWN_TYPE,
@@ -72,165 +72,128 @@ public class OperationRemoteRepositoryTest {
     }
 
     @Test
-    public void shouldFilterFolders() throws IOException {
-        doFirstPoll();
-
+    public void shouldSkipEmptyRemote() throws IOException {
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[0]);
         assertTrue(repository.poll().isEmpty());
     }
 
     @Test
-    public void shouldNotReturnTheSameFileMultipleTimesAfterFirstPoll() throws IOException {
-        doFirstPoll();
+    public void shouldSkipExistingFilesButReturnNewFiles() throws IOException {
+        final var existingFoo = createFTPFile("Foo.pdf", beforeServerStart);
+        final var existingBar = createFTPFile("Bar.pdf", beforeServerStart);
 
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.pdf", now())
+                existingFoo, existingBar
         });
+        assertTrue(repository.poll().isEmpty());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                existingFoo, createFTPFile("Qux.pdf", nextPolledInstant()), existingBar
+        });
+        final var addedFile = repository.poll();
+        assertTrue(addedFile.isPresent());
+        assertEquals("Qux.pdf", addedFile.get().getName());
+    }
+
+    @Test
+    public void shouldSkipTheSameFileWhenPollAgain() throws IOException {
+        final var response = new FTPFile[]{createFTPFile("Foo.pdf", nextPolledInstant())};
+        when(ftpClient.listFiles(any())).thenReturn(response);
 
         assertTrue(repository.poll().isPresent());
         assertTrue(repository.poll().isEmpty());
     }
 
     @Test
-    public void shouldNotReturnExistingFilesOnTheFirstPoll() throws IOException {
-        final var file1 = createFTPFile("Foo.pdf", now());
-        final var file2 = createFTPFile("Bar.pdf", now());
-        final var file3 = createFTPFile("Qux.pdf", now());
-
+    public void shouldFilterBySuffix() throws IOException {
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                file1, file2
+                createFTPFile("Foo.doc", nextPolledInstant())
         });
         assertTrue(repository.poll().isEmpty());
-        assertTrue(repository.poll().isEmpty());
-        assertTrue(repository.poll().isEmpty());
+    }
 
-        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                file1, file3, file2
-        });
-
+    @Test
+    public void shouldReturnTheAlphabeticallyHigherFileInCaseOfEqualTimestamps() throws IOException {
+        final var timestamp = nextPolledInstant();
+        final var response = new FTPFile[]{
+                createFTPFile("Bar.pdf", timestamp),
+                createFTPFile("Foo.pdf", timestamp)
+        };
+        when(ftpClient.listFiles(any())).thenReturn(response);
         final var result = repository.poll();
         assertTrue(result.isPresent());
-        assertEquals("Qux.pdf", result.get().getName());
+        assertEquals("Foo.pdf", result.get().getName());
     }
 
     @Test
-    public void shouldNotReturnAlreadyExistingFilesWhenPollingMultipleTimes() throws IOException {
+    public void shouldSkipNewFilesWithSameOrLowerTimestampThanTheLastOne() throws IOException {
+        final var timestamp = nextPolledInstant();
+
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.pdf", now())
+                createFTPFile("Foo.pdf", timestamp),
         });
-
-        assertTrue(repository.poll().isEmpty());
-        assertTrue(repository.poll().isEmpty());
-    }
-
-    @Test
-    public void shouldReturnOnlyFilesWhichHaveBeenAddedAfterPollingStart() throws IOException {
-        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.pdf", now().minus(3, ChronoUnit.MINUTES))
-        });
-        final var existingFtpFile = repository.poll();
-        assertTrue(existingFtpFile.isEmpty());
+        final var file = repository.poll();
+        assertTrue(file.isPresent());
+        assertEquals("Foo.pdf", file.get().getName());
 
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Bar.pdf", now())
-        });
-        final var addedFtpFile = repository.poll();
-        assertTrue(addedFtpFile.isPresent());
-        assertEquals("Bar.pdf", addedFtpFile.get().getName());
-    }
-
-    @Test
-    public void shouldFilterBySuffix() throws IOException {
-        doFirstPoll();
-
-        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.doc", now().minus(3, ChronoUnit.MINUTES))
+                createFTPFile("Foo.pdf", timestamp),
+                createFTPFile("Bar.pdf", timestamp.minus(5, ChronoUnit.MINUTES))
         });
         assertTrue(repository.poll().isEmpty());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                createFTPFile("Bar.pdf", timestamp.minus(5, ChronoUnit.MINUTES)),
+                createFTPFile("Foo.pdf", timestamp)
+        });
+        assertTrue(repository.poll().isEmpty());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                createFTPFile("Bar.pdf", timestamp),
+                createFTPFile("Foo.pdf", timestamp)
+        });
+        assertTrue(repository.poll().isEmpty());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                createFTPFile("Bar.pdf", timestamp),
+                createFTPFile("Foo.pdf", timestamp)
+        });
+        assertTrue(repository.poll().isEmpty());
     }
 
     @Test
-    public void shouldReturnTheMostCurrentFile() throws IOException {
-        doFirstPoll();
+    public void shouldReturnTheMostRecentFile() throws IOException {
+        final var timestamp = nextPolledInstant();
 
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.pdf", now()),
-                createFTPFile("Bar.pdf", now().minus(3, ChronoUnit.MINUTES))
+                createFTPFile("Foo.pdf", timestamp),
         });
-        final var ftpFile1 = repository.poll();
-        assertTrue(ftpFile1.isPresent());
-        assertEquals("Foo.pdf", ftpFile1.get().getName());
+        final var file1 = repository.poll();
+        assertTrue(file1.isPresent());
+        assertEquals("Foo.pdf", file1.get().getName());
 
         when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("Foo.pdf", now().minus(3, ChronoUnit.MINUTES)),
-                createFTPFile("Bar.pdf", now())
+                createFTPFile("Foo.pdf", timestamp),
+                createFTPFile("Bar.pdf", timestamp.plus(5, ChronoUnit.MINUTES))
         });
-        final var ftpFile2 = repository.poll();
-        assertTrue(ftpFile2.isPresent());
-        assertEquals("Bar.pdf", ftpFile2.get().getName());
+        final var file2 = repository.poll();
+        assertTrue(file2.isPresent());
+        assertEquals("Bar.pdf", file2.get().getName());
+
+        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
+                createFTPFile("Foo.pdf", timestamp),
+                createFTPFile("Qux.pdf", timestamp.plus(10, ChronoUnit.MINUTES)),
+                createFTPFile("Bar.pdf", timestamp.plus(5, ChronoUnit.MINUTES))
+        });
+        final var file3 = repository.poll();
+        assertTrue(file3.isPresent());
+        assertEquals("Qux.pdf", file3.get().getName());
     }
 
     @Test
-    public void shouldTakeTheAlphabeticallyHigherFileInCaseOfEqualTimestampsRespectingPastMatches() throws IOException {
-        doFirstPoll();
-
+    public void pollingShouldSkipHugeFiles() throws IOException {
         when(ftpClient.listFiles(any())).thenReturn(
-                new FTPFile[]{
-                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
-                },
-                new FTPFile[]{
-                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
-                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L))
-                },
-                new FTPFile[]{
-                        createFTPFile("brand-3.pdf", Instant.ofEpochMilli(1646654220000L)),
-                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
-                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L))
-                },
-                new FTPFile[]{
-                        createFTPFile("brand-3.pdf", Instant.ofEpochMilli(1646654220000L)),
-                        createFTPFile("thl-1.pdf", Instant.ofEpochMilli(1646654160000L)),
-                        createFTPFile("thl-2.pdf", Instant.ofEpochMilli(1646654220000L)),
-                        createFTPFile("thl-4.pdf", Instant.ofEpochMilli(1646654220000L))
-                }
-        );
-
-        final var thl1 = repository.poll();
-        assertTrue(thl1.isPresent());
-        assertEquals("thl-1.pdf", thl1.get().getName());
-
-        final var thl2 = repository.poll();
-        assertTrue(thl2.isPresent());
-        assertEquals("thl-2.pdf", thl2.get().getName());
-
-        final var brand3 = repository.poll();
-        assertTrue(brand3.isPresent());
-        assertEquals("brand-3.pdf", brand3.get().getName());
-
-        final var thl4 = repository.poll();
-        assertTrue(thl4.isPresent());
-        assertEquals("thl-4.pdf", thl4.get().getName());
-    }
-
-    @Test
-    public void shouldTakeTheAlphabeticallyHigherFileInCaseOfEqualTimestamps() throws IOException {
-        doFirstPoll();
-
-        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[]{
-                createFTPFile("brand.pdf", Instant.ofEpochMilli(1646641500000L)),
-                createFTPFile("thl.pdf", Instant.ofEpochMilli(1646641500000L))
-        });
-        final var ftpFile = repository.poll();
-        assertTrue(ftpFile.isPresent());
-        assertEquals("thl.pdf", ftpFile.get().getName());
-    }
-
-    @Test
-    public void pollingShouldIgnoreHugeFiles() throws IOException {
-        doFirstPoll();
-
-        when(ftpClient.listFiles(any())).thenReturn(
-                new FTPFile[]{createFTPFile("Foo.pdf", now(), 10_000_001L)}
+                new FTPFile[]{createFTPFile("Foo.pdf", nextPolledInstant(), 10_000_001L)}
         );
         assertTrue(repository.poll().isEmpty());
     }
@@ -337,8 +300,10 @@ public class OperationRemoteRepositoryTest {
         assertTrue(repository.awaitUploadCompletion(file).isEmpty());
     }
 
-    private void doFirstPoll() throws IOException {
-        when(ftpClient.listFiles(any())).thenReturn(new FTPFile[0]);
-        repository.poll();
+    /**
+     * @return an {@link Instant} which for sure will be accepted as "newer" than the server start time in {@link OperationRemoteRepository} by adding enough time.
+     */
+    private Instant nextPolledInstant() {
+        return now().plus(1, ChronoUnit.SECONDS);
     }
 }

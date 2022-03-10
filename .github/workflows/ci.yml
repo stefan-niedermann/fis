@@ -193,7 +193,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Clear everything but the Dockerfile
-        run: rm -v !("Dockerfile")
+        run: rm -rv !("Dockerfile")
       - name: Unstash JarFIS
         uses: actions/download-artifact@v2
         with:

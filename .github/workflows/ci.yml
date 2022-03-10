@@ -194,10 +194,8 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: jar
-          path: frontend
-        - name: Rename jar file
-          working-directory: frontend
-          run: mv fis*.jar fis.jar
+      - name: Rename jar file
+        run: mv fis*.jar fis.jar
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx

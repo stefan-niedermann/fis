@@ -215,8 +215,8 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          context: ./
-          file: ./docker/Dockerfile
+          context: .
+          file: docker/Dockerfile
           tags: niedermann/fis:latest
           build-args: |
-            JAR_FILE=fis.jar
+            JAR_FILE=docker/fis.jar

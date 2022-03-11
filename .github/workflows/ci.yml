@@ -189,6 +189,8 @@ jobs:
     #if: github.ref == 'refs/heads/master'
     needs: [ validation, lint-ui, test-ui, e2e-ui, test-backend, build-ui, jar, e2e-prod ]
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
     steps:
       - name: Checkout
         uses: actions/checkout@v3

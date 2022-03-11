@@ -185,9 +185,9 @@ jobs:
             frontend/cypress/fis.log
 
   docker:
-    name: Bundle Docker container
+    name: Docker
     # if: github.ref == 'refs/heads/master'
-    needs: jar
+    needs: [jar, e2e-prod]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

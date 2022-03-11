@@ -218,3 +218,5 @@ jobs:
           context: ./
           file: ./docker/Dockerfile
           tags: niedermann/fis:latest
+          build-args:
+            JAR_FILE: fis.jar

@@ -1,7 +1,8 @@
 FROM openjdk:17-jdk-alpine
 RUN ls -all
 RUN ls -all CACHED
-COPY fis.jar /fis.jar
+ARG JAR_FILE
+COPY ${JAR_FILE} app.jar
 RUN addgroup -S spring && adduser -S spring -G spring
 USER spring:spring
-ENTRYPOINT ["java","-jar","/fis.jar"]
+ENTRYPOINT ["java","-jar","/app.jar"]

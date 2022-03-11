@@ -186,7 +186,7 @@ jobs:
 
   docker:
     name: Docker
-    # if: github.ref == 'refs/heads/master'
+    if: github.ref == 'refs/heads/master'
     needs: [validation, lint-ui, test-ui, e2e-ui, test-backend, build-ui, jar, e2e-prod]
     runs-on: ubuntu-latest
     steps:

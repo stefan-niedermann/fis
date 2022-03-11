@@ -1,9 +1,15 @@
 FROM openjdk:17-jdk-alpine
-RUN ls -all
-ARG JAR_FILE
-COPY ${JAR_FILE} app.jar
+
+MAINTAINER Niedermann IT <info@niedermann.it>
+
 RUN apk add --update-cache tesseract-ocr && rm -rf /var/cache/apk/*
-RUN addgroup -S spring && adduser -S spring -G spring
-USER spring:spring
+RUN addgroup -S jarfis && adduser -S jarfis -G jarfis
+
+USER jarfis:jarfis
+
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/app.jar"]
+
+ARG JAR_FILE
+COPY ${JAR_FILE} fis.jar
+
+ENTRYPOINT ["java","-jar","/fis.jar"]

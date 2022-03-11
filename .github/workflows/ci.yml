@@ -225,7 +225,5 @@ jobs:
           context: .
           file: docker/Dockerfile
           tags: ${{ steps.prep.outputs.tags }}
-          secrets: |
-            GIT_AUTH_TOKEN=${{ github.token }}
           build-args: |
             JAR_FILE=docker/fis.jar

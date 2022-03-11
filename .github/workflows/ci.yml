@@ -215,5 +215,6 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           push: true
-          file: docker
+          context: docker
+          file: Dockerfile
           tags: niedermann/fis:latest

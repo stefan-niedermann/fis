@@ -192,15 +192,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Clear everything but the Dockerfile
-        run: |
-          mkdir docker
-          mv Dockerfile docker
       - name: Unstash JarFIS
         uses: actions/download-artifact@v2
         with:
           name: jar
-      - name: Rename jar file
+      - name: Move unstashed JarFIS to docker folder
         run: mv fis*.jar docker/fis.jar
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1

@@ -187,7 +187,7 @@ jobs:
   docker:
     name: Docker
     #if: github.ref == 'refs/heads/master'
-    needs: [validation, lint-ui, test-ui, e2e-ui, test-backend, build-ui, jar, e2e-prod]
+    needs: [ validation, lint-ui, test-ui, e2e-ui, test-backend, build-ui, jar, e2e-prod ]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -225,5 +225,7 @@ jobs:
           context: .
           file: docker/Dockerfile
           tags: ${{ steps.prep.outputs.tags }}
+          secrets: |
+            GIT_AUTH_TOKEN=${{ github.token }}
           build-args: |
             JAR_FILE=docker/fis.jar

@@ -16,7 +16,7 @@
   - [Configuration](#configuration)
   - [Start](#start)
   - [Run as service](#run-as-service)
-  - [Run as docker container](#run-as-docker-container)
+  - [Run as docker container](#run-with-docker)
 - [Maintainer](#maintainer)
 - [License](#license)
 
@@ -140,7 +140,7 @@ logging:
       max-history: 30
 ```
 
-### Run as Docker container
+### Run with Docker
 
 Create a file called `jarfis.txt`. Write [each configuration parameter](#configuration) you want to customize to this file as [environment variables](https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html), e.g.:
 

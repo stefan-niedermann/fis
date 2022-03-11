@@ -42,7 +42,7 @@ public class OperationRemoteRepository {
         }
         try {
             final var files = ftpClient.listFiles(config.ftp().path());
-            Arrays.stream(files).forEach(file -> logger.trace("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            Arrays.stream(files).forEach(file -> logger.debug("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
             final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)
                     .filter(file -> file.getName().endsWith(config.ftp().fileSuffix()))

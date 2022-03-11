@@ -42,6 +42,24 @@ public class OperationRemoteRepository {
         }
         try {
             final var files = ftpClient.listFiles(config.ftp().path());
+            try {
+                logger.debug("+ /");
+                Arrays.stream(ftpClient.listFiles()).forEach(file -> logger.debug("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            try {
+                logger.debug("+ /FRITZ");
+                Arrays.stream(ftpClient.listFiles("FRITZ")).forEach(file -> logger.debug("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
+            try {
+                logger.debug("+ /FRITZ/faxbox");
+                Arrays.stream(ftpClient.listFiles("/FRITZ/faxbox")).forEach(file -> logger.debug("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
+            } catch (Exception e) {
+                logger.error(e.getMessage(), e);
+            }
             Arrays.stream(files).forEach(file -> logger.debug("⇒ [" + file.getTimestamp().getTimeInMillis() + "] " + file.getName()));
             final var match = Arrays.stream(files)
                     .filter(FTPFile::isFile)

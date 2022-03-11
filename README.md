@@ -16,6 +16,7 @@
   - [Configuration](#configuration)
   - [Start](#start)
   - [Run as service](#run-as-service)
+  - [Run as docker container](#run-as-docker-container)
 - [Maintainer](#maintainer)
 - [License](#license)
 
@@ -138,6 +139,23 @@ logging:
       file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
       max-history: 30
 ```
+
+### Run as Docker container
+
+Create a file called `jarfis.txt`. Write [each configuration parameter](#configuration) you want to customize to this file as [environment variables](https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html), e.g.:
+
+```sh
+FIS_FTP_USERNAME=Sample
+FIS_FTP_PASSWORD=Secret
+```
+
+When starting the container, pass a port mapping and environment variables as arguments:
+
+```sh
+docker run --network host --name jarfis --env-file jarfis.txt niedermann/fis
+```
+
+Developer note: It should be enough to just map the port with `-p 8080:8080` instead of using `--network host`, but while fetching the weather and even connecting to the FTP server works without any issues, remote files can not be listed. This leads to a broken behavior that is not capable of displaying incoming operation faxes.
 
 ## Maintainer
 

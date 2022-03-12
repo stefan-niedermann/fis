@@ -184,10 +184,10 @@ jobs:
             frontend/cypress/screenshots
             frontend/cypress/fis.log
 
-  docker:
+  publish-image:
     name: Publish Docker image
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/')
-    needs: [ validation, lint-ui, test-ui, e2e-ui, test-backend, e2e-prod ]
+    needs: [ validation, lint-ui, test-ui, e2e-ui, test-backend, build-ui, jar, e2e-prod ]
     runs-on: ubuntu-latest
     permissions:
       packages: write

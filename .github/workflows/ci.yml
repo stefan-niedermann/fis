@@ -230,3 +230,22 @@ jobs:
           tags: ghcr.io/${{ github.repository }}:${{ steps.prep.outputs.tags }}
           build-args: |
             JAR_FILE=docker/fis.jar
+
+  publish-release:
+    name: Publish GitHub release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [ validation, lint-ui, test-ui, e2e-ui, test-backend, jar, e2e-prod ]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Unstash JarFIS
+        uses: actions/download-artifact@v2
+        with:
+          name: jar
+      - uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: ${{ secrets.RELEASE_TOKEN }}
+          prerelease: false
+          files: |
+            *.jar

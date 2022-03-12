@@ -152,7 +152,7 @@ FIS_FTP_PASSWORD=Secret
 When starting the container, pass a port mapping and environment variables as arguments:
 
 ```sh
-docker run --network host --name jarfis --env-file jarfis.txt niedermann/fis
+docker run --network host --name jarfis --env-file jarfis.txt ghcr.io/stefan-niedermann/fis
 ```
 
 Developer note: It should be enough to just map the port with `-p 8080:8080` instead of using `--network host`, but while fetching the weather and even connecting to the FTP server works without any issues, remote files can not be listed. This leads to a broken behavior that is not capable of displaying incoming operation faxes.

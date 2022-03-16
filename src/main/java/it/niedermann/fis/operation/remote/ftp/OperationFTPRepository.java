@@ -1,4 +1,4 @@
-package it.niedermann.fis.operation.remote;
+package it.niedermann.fis.operation.remote.ftp;
 
 import it.niedermann.fis.FisConfiguration;
 import org.apache.commons.net.ftp.FTPClient;
@@ -17,21 +17,21 @@ import static java.util.Optional.empty;
 import static org.apache.commons.io.FileUtils.byteCountToDisplaySize;
 
 @Service
-public class OperationRemoteRepository {
+public class OperationFTPRepository {
 
-    private final Logger logger = LoggerFactory.getLogger(OperationRemoteRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(OperationFTPRepository.class);
 
     private final FisConfiguration config;
     private final FTPClient ftpClient;
     private final Collection<String> alreadyExistingFileNames = new LinkedList<>();
     private boolean firstPoll = true;
 
-    public OperationRemoteRepository(
+    public OperationFTPRepository(
             FisConfiguration config,
-            OperationFTPClientFactory ftpClientFactory
-    ) throws IOException {
+            OperationFTPClient ftpClient
+    ) {
         this.config = config;
-        this.ftpClient = ftpClientFactory.createFTPClient(config);
+        this.ftpClient = ftpClient;
     }
 
     public Optional<FTPFile> poll() {

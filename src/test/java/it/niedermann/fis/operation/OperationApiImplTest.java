@@ -3,7 +3,8 @@ package it.niedermann.fis.operation;
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
-import it.niedermann.fis.operation.remote.OperationRemoteRepository;
+import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
+import it.niedermann.fis.operation.remote.mail.OperationMailRepository;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,7 +25,8 @@ public class OperationApiImplTest {
 
     private OperationApiImpl api;
     private FisConfiguration config;
-    private OperationRemoteRepository operationRemoteRepository;
+    private OperationFTPRepository operationFTPRepository;
+    private OperationMailRepository operationMailRepository;
     private OperationParserRepository operationParserRepository;
 
     @BeforeEach
@@ -33,11 +35,13 @@ public class OperationApiImplTest {
         when(config.ftp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
         when(config.operation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
         when(config.operation().duration()).thenReturn(500L);
-        operationRemoteRepository = mock(OperationRemoteRepository.class);
+        operationFTPRepository = mock(OperationFTPRepository.class);
+        operationMailRepository = mock(OperationMailRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
         this.api = new OperationApiImpl(
                 config,
-                operationRemoteRepository,
+                operationFTPRepository,
+                operationMailRepository,
                 operationParserRepository
         );
     }
@@ -51,7 +55,7 @@ public class OperationApiImplTest {
 
     @Test
     public void shouldNotHaveAnyActiveOperation_whenNoFTPFileIsGiven() {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.empty());
+        when(operationFTPRepository.poll()).thenReturn(Optional.empty());
 
         api.pollOperations();
 
@@ -62,8 +66,8 @@ public class OperationApiImplTest {
 
     @Test
     public void shouldNotHaveAnyActiveOperation_whenFTPDownloadFails() {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.download(any())).thenReturn(Optional.empty());
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.empty());
 
         api.pollOperations();
 
@@ -74,8 +78,8 @@ public class OperationApiImplTest {
 
     @Test
     public void shouldNotHaveAnyActiveOperation_whenParsingFails() {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.empty());
 
         api.pollOperations();
@@ -87,9 +91,9 @@ public class OperationApiImplTest {
 
     @Test
     public void shouldReturnAnActiveOperation_whenAvailable() {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
-        when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
         api.pollOperations();
@@ -101,9 +105,9 @@ public class OperationApiImplTest {
 
     @Test
     public void shouldResetActiveOperations_afterGivenTime() throws InterruptedException {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
-        when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
 
         api.pollOperations();
@@ -127,9 +131,9 @@ public class OperationApiImplTest {
         final var operation2 = mock(OperationDto.class);
         when(operation2.getKeyword()).thenReturn("Bar");
 
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
-        when(operationRemoteRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
-        when(operationRemoteRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
         when(operationParserRepository.parse(any())).thenReturn(Optional.of(operation1));
 
         api.pollOperations();
@@ -151,7 +155,7 @@ public class OperationApiImplTest {
      * The first poll will be ignored and not published
      */
     private void pollFirstTime() {
-        when(operationRemoteRepository.poll()).thenReturn(Optional.of(createFTPFile("Already existing PDF file.pdf", now())));
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Already existing PDF file.pdf", now())));
 
         api.pollOperations();
     }

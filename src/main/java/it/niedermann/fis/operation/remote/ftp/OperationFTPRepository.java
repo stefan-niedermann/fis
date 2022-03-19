@@ -34,7 +34,7 @@ public class OperationFTPRepository {
         this.ftpClient = ftpClient;
     }
 
-    public Optional<FTPFile> poll() {
+    public synchronized Optional<FTPFile> poll() {
         if (alreadyExistingFileNames.size() == 0) {
             logger.debug("Checking FTP server for incoming operations");
         } else {

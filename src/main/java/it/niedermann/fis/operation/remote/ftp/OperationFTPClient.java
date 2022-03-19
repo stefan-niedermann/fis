@@ -19,8 +19,8 @@ class OperationFTPClient extends FTPClient {
     ) throws IOException {
         connect(config.ftp().host());
         if (!login(config.ftp().username(), config.ftp().password())) {
-            throw new IllegalArgumentException("🚒 Could not connect to FTP server + " + config.ftp().host() + ". Please check FTP credentials.");
+            throw new IllegalArgumentException("❌ Could not connect to FTP server + " + config.ftp().host() + ". Please check FTP credentials.");
         }
-        logger.info("🚒 Connected to FTP server " + getRemoteAddress() + " on port " + getRemotePort() + ", polling each " + config.ftp().pollInterval() / 1_000 + " seconds.");
+        logger.info("✅ Connected to FTP server " + getRemoteAddress() + " on port " + getRemotePort() + ", polling each " + config.ftp().pollInterval() / 1_000 + " seconds.");
     }
 }

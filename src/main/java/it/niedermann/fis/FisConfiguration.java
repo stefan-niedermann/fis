@@ -14,6 +14,7 @@ import java.util.List;
 @ConfigurationProperties("fis")
 @Validated
 public record FisConfiguration(
+        String contact,
         TesseractConfiguration tesseract,
         WeatherConfiguration weather,
         FtpConfiguration ftp,
@@ -51,7 +52,8 @@ public record FisConfiguration(
 
     public static record OperationConfiguration(
             long duration,
-            List<String> recipients
+            List<String> recipients,
+            String sender
     ) {
     }
 }

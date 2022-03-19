@@ -17,8 +17,7 @@ import java.util.Optional;
 import static it.niedermann.fis.operation.OperationTestUtil.createFTPFile;
 import static java.time.Instant.now;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.util.AssertionErrors.*;
 
 public class OperationApiImplTest {
@@ -101,6 +100,22 @@ public class OperationApiImplTest {
         final var operation = api.getOperation("");
         assertEquals("Should return an active operation when available", HttpStatus.OK, operation.getStatusCode());
         assertNotNull("Should return an active operation when available", operation.getBody());
+    }
+
+    @Test
+    public void shouldSendAMail_whenOperationAvailable() {
+        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Foo.pdf", now())));
+        when(operationFTPRepository.awaitUploadCompletion(any())).thenReturn(Optional.of(mock(FTPFile.class)));
+        when(operationFTPRepository.download(any())).thenReturn(Optional.of(mock(File.class)));
+        when(operationParserRepository.parse(any())).thenReturn(Optional.of(mock(OperationDto.class)));
+
+        api.pollOperations();
+
+        verify(operationMailRepository, times(1)).send(any(OperationDto.class));
+
+        api.pollOperations();
+
+        verify(operationMailRepository, times(2)).send(any(OperationDto.class));
     }
 
     @Test

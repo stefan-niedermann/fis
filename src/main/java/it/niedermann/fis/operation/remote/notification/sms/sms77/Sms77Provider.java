@@ -1,0 +1,43 @@
+package it.niedermann.fis.operation.remote.notification.sms.sms77;
+
+import it.niedermann.fis.FisConfiguration;
+import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
+import it.niedermann.fis.operation.remote.notification.sms.AbstractSmsProvider;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import java.io.IOException;
+
+public class Sms77Provider extends AbstractSmsProvider {
+
+    private final Logger logger = LoggerFactory.getLogger(Sms77Provider.class);
+
+    private final Sms77Service service = new Retrofit.Builder()
+            .baseUrl("https://gateway.sms77.io/api/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(Sms77Service.class);
+
+    public Sms77Provider(
+            FisConfiguration config,
+            OperationNotificationUtil notificationUtil
+    ) {
+        super(config, notificationUtil);
+    }
+
+    @Override
+    public void accept(OperationDto operation) {
+        recipients.forEach(recipient -> {
+            try {
+                final Response<String> response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
+                logger.debug(response.body());
+            } catch (IOException e) {
+                logger.error(e.getMessage(), e);
+            }
+        });
+    }
+}

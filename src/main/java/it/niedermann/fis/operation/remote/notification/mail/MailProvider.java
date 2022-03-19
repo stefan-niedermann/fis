@@ -1,83 +1,51 @@
-package it.niedermann.fis.operation.remote.mail;
+package it.niedermann.fis.operation.remote.notification.mail;
 
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
+import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
-
-import static java.net.URLEncoder.encode;
+import java.util.function.Consumer;
 
 @Service
-public class OperationMailRepository {
+public class MailProvider implements Consumer<OperationDto> {
 
-    private final Logger logger = LoggerFactory.getLogger(OperationMailRepository.class);
+    private final Logger logger = LoggerFactory.getLogger(MailProvider.class);
 
     private final Optional<JavaMailSender> mailSender;
+    private final OperationNotificationUtil notificationUtil;
     private final Optional<String> sender;
     private final Optional<String> location;
     private final Collection<String> recipients;
 
-    public OperationMailRepository(
+    public MailProvider(
             FisConfiguration config,
+            OperationNotificationUtil notificationUtil,
             Optional<JavaMailSender> mailSender,
             Optional<String> location
     ) {
         this.mailSender = mailSender;
+        this.notificationUtil = notificationUtil;
         this.sender = Optional.ofNullable(config.operation().sender());
         this.location = location;
-        this.recipients = config.operation().recipients() == null
-                ? Collections.emptyList()
-                : config.operation().recipients();
+        this.recipients = filterMailRecipients(config.operation().recipients());
 
         if (mailSender.isPresent()) {
-            this.logger.info("✅ SMTP configuration is present");
-
-            if (recipients.size() > 0) {
-                this.logger.info("✅ " + recipients.size() + " recipients configured");
-
-                if (sender.isPresent()) {
-                    this.logger.info("✅ Sender configured: " + sender);
-                } else {
-                    this.logger.warn("No Sender is configured: Mails might go to junk folder");
-                }
-            } else {
-                if (sender.isPresent()) {
-                    this.logger.info("No recipients are configured: No mail notification will be sent");
-                } else {
-                    this.logger.info("No recipients and no sender are configured: No mail notification will be sent");
-                }
-            }
-        } else {
-            if (recipients.size() > 0) {
-                this.logger.info("✅ " + recipients.size() + " recipients configured");
-
-                if (sender.isPresent()) {
-                    this.logger.info("✅ Sender configured: " + sender);
-                } else {
-                    this.logger.warn(recipients.size() + " recipients are configured, but SMTP configuration is missing.");
-                }
-            } else {
-                if (sender.isPresent()) {
-                    this.logger.info("✅ Sender configured: " + sender);
-                } else {
-                    this.logger.warn("No Sender is configured: Mails might go to junk folder");
-                }
-            }
+            logger.info("✅ Found SMTP configuration");
         }
     }
 
-    @Async
-    public void send(OperationDto operation) {
+    @Override
+    public void accept(OperationDto operation) {
         mailSender.ifPresentOrElse(
                 mailSender -> {
                     if (this.recipients.size() > 0) {
@@ -97,6 +65,7 @@ public class OperationMailRepository {
         );
     }
 
+    @SuppressWarnings("SpellCheckingInspection")
     private SimpleMailMessage createMessage(String recipient, String sender, Optional<String> location, OperationDto operation) {
         final var message = new SimpleMailMessage();
         message.setFrom(sender);
@@ -120,17 +89,18 @@ public class OperationMailRepository {
                 operation.getStreet(),
                 operation.getNumber(),
                 operation.getLocation(),
-                getGoogleMapsLink(location, operation),
+                location.isPresent()
+                        ? notificationUtil.getGoogleMapsLink(operation, location.get())
+                        : notificationUtil.getGoogleMapsLink(operation),
                 operation.getNote(),
                 String.join(", ", operation.getVehicles())));
         return message;
     }
 
-    private String getGoogleMapsLink(Optional<String> location, OperationDto operation) {
-        final var link = String.format("https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&destination=%s",
-                encode(operation.getStreet() + " " + operation.getNumber() + ", " + operation.getLocation(), StandardCharsets.UTF_8));
-        return location
-                .map(s -> link + "&origin=" + encode(s, StandardCharsets.UTF_8))
-                .orElse(link);
+    private Collection<String> filterMailRecipients(Collection<String> recipients) {
+        final var validator = EmailValidator.getInstance();
+        return recipients == null
+                ? Collections.emptyList()
+                : recipients.stream().filter(validator::isValid).toList();
     }
 }

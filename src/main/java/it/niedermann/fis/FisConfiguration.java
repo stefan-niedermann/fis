@@ -54,6 +54,7 @@ public record FisConfiguration(
             long duration,
             String location,
             List<String> recipients,
+            String smsApiKey,
             String sender
     ) {
     }

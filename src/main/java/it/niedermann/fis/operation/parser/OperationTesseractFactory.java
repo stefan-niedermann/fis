@@ -3,7 +3,8 @@ package it.niedermann.fis.operation.parser;
 import it.niedermann.fis.FisConfiguration;
 import net.sourceforge.tess4j.Tesseract;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ObjectUtils;
+
+import java.util.Optional;
 
 import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 
@@ -12,13 +13,10 @@ import static net.sourceforge.tess4j.util.LoadLibs.extractTessResources;
 class OperationTesseractFactory {
 
     public Tesseract createTesseract(FisConfiguration config) {
-        final var tessdata = ObjectUtils.isEmpty(config.tesseract().tessdata())
-                ? extractTessResources("tessdata").getAbsolutePath()
-                : config.tesseract().tessdata();
         final var tesseract = new Tesseract();
         tesseract.setVariable("LC_ALL", "C");
         tesseract.setVariable("user_defined_dpi", "150"); // https://stackoverflow.com/a/58296472
-        tesseract.setDatapath(tessdata);
+        tesseract.setDatapath(Optional.ofNullable(config.tesseract().tessdata()).orElse(extractTessResources("tessdata").getAbsolutePath()));
         tesseract.setLanguage(config.tesseract().lang());
         return tesseract;
     }

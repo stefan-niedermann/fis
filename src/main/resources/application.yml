@@ -1,5 +1,7 @@
 fis:
   ftp:
+    # username: SECRET
+    # password: SECRET
     host: fritz.box
     path: /FRITZ/faxbox
     fileSuffix: .pdf
@@ -9,17 +11,25 @@ fis:
     maxFileSize: 10000000
   tesseract:
     lang: deu
+    tessdata: # CUSTOM TESSDATA
   weather:
+    key: # OPENWEATHERMAP API KEY
     lang: de
     units: metric
     location: 2921044
     pollInterval: 60000
   operation:
     duration: 1800000
-    notifications:
+    origin: # LOCATION OF YOUR FIRE STATION
+    notification:
       senderName: JarFIS
-      smsLimit: 10 # per day per recipient
+      senderMail: # TO AVOID JUNK FOLDER
+      smsLimit: 10 # PER DAY PER RECIPIENT TO AVOID COSTS BY SPAMMERS
+      mail:
+      # - foo@example.com
+      sms:
+      # - 0123456789
   client:
     weatherPollInterval: 30000
     operationPollInterval: 2000
-    highlight:
+    highlight: # YOUR FIRE STATION NAME

@@ -15,17 +15,29 @@ import java.util.Collection;
 @ConfigurationProperties("fis")
 @Validated
 public record FisConfiguration(
-        String contact,
+        FtpConfiguration ftp,
         TesseractConfiguration tesseract,
         WeatherConfiguration weather,
-        FtpConfiguration ftp,
         OperationConfiguration operation,
         ClientConfigurationDto client
 ) {
 
+    public static record FtpConfiguration(
+            @NotBlank String username,
+            @NotBlank String password,
+            @NotBlank String host,
+            String path,
+            @NotNull String fileSuffix,
+            @Min(100) long pollInterval,
+            @Min(100) long checkUploadCompleteInterval,
+            @Min(0) int checkUploadCompleteMaxAttempts,
+            @Min(0) long maxFileSize
+    ) {
+    }
+
     public static record TesseractConfiguration(
-            String tessdata,
-            @Length(min = 3, max = 3) @NotBlank String lang
+            @Length(min = 3, max = 3) @NotBlank String lang,
+            String tessdata
     ) {
     }
 
@@ -35,19 +47,6 @@ public record FisConfiguration(
             @NotBlank String units,
             @NotBlank String location,
             @Min(1_000) long pollInterval
-    ) {
-    }
-
-    public static record FtpConfiguration(
-            @NotBlank String host,
-            @NotBlank String username,
-            @NotBlank String password,
-            String path,
-            @NotNull String fileSuffix,
-            @Min(100) long pollInterval,
-            @Min(100) long checkUploadCompleteInterval,
-            @Min(0) int checkUploadCompleteMaxAttempts,
-            @Min(0) long maxFileSize
     ) {
     }
 

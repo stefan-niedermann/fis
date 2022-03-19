@@ -10,6 +10,11 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): 
         user: Cypress.env('FTP_USER'),
         pass: Cypress.env('FTP_PASS')
       }))
+      .then(c => new Promise<Ftp>(resolve => c.on('error', (e) => {
+        console.error('Captured jsftp error:');
+        console.error(e);
+        resolve(c)
+      })))
       .then(c => new Promise<Ftp>(resolve => c.once('connect', () => resolve(c))))
       .then(c => new Promise<Ftp>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
       .then(c => c.destroy())

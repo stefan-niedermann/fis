@@ -5,7 +5,6 @@ let faxNumber = 0;
 Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): any => {
   if (Cypress.env('FTP_HOST')) {
     return cy.wrap(type)
-      .then(_ => console.info('HELLO THERE'))
       .then(_ => new FtpClient())
       .then(c => {
         c.connect({

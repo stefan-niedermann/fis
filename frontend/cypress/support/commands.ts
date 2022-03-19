@@ -1,4 +1,4 @@
-import * as Client from 'ftp';
+import * as FtpClient from 'ftp';
 
 let faxNumber = 0;
 
@@ -6,7 +6,7 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): 
   if (Cypress.env('FTP_HOST')) {
     return cy.wrap(type)
       .then(_ => console.info('HELLO THERE'))
-      .then(_ => new Client())
+      .then(_ => new FtpClient())
       .then(c => {
         c.connect({
           host: Cypress.env('FTP_HOST'),
@@ -15,8 +15,8 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): 
         })
         return c;
       })
-      .then(c => new Promise<Client>(resolve => c.on('ready', () => resolve(c))))
-      .then(c => new Promise<Client>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
+      .then(c => new Promise<FtpClient>(resolve => c.on('ready', () => resolve(c))))
+      .then(c => new Promise<FtpClient>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
       .then(c => c.end())
   } else {
     switch (type) {

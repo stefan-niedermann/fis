@@ -13,7 +13,7 @@ fis:
     lang: deu
     tessdata: # CUSTOM TESSDATA
   weather:
-    key: # OPENWEATHERMAP API KEY
+    # key: OPENWEATHERMAP API KEY
     lang: de
     units: metric
     location: 2921044

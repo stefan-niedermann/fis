@@ -34,7 +34,7 @@ public class OperationMailRepositoryTest {
         mailSender = mock(JavaMailSender.class);
         when(operationConfig.recipients()).thenReturn(List.of("foo@example.com", "bar@example.com"));
 
-        repository = new OperationMailRepository(config, Optional.of(mailSender));
+        repository = new OperationMailRepository(config, Optional.of(mailSender), Optional.empty());
         repository.send(mock(OperationDto.class));
 
         verify(mailSender, times(1)).send(any(SimpleMailMessage.class), any(SimpleMailMessage.class));
@@ -45,7 +45,7 @@ public class OperationMailRepositoryTest {
         mailSender = mock(JavaMailSender.class);
         when(operationConfig.recipients()).thenReturn(List.of("foo@example.com", "bar@example.com"));
 
-        repository = new OperationMailRepository(config, Optional.empty());
+        repository = new OperationMailRepository(config, Optional.empty(), Optional.empty());
         repository.send(mock(OperationDto.class));
 
         verifyNoInteractions(mailSender);
@@ -56,7 +56,7 @@ public class OperationMailRepositoryTest {
         mailSender = mock(JavaMailSender.class);
         when(operationConfig.recipients()).thenReturn(null);
 
-        repository = new OperationMailRepository(config, Optional.of(mailSender));
+        repository = new OperationMailRepository(config, Optional.of(mailSender), Optional.empty());
         repository.send(mock(OperationDto.class));
 
         verifyNoInteractions(mailSender);
@@ -68,7 +68,7 @@ public class OperationMailRepositoryTest {
         when(operationConfig.recipients()).thenReturn(Collections.singletonList("foo@example.com"));
         when(operationConfig.sender()).thenReturn("Foo <foo@example.com>");
 
-        repository = new OperationMailRepository(config, Optional.of(mailSender));
+        repository = new OperationMailRepository(config, Optional.of(mailSender), Optional.empty());
         repository.send(mock(OperationDto.class));
 
         verify(mailSender, times(1)).send(
@@ -81,7 +81,7 @@ public class OperationMailRepositoryTest {
         mailSender = mock(JavaMailSender.class);
         when(operationConfig.recipients()).thenReturn(Collections.singletonList("foo@example.com"));
 
-        repository = new OperationMailRepository(config, Optional.of(mailSender));
+        repository = new OperationMailRepository(config, Optional.of(mailSender), Optional.empty());
         repository.send(mock(OperationDto.class));
 
         verify(mailSender, times(1)).send(
@@ -95,7 +95,7 @@ public class OperationMailRepositoryTest {
         doThrow(new MailSendException(Collections.emptyMap())).when(mailSender).send((SimpleMailMessage[]) argThat(messages -> true));
         when(operationConfig.recipients()).thenReturn(Collections.singletonList("foo@example.com"));
 
-        repository = new OperationMailRepository(config, Optional.of(mailSender));
+        repository = new OperationMailRepository(config, Optional.of(mailSender), Optional.empty());
 
         try {
             repository.send(mock(OperationDto.class));

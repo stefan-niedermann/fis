@@ -52,6 +52,7 @@ public record FisConfiguration(
 
     public static record OperationConfiguration(
             long duration,
+            String location,
             List<String> recipients,
             String sender
     ) {

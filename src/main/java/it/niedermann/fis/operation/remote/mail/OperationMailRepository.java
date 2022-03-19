@@ -10,9 +10,12 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
+
+import static java.net.URLEncoder.encode;
 
 @Service
 public class OperationMailRepository {
@@ -21,14 +24,17 @@ public class OperationMailRepository {
 
     private final Optional<JavaMailSender> mailSender;
     private final Optional<String> sender;
+    private final Optional<String> location;
     private final Collection<String> recipients;
 
     public OperationMailRepository(
             FisConfiguration config,
-            Optional<JavaMailSender> mailSender
+            Optional<JavaMailSender> mailSender,
+            Optional<String> location
     ) {
         this.mailSender = mailSender;
         this.sender = Optional.ofNullable(config.operation().sender());
+        this.location = location;
         this.recipients = config.operation().recipients() == null
                 ? Collections.emptyList()
                 : config.operation().recipients();
@@ -77,7 +83,7 @@ public class OperationMailRepository {
                     if (this.recipients.size() > 0) {
                         final var messages = this.recipients
                                 .stream()
-                                .map(recipient -> createMessage(recipient, sender.orElse("JarFIS"), operation))
+                                .map(recipient -> createMessage(recipient, sender.orElse("JarFIS"), location, operation))
                                 .toArray(SimpleMailMessage[]::new);
                         try {
                             mailSender.send(messages);
@@ -91,12 +97,40 @@ public class OperationMailRepository {
         );
     }
 
-    private SimpleMailMessage createMessage(String recipient, String sender, OperationDto operation) {
+    private SimpleMailMessage createMessage(String recipient, String sender, Optional<String> location, OperationDto operation) {
         final var message = new SimpleMailMessage();
         message.setFrom(sender);
         message.setTo(recipient);
-        message.setSubject(operation.getKeyword());
-        message.setText(operation.getLocation());
+        message.setText(String.format("Einsatz: %s, %s %s, %s".stripIndent(),
+                operation.getKeyword(),
+                operation.getStreet(),
+                operation.getNumber(),
+                operation.getLocation()
+        ));
+        message.setText(String.format("""
+                            Schlagworte: %s (%s)
+                            Adresse: %s %s, %s
+                            %s
+                            
+                            Notiz: %s
+                            Alarmiert: %s
+                        """.stripIndent(),
+                operation.getKeyword(),
+                String.join(", ", operation.getTags()),
+                operation.getStreet(),
+                operation.getNumber(),
+                operation.getLocation(),
+                getGoogleMapsLink(location, operation),
+                operation.getNote(),
+                String.join(", ", operation.getVehicles())));
         return message;
+    }
+
+    private String getGoogleMapsLink(Optional<String> location, OperationDto operation) {
+        final var link = String.format("https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&destination=%s",
+                encode(operation.getStreet() + " " + operation.getNumber() + ", " + operation.getLocation(), StandardCharsets.UTF_8));
+        return location
+                .map(s -> link + "&origin=" + encode(s, StandardCharsets.UTF_8))
+                .orElse(link);
     }
 }

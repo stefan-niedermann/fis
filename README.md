@@ -79,6 +79,10 @@ fis:
     # tessdata: 
   # operation:
     # duration: 1800000
+    # location: YOUR LOCATION
+    # recipients:
+      # - getinfo@example.com
+    # sender: JarFIS <jarfis@example.com>
   # client:
     # weatherPollInterval: 30000
     # operationPollInterval: 2000

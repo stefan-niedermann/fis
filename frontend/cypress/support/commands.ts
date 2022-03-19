@@ -1,6 +1,8 @@
+const ftp = require("basic-ftp")
+
 declare namespace Cypress {
   interface Chainable<Subject = any> {
-    sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
+    sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable;
 
     verifyInfoScreen(temperature?: number): Chainable<null>;
 
@@ -16,9 +18,25 @@ declare namespace Cypress {
 
 let faxNumber = 0;
 
-Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand') => {
+Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): any => {
   if (Cypress.env('FTP_HOST')) {
-    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf -o ${type}-${++faxNumber}.pdf`)
+    return new Cypress.Promise(async (resolve, reject) => {
+      const client = new ftp.Client()
+      client.ftp.verbose = true
+      try {
+        await client.access({
+          host: Cypress.env('FTP_HOST'),
+          user: Cypress.env('FTP_USER'),
+          password: Cypress.env('FTP_PASS')
+        })
+        await client.uploadFrom(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`)
+      } catch (err) {
+        console.error(err)
+        reject(err)
+      }
+      client.close()
+      resolve()
+    })
   } else {
     switch (type) {
       case 'brand':
@@ -31,6 +49,7 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand') =
         cy.intercept('/api/operation', {statusCode: 204})
         break;
     }
+    return new Cypress.Promise(resolve => resolve())
   }
 })
 
@@ -65,10 +84,6 @@ Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {
       break;
   }
 })
-
-function ftp(command: string) {
-  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`)
-}
 
 const SAMPLE_OPERATION_THL = {
   "keyword": "THL UNWETTER",

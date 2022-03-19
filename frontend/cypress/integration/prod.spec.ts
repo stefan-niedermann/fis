@@ -1,7 +1,6 @@
 /*
  * Prerequisites:
  * - JarFIS instance must be up and running
- * - lftp needs to be installed
  * - Following environment variables must be present:
  *   - FTP_HOST
  *   - FTP_DIR

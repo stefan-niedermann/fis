@@ -16,3 +16,23 @@
 // When a command from ./commands is ready to use, import with `import './commands'` syntax
 
 import './commands';
+
+
+declare global {
+  namespace Cypress {
+    interface Chainable<Subject = any> {
+      sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<Subject>;
+
+      verifyInfoScreen(temperature?: number): Chainable<null>;
+
+      verifyClockPresent(timeout?: number): Chainable<null>;
+
+      verifyWeatherPresent(temperature?: number): Chainable<null>;
+
+      verifyProcessingScreenShown(): Chainable<null>;
+
+      verifyOperationShown(type: 'thl' | 'brand'): Chainable<null>;
+    }
+  }
+
+}

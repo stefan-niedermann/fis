@@ -1,24 +1,23 @@
-declare namespace Cypress {
-  interface Chainable<Subject = any> {
-    sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable<null>;
-
-    verifyInfoScreen(temperature?: number): Chainable<null>;
-
-    verifyClockPresent(timeout?: number): Chainable<null>;
-
-    verifyWeatherPresent(temperature?: number): Chainable<null>;
-
-    verifyProcessingScreenShown(): Chainable<null>;
-
-    verifyOperationShown(type: 'thl' | 'brand'): Chainable<null>;
-  }
-}
+import Ftp from 'jsftp';
 
 let faxNumber = 0;
 
-Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand') => {
+Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): any => {
   if (Cypress.env('FTP_HOST')) {
-    ftp(`put -O ${Cypress.env('FTP_DIR')} cypress/assets/${type}.pdf -o ${type}-${++faxNumber}.pdf`)
+    return cy.wrap(type)
+      .then(_ => new Ftp({
+        host: Cypress.env('FTP_HOST'),
+        user: Cypress.env('FTP_USER'),
+        pass: Cypress.env('FTP_PASS')
+      }))
+      .then(c => new Promise<Ftp>(resolve => c.on('error', (e) => {
+        console.error('Captured jsftp error:');
+        console.error(e);
+        resolve(c)
+      })))
+      .then(c => new Promise<Ftp>(resolve => c.once('connect', () => resolve(c))))
+      .then(c => new Promise<Ftp>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
+      .then(c => c.destroy())
   } else {
     switch (type) {
       case 'brand':
@@ -65,10 +64,6 @@ Cypress.Commands.add('verifyOperationShown', (type: 'thl' | 'brand') => {
       break;
   }
 })
-
-function ftp(command: string) {
-  return cy.exec(`lftp -u ${Cypress.env('FTP_USER')},${Cypress.env('FTP_PASS')} -e "set ssl:verify-certificate no; ${command}; quit;" ${Cypress.env('FTP_HOST')}`)
-}
 
 const SAMPLE_OPERATION_THL = {
   "keyword": "THL UNWETTER",

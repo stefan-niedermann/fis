@@ -1,42 +1,20 @@
-const ftp = require("basic-ftp")
-
-declare namespace Cypress {
-  interface Chainable<Subject = any> {
-    sendFaxToFtpServer(type: 'invalid' | 'thl' | 'brand'): Chainable;
-
-    verifyInfoScreen(temperature?: number): Chainable<null>;
-
-    verifyClockPresent(timeout?: number): Chainable<null>;
-
-    verifyWeatherPresent(temperature?: number): Chainable<null>;
-
-    verifyProcessingScreenShown(): Chainable<null>;
-
-    verifyOperationShown(type: 'thl' | 'brand'): Chainable<null>;
-  }
-}
+import * as Client from 'ftp';
 
 let faxNumber = 0;
 
 Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): any => {
   if (Cypress.env('FTP_HOST')) {
-    return new Cypress.Promise(async (resolve, reject) => {
-      const client = new ftp.Client()
-      client.ftp.verbose = true
-      try {
-        await client.access({
-          host: Cypress.env('FTP_HOST'),
-          user: Cypress.env('FTP_USER'),
-          password: Cypress.env('FTP_PASS')
-        })
-        await client.uploadFrom(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`)
-      } catch (err) {
-        console.error(err)
-        reject(err)
-      }
-      client.close()
-      resolve()
-    })
+    return cy.wrap(type)
+      .then(_ => console.info('HELLO THERE'))
+      .then(_ => new Client())
+      .then(c => c.connect({
+        host: Cypress.env('FTP_HOST'),
+        user: Cypress.env('FTP_USER'),
+        password: Cypress.env('FTP_PASS')
+      }))
+      .then(c => new Promise(resolve => c.on('ready', () => resolve(c))))
+      .then(c => new Promise(resolve => (c as Client).put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
+      .then(c => (c as Client).end())
   } else {
     switch (type) {
       case 'brand':
@@ -49,7 +27,6 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): 
         cy.intercept('/api/operation', {statusCode: 204})
         break;
     }
-    return new Cypress.Promise(resolve => resolve())
   }
 })
 

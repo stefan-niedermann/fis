@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@types/ftp": "^0.3.33",
+    "ftp": "^0.3.10"
+  }
+}

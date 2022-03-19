@@ -4,7 +4,8 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.api.OperationApi;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
-import it.niedermann.fis.operation.remote.OperationRemoteRepository;
+import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
+import it.niedermann.fis.operation.remote.mail.OperationMailRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,8 @@ public class OperationApiImpl implements OperationApi {
     private final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);
 
     private final FisConfiguration config;
-    private final OperationRemoteRepository remoteRepository;
+    private final OperationFTPRepository ftpRepository;
+    private final OperationMailRepository mailRepository;
     private final OperationParserRepository parserRepository;
 
     private Thread cancelCurrentOperation;
@@ -30,11 +32,13 @@ public class OperationApiImpl implements OperationApi {
 
     public OperationApiImpl(
             FisConfiguration config,
-            OperationRemoteRepository remoteRepository,
+            OperationFTPRepository ftpRepository,
+            OperationMailRepository mailRepository,
             OperationParserRepository parserRepository
     ) {
         this.config = config;
-        this.remoteRepository = remoteRepository;
+        this.ftpRepository = ftpRepository;
+        this.mailRepository = mailRepository;
         this.parserRepository = parserRepository;
     }
 
@@ -49,9 +53,9 @@ public class OperationApiImpl implements OperationApi {
 
     @Scheduled(fixedDelayString = "${fis.ftp.pollInterval}")
     public void pollOperations() {
-        remoteRepository.poll()
-                .flatMap(remoteRepository::awaitUploadCompletion)
-                .flatMap(remoteRepository::download)
+        ftpRepository.poll()
+                .flatMap(ftpRepository::awaitUploadCompletion)
+                .flatMap(ftpRepository::download)
                 .ifPresent(this::parseAndApplyOperation);
     }
 
@@ -61,6 +65,7 @@ public class OperationApiImpl implements OperationApi {
         this.parserRepository.parse(operationFile).ifPresent(operationDto -> {
             logger.debug("🚒 Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
             this.currentOperation = operationDto;
+            mailRepository.send(operationDto);
 
             logger.debug("Planning cancellation of currently active operation: \"" + operationDto.getKeyword() + "\"…");
             scheduleOperationCancellation(operationDto);

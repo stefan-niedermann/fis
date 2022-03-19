@@ -1,7 +1,6 @@
-package it.niedermann.fis.operation.remote;
+package it.niedermann.fis.operation.remote.ftp;
 
 import it.niedermann.fis.FisConfiguration;
-import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,10 +19,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class OperationRemoteRepositoryTest {
+public class OperationFTPRepositoryTest {
 
-    private OperationRemoteRepository repository;
-    private FTPClient ftpClient;
+    private OperationFTPRepository repository;
+    private OperationFTPClient ftpClient;
 
     @BeforeEach
     public void setup() throws IOException {
@@ -34,13 +33,11 @@ public class OperationRemoteRepositoryTest {
         when(ftpConfig.maxFileSize()).thenReturn(10_000_000L);
         final var config = mock(FisConfiguration.class);
         when(config.ftp()).thenReturn(ftpConfig);
-        ftpClient = mock(FTPClient.class);
+        ftpClient = mock(OperationFTPClient.class);
         when(ftpClient.login(any(), any())).thenReturn(true);
-        final var ftpClientFactory = mock(OperationFTPClientFactory.class);
-        when(ftpClientFactory.createFTPClient(config)).thenReturn(ftpClient);
-        this.repository = new OperationRemoteRepository(
+        this.repository = new OperationFTPRepository(
                 config,
-                ftpClientFactory
+                ftpClient
         );
     }
 

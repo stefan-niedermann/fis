@@ -1,22 +1,17 @@
-import * as FtpClient from 'ftp';
+import Ftp from 'jsftp';
 
 let faxNumber = 0;
 
 Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): any => {
   if (Cypress.env('FTP_HOST')) {
     return cy.wrap(type)
-      .then(_ => new FtpClient())
-      .then(c => {
-        c.connect({
-          host: Cypress.env('FTP_HOST'),
-          user: Cypress.env('FTP_USER'),
-          password: Cypress.env('FTP_PASS')
-        })
-        return c;
-      })
-      .then(c => new Promise<FtpClient>(resolve => c.on('ready', () => resolve(c))))
-      .then(c => new Promise<FtpClient>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
-      .then(c => c.end())
+      .then(_ => new Ftp({
+        host: Cypress.env('FTP_HOST'),
+        user: Cypress.env('FTP_USER'),
+        pass: Cypress.env('FTP_PASS')
+      }))
+      .then(c => new Promise<Ftp>(resolve => c.on('ready', () => resolve(c))))
+      .then(c => new Promise(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(null))))
   } else {
     switch (type) {
       case 'brand':

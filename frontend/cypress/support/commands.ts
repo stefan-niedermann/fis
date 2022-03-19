@@ -7,14 +7,17 @@ Cypress.Commands.add('sendFaxToFtpServer', (type: 'invalid' | 'thl' | 'brand'): 
     return cy.wrap(type)
       .then(_ => console.info('HELLO THERE'))
       .then(_ => new Client())
-      .then(c => c.connect({
-        host: Cypress.env('FTP_HOST'),
-        user: Cypress.env('FTP_USER'),
-        password: Cypress.env('FTP_PASS')
-      }))
-      .then(c => new Promise(resolve => c.on('ready', () => resolve(c))))
-      .then(c => new Promise(resolve => (c as Client).put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
-      .then(c => (c as Client).end())
+      .then(c => {
+        c.connect({
+          host: Cypress.env('FTP_HOST'),
+          user: Cypress.env('FTP_USER'),
+          password: Cypress.env('FTP_PASS')
+        })
+        return c;
+      })
+      .then(c => new Promise<Client>(resolve => c.on('ready', () => resolve(c))))
+      .then(c => new Promise<Client>(resolve => c.put(`cypress/assets/${type}.pdf`, `${Cypress.env('FTP_DIR')}/${type}-${++faxNumber}.pdf`, () => resolve(c))))
+      .then(c => c.end())
   } else {
     switch (type) {
       case 'brand':

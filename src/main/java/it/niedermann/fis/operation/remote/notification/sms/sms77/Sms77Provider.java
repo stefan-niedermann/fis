@@ -31,13 +31,16 @@ public class Sms77Provider extends AbstractSmsProvider {
 
     @Override
     public void accept(OperationDto operation) {
-        recipients.forEach(recipient -> {
-            try {
-                final Response<String> response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
-                logger.debug(response.body());
-            } catch (IOException e) {
-                logger.error(e.getMessage(), e);
-            }
-        });
+        apiKey.ifPresentOrElse(
+                apiKey -> recipients.forEach(recipient -> {
+                    try {
+                        final Response<String> response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
+                        logger.debug(response.body());
+                    } catch (IOException e) {
+                        logger.error(e.getMessage(), e);
+                    }
+                }),
+                () -> this.logger.trace("✉️ Skipped sending SMS because API key has not been provided.")
+        );
     }
 }

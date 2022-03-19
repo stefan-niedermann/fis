@@ -7,13 +7,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 @Service
 public abstract class AbstractSmsProvider implements Consumer<OperationDto> {
 
-    protected final String apiKey;
+    protected final Optional<String> apiKey;
     protected final Collection<String> recipients;
     private final OperationNotificationUtil notificationUtil;
 
@@ -30,7 +31,7 @@ public abstract class AbstractSmsProvider implements Consumer<OperationDto> {
             OperationNotificationUtil notificationUtil
     ) {
         this.notificationUtil = notificationUtil;
-        this.apiKey = config.operation().smsApiKey();
+        this.apiKey = Optional.ofNullable(config.operation().smsApiKey());
         this.recipients = filterPhoneRecipients(config.operation().recipients());
     }
 

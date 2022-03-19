@@ -23,21 +23,24 @@ public class MailProvider implements Consumer<OperationDto> {
 
     private final Optional<JavaMailSender> mailSender;
     private final OperationNotificationUtil notificationUtil;
-    private final Optional<String> sender;
-    private final Optional<String> location;
+    private final String sender;
+    private final Optional<String> origin;
     private final Collection<String> recipients;
 
     public MailProvider(
             FisConfiguration config,
             OperationNotificationUtil notificationUtil,
             Optional<JavaMailSender> mailSender,
-            Optional<String> location
+            Optional<String> origin
     ) {
         this.mailSender = mailSender;
         this.notificationUtil = notificationUtil;
-        this.sender = Optional.ofNullable(config.operation().sender());
-        this.location = location;
-        this.recipients = filterMailRecipients(config.operation().recipients());
+        this.sender = config.operation().notification().senderName() + Optional
+                .ofNullable(config.operation().notification().senderMail())
+                .map(mail -> String.format(" <%s>", mail))
+                .orElse("");
+        this.origin = origin;
+        this.recipients = filterMailRecipients(config.operation().notification().mail());
 
         if (mailSender.isPresent()) {
             logger.info("✅ Found SMTP configuration");
@@ -51,11 +54,11 @@ public class MailProvider implements Consumer<OperationDto> {
                     if (this.recipients.size() > 0) {
                         final var messages = this.recipients
                                 .stream()
-                                .map(recipient -> createMessage(recipient, sender.orElse("JarFIS"), location, operation))
+                                .map(recipient -> createMessage(recipient, sender, origin, operation))
                                 .toArray(SimpleMailMessage[]::new);
                         try {
                             mailSender.send(messages);
-                            logger.info("✉ Successfully sent mail to " + recipients.size() + " recipients");
+                            logger.info("✉ Successfully sent mail to " + recipients.size() + " notification");
                         } catch (MailException e) {
                             logger.error(e.getMessage(), e);
                         }
@@ -66,7 +69,7 @@ public class MailProvider implements Consumer<OperationDto> {
     }
 
     @SuppressWarnings("SpellCheckingInspection")
-    private SimpleMailMessage createMessage(String recipient, String sender, Optional<String> location, OperationDto operation) {
+    private SimpleMailMessage createMessage(String recipient, String sender, Optional<String> origin, OperationDto operation) {
         final var message = new SimpleMailMessage();
         message.setFrom(sender);
         message.setTo(recipient);
@@ -89,8 +92,8 @@ public class MailProvider implements Consumer<OperationDto> {
                 operation.getStreet(),
                 operation.getNumber(),
                 operation.getLocation(),
-                location.isPresent()
-                        ? notificationUtil.getGoogleMapsLink(operation, location.get())
+                origin.isPresent()
+                        ? notificationUtil.getGoogleMapsLink(operation, origin.get())
                         : notificationUtil.getGoogleMapsLink(operation),
                 operation.getNote(),
                 String.join(", ", operation.getVehicles())));

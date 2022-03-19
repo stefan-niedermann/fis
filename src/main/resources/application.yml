@@ -16,6 +16,9 @@ fis:
     pollInterval: 60000
   operation:
     duration: 1800000
+    notifications:
+      senderName: JarFIS
+      smsLimit: 10 # per day per recipient
   client:
     weatherPollInterval: 30000
     operationPollInterval: 2000

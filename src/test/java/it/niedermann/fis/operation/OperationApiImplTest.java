@@ -111,11 +111,11 @@ public class OperationApiImplTest {
 
         api.pollOperations();
 
-        verify(operationNotificationRepository, times(1)).notify(any(OperationDto.class));
+        verify(operationNotificationRepository, times(1)).accept(any(OperationDto.class));
 
         api.pollOperations();
 
-        verify(operationNotificationRepository, times(2)).notify(any(OperationDto.class));
+        verify(operationNotificationRepository, times(2)).accept(any(OperationDto.class));
     }
 
     @Test

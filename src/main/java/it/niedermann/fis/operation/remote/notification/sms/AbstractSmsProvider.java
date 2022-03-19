@@ -9,30 +9,23 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 @Service
 public abstract class AbstractSmsProvider implements Consumer<OperationDto> {
 
     protected final Optional<String> apiKey;
     protected final Collection<String> recipients;
+    protected final String senderName;
     private final OperationNotificationUtil notificationUtil;
-
-    /**
-     * @see <a href="https://www.baeldung.com/java-regex-validate-phone-numbers#multiple">Source at baeldung.com</a>
-     */
-    private final Pattern phoneNumberPattern = Pattern.compile(
-            "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
-                    + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?){2}\\d{3}$"
-                    + "|^(\\+\\d{1,3}( )?)?(\\d{3}[ ]?)(\\d{2}[ ]?){2}\\d{2}$");
 
     public AbstractSmsProvider(
             FisConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {
         this.notificationUtil = notificationUtil;
-        this.apiKey = Optional.ofNullable(config.operation().smsApiKey());
-        this.recipients = filterPhoneRecipients(config.operation().recipients());
+        this.apiKey = Optional.ofNullable(config.operation().notification().smsApiKey());
+        this.senderName = config.operation().notification().senderName();
+        this.recipients = filterPhoneRecipients(config.operation().notification().sms());
     }
 
     protected String getMessage(OperationDto operation) {
@@ -42,6 +35,18 @@ public abstract class AbstractSmsProvider implements Consumer<OperationDto> {
     private Collection<String> filterPhoneRecipients(Collection<String> recipients) {
         return recipients == null
                 ? Collections.emptyList()
-                : recipients.stream().filter(recipient -> phoneNumberPattern.matcher(recipient).matches()).toList();
+                : recipients
+                .stream()
+                .filter(this::isValidPhoneNumber)
+                .map(this::sanitizePhoneNumber)
+                .toList();
+    }
+
+    protected boolean isValidPhoneNumber(String source) {
+        return source != null && sanitizePhoneNumber(source).length() > 6;
+    }
+
+    protected String sanitizePhoneNumber(String source) {
+        return source.replaceAll("\\D", "");
     }
 }

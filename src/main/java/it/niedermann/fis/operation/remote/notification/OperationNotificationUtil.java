@@ -15,10 +15,10 @@ public class OperationNotificationUtil {
         return getGoogleMapsLink(operation, null);
     }
 
-    public String getGoogleMapsLink(OperationDto operation, String location) {
+    public String getGoogleMapsLink(OperationDto operation, String origin) {
         final var link = String.format("https://www.google.com/maps/dir/?api=1&dir_action=navigate&travelmode=driving&destination=%s",
                 encode(operation.getStreet() + " " + operation.getNumber() + ", " + operation.getLocation(), StandardCharsets.UTF_8));
-        return Optional.ofNullable(location)
+        return Optional.ofNullable(origin)
                 .map(s -> link + "&origin=" + encode(s, StandardCharsets.UTF_8))
                 .orElse(link);
     }

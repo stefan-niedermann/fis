@@ -5,10 +5,11 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Collection;
 
 @SuppressWarnings("SpellCheckingInspection")
 @ConfigurationProperties("fis")
@@ -52,10 +53,18 @@ public record FisConfiguration(
 
     public static record OperationConfiguration(
             long duration,
-            String location,
-            List<String> recipients,
-            String smsApiKey,
-            String sender
+            String origin,
+            @NotNull NotificationConfiguration notification
     ) {
+
+        public static record NotificationConfiguration(
+                @NotBlank String senderName,
+                String senderMail,
+                String smsApiKey,
+                int smsLimit,
+                Collection<@Email String> mail,
+                Collection<String> sms
+        ) {
+        }
     }
 }

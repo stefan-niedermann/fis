@@ -65,8 +65,11 @@ fis:
 
 - Optionally [configure logback](https://howtodoinjava.com/spring-boot2/logging/configure-logging-application-yml/) for enhanced logging
 - Optionally [configure an API key OpenWeatherMap](https://openweathermap.org/) to show weather information when no operation is active
-- Optionally [configure an API key for smsapi.com](https://www.smsapi.com) to enable push notifications via SMS
-- Optionally [configure an SMTP server](https://www.baeldung.com/spring-email#2-spring-boot-mail-server-properties) to enable push notifications via mail
+- Optionally [configure an API key for smsapi.com](https://www.smsapi.com) to enable push notifications via SMS  
+  ⚠️ This can cause costs, consider configuring a daily limit  
+  ⚠️ Depending on local laws it is usually illegal to forward operation information to not authorized people
+- Optionally [configure an SMTP server](https://www.baeldung.com/spring-email#2-spring-boot-mail-server-properties) to enable push notifications via mail  
+  ⚠️ Depending on local laws it is usually illegal to forward operation information to not authorized people
 - For more information about advanced configuration (e.g. passing arguments from the command line, …) see
 the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
 

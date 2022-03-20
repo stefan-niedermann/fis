@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.mockito.Mockito.*;
 
-public class OperationNotificationRepositoryTest {
+public class OperationNotificationRepositoryImplTest {
 
     private OperationNotificationRepository repository;
     private MailProvider mailProvider;
@@ -29,7 +29,7 @@ public class OperationNotificationRepositoryTest {
         when(config.operation()).thenReturn(operationConfig);
         when(operationConfig.notification()).thenReturn(notificationConfig);
         when(notificationConfig.smsLimit()).thenReturn(10);
-        repository = new OperationNotificationRepository(config, mailProvider, smsProviderFactory);
+        repository = new OperationNotificationRepositoryImpl(config, mailProvider, smsProviderFactory);
     }
 
     @Test
@@ -62,7 +62,7 @@ public class OperationNotificationRepositoryTest {
             repository.accept(operation);
         }
 
-        repository.resetSmsLimit();
+        repository.resetLimits();
         repository.accept(operation);
 
         verify(mailProvider, times(notificationConfig.smsLimit() + 2)).accept(operation);

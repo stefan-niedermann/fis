@@ -43,6 +43,7 @@ public class OperationNotificationRepositoryImpl implements OperationNotificatio
         if (smsLimit > 0 && smsCount < smsLimit) {
             this.smsProvider.accept(operation);
             this.smsCount++;
+            this.logger.debug("SMS limit: " + this.smsCount + " / " + this.smsLimit);
         } else {
             this.logger.warn("Skipped sending SMS notification because daily limit is exceeded");
         }
@@ -53,6 +54,7 @@ public class OperationNotificationRepositoryImpl implements OperationNotificatio
     @Scheduled(cron = "0 0 * * * ?")
     @Override
     public void resetLimits() {
+        this.logger.info("Resetting sms count to " + this.smsLimit + " (was " + this.smsCount + ")");
         this.smsCount = 0;
     }
 }

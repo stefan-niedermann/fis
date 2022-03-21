@@ -1,4 +1,4 @@
-package it.niedermann.fis.operation.remote.notification.sms.sms77;
+package it.niedermann.fis.operation.remote.notification.sms.com.smsapi;
 
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
@@ -12,35 +12,36 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 
-public class Sms77Provider extends SmsProvider {
+public class SmsApiProvider extends SmsProvider {
 
-    private final Logger logger = LoggerFactory.getLogger(Sms77Provider.class);
+    private final Logger logger = LoggerFactory.getLogger(SmsApiProvider.class);
 
-    private final Sms77Service service = new Retrofit.Builder()
-            .baseUrl("https://gateway.sms77.io/api/")
+    private final SmsApiService service = new Retrofit.Builder()
+            .baseUrl("https://api.smsapi.com/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-            .create(Sms77Service.class);
+            .create(SmsApiService.class);
 
-    public Sms77Provider(
+    public SmsApiProvider(
             FisConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {
         super(config, notificationUtil);
-        logger.warn("⚠️ This SMS provider has not been tested. Use at your own risk!");
     }
 
     @Override
     public void accept(OperationDto operation) {
         apiKey.ifPresentOrElse(
-                apiKey -> recipients.forEach(recipient -> {
-                    try {
-                        final Response<String> response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
-                        logger.debug(response.body());
-                    } catch (IOException e) {
-                        logger.error(e.getMessage(), e);
+                apiKey -> {
+                    if (recipients.size() > 0) {
+                        try {
+                            final Response<String> response = service.sendSms(apiKey, senderName, String.join(",", recipients), getMessage(operation)).execute();
+                            logger.debug(response.body());
+                        } catch (IOException e) {
+                            logger.error(e.getMessage(), e);
+                        }
                     }
-                }),
+                },
                 () -> this.logger.trace("✉️ Skipped sending SMS because API key has not been provided.")
         );
     }

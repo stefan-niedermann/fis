@@ -1,4 +1,4 @@
-package it.niedermann.fis.operation.remote.notification.sms.smsapi;
+package it.niedermann.fis.operation.remote.notification.sms.com.smsapi;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

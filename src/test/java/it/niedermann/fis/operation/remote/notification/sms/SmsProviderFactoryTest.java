@@ -2,8 +2,9 @@ package it.niedermann.fis.operation.remote.notification.sms;
 
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
-import it.niedermann.fis.operation.remote.notification.sms.sms77.Sms77Provider;
-import it.niedermann.fis.operation.remote.notification.sms.smsapi.SmsApiProvider;
+import it.niedermann.fis.operation.remote.notification.sms.com.smsapi.SmsApiProvider;
+import it.niedermann.fis.operation.remote.notification.sms.io.sms77.Sms77Provider;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

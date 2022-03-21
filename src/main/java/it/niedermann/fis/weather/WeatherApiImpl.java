@@ -4,7 +4,9 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.api.WeatherApi;
 import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
-import it.niedermann.fis.weather.provider.openweathermap.OpenWeatherMapProvider;
+import it.niedermann.fis.weather.provider.WeatherProviderFactory;
+import it.niedermann.fis.weather.provider.WeatherProviderType;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +27,14 @@ public class WeatherApiImpl implements WeatherApi {
     private WeatherDto weather;
 
     public WeatherApiImpl(
-            FisConfiguration config
+            FisConfiguration config,
+            WeatherProviderFactory weatherProviderFactory
     ) {
         if (config.weather().key() == null) {
             weatherProvider = null;
-            logger.info("Weather information is not available because no API key has been specified");
+            logger.info("❌ Weather information is not available because no API key has been specified");
         } else {
-            weatherProvider = new OpenWeatherMapProvider(config.weather().lang(),
-                    config.weather().location(),
-                    config.weather().units(),
-                    config.weather().key());
+            weatherProvider = weatherProviderFactory.createWeatherProvider(WeatherProviderType.OPENWEATHERMAP);
         }
     }
 

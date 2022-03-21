@@ -1,4 +1,4 @@
-package it.niedermann.fis.weather.provider.openweathermap;
+package it.niedermann.fis.weather.provider.org.openweathermap;
 
 import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;

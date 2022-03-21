@@ -1,4 +1,4 @@
-package it.niedermann.fis.weather.provider.openweathermap;
+package it.niedermann.fis.weather.provider.org.openweathermap;
 
 import it.niedermann.fis.main.model.WeatherIconDto;
 import it.niedermann.fis.weather.provider.DayNightIcon;

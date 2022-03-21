@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation.remote.notification.sms;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.NotificationConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
 import it.niedermann.fis.operation.remote.notification.sms.com.smsapi.SmsApiProvider;
 import it.niedermann.fis.operation.remote.notification.sms.io.sms77.Sms77Provider;
@@ -14,11 +14,11 @@ import java.util.function.Consumer;
 @Service
 public class SmsProviderFactory {
 
-    private final FisConfiguration config;
+    private final NotificationConfiguration config;
     private final OperationNotificationUtil notificationUtil;
 
     public SmsProviderFactory(
-            FisConfiguration config,
+            NotificationConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {
         this.config = config;

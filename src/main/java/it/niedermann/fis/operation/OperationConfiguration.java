@@ -1,13 +1,12 @@
-package it.niedermann.fis;
+package it.niedermann.fis.operation;
 
-import it.niedermann.fis.main.model.ClientConfigurationDto;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 @SuppressWarnings("SpellCheckingInspection")
-@ConfigurationProperties("fis")
+@ConfigurationProperties("fis.operation")
 @Validated
-public record FisConfiguration(
-        ClientConfigurationDto client
-) {
+public record OperationConfiguration(
+                long duration,
+                String origin) {
 }

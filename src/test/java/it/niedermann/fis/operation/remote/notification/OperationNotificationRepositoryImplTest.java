@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation.remote.notification;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.remote.notification.mail.MailProvider;
 import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
@@ -15,7 +14,7 @@ public class OperationNotificationRepositoryImplTest {
     private OperationNotificationRepository repository;
     private MailProvider mailProvider;
     private SmsProvider smsProvider;
-    private FisConfiguration.OperationConfiguration.NotificationConfiguration notificationConfig;
+    private NotificationConfiguration config;
 
     @BeforeEach()
     public void setup() {
@@ -23,12 +22,8 @@ public class OperationNotificationRepositoryImplTest {
         smsProvider = mock(SmsProvider.class);
         final var smsProviderFactory = mock(SmsProviderFactory.class);
         when(smsProviderFactory.createSmsProvider(any())).thenReturn(smsProvider);
-        final var config = mock(FisConfiguration.class);
-        final var operationConfig = mock(FisConfiguration.OperationConfiguration.class);
-        notificationConfig = mock(FisConfiguration.OperationConfiguration.NotificationConfiguration.class);
-        when(config.operation()).thenReturn(operationConfig);
-        when(operationConfig.notification()).thenReturn(notificationConfig);
-        when(notificationConfig.smsLimit()).thenReturn(10);
+        config = mock(NotificationConfiguration.class);
+        when(config.smsLimit()).thenReturn(10);
         repository = new OperationNotificationRepositoryImpl(config, mailProvider, smsProviderFactory);
     }
 
@@ -46,26 +41,26 @@ public class OperationNotificationRepositoryImplTest {
     public void shouldSkipSendingSmsWhenLimitExceeds() {
         final var operation = mock(OperationDto.class);
 
-        for (int i = 0; i < notificationConfig.smsLimit() + 1; i++) {
+        for (int i = 0; i < config.smsLimit() + 1; i++) {
             repository.accept(operation);
         }
 
-        verify(mailProvider, times(notificationConfig.smsLimit() + 1)).accept(operation);
-        verify(smsProvider, times(notificationConfig.smsLimit())).accept(operation);
+        verify(mailProvider, times(config.smsLimit() + 1)).accept(operation);
+        verify(smsProvider, times(config.smsLimit())).accept(operation);
     }
 
     @Test
     public void shouldContinueSendingSmsAfterLimitWasReset() {
         final var operation = mock(OperationDto.class);
 
-        for (int i = 0; i < notificationConfig.smsLimit() + 1; i++) {
+        for (int i = 0; i < config.smsLimit() + 1; i++) {
             repository.accept(operation);
         }
 
         repository.resetLimits();
         repository.accept(operation);
 
-        verify(mailProvider, times(notificationConfig.smsLimit() + 2)).accept(operation);
-        verify(smsProvider, times(notificationConfig.smsLimit() + 1)).accept(operation);
+        verify(mailProvider, times(config.smsLimit() + 2)).accept(operation);
+        verify(smsProvider, times(config.smsLimit() + 1)).accept(operation);
     }
 }

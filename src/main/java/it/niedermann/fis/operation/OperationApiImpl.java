@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.api.OperationApi;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
@@ -8,6 +7,7 @@ import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -17,11 +17,12 @@ import java.io.File;
 
 @Controller
 @RequestMapping("/api")
+@EnableConfigurationProperties(OperationConfiguration.class)
 public class OperationApiImpl implements OperationApi {
 
     private final Logger logger = LoggerFactory.getLogger(OperationApiImpl.class);
 
-    private final FisConfiguration config;
+    private final OperationConfiguration config;
     private final OperationFTPRepository ftpRepository;
     private final OperationNotificationRepository notificationRepository;
     private final OperationParserRepository parserRepository;
@@ -31,7 +32,7 @@ public class OperationApiImpl implements OperationApi {
     private boolean processing = false;
 
     public OperationApiImpl(
-            FisConfiguration config,
+            OperationConfiguration config,
             OperationFTPRepository ftpRepository,
             OperationNotificationRepository notificationRepository,
             OperationParserRepository parserRepository
@@ -86,8 +87,8 @@ public class OperationApiImpl implements OperationApi {
 
         cancelCurrentOperation = new Thread(() -> {
             try {
-                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.operation().duration() / 1_000 + "s");
-                Thread.sleep(config.operation().duration());
+                logger.trace("Scheduled cancellation of operation \"" + dto.getKeyword() + "\" in " + config.duration() / 1_000 + "s");
+                Thread.sleep(config.duration());
                 if (Thread.currentThread().isInterrupted()) {
                     throw new InterruptedException();
                 }

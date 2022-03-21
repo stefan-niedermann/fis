@@ -1,6 +1,5 @@
 package it.niedermann.fis.weather;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.api.WeatherApi;
 import it.niedermann.fis.main.model.WeatherDto;
 import it.niedermann.fis.weather.provider.WeatherProvider;
@@ -9,6 +8,7 @@ import it.niedermann.fis.weather.provider.WeatherProviderType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
@@ -19,6 +19,7 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/api")
+@EnableConfigurationProperties(WeatherConfiguration.class)
 public class WeatherApiImpl implements WeatherApi {
 
     private final Logger logger = LoggerFactory.getLogger(WeatherApiImpl.class);
@@ -27,10 +28,9 @@ public class WeatherApiImpl implements WeatherApi {
     private WeatherDto weather;
 
     public WeatherApiImpl(
-            FisConfiguration config,
-            WeatherProviderFactory weatherProviderFactory
-    ) {
-        if (config.weather().key() == null) {
+            WeatherConfiguration config,
+            WeatherProviderFactory weatherProviderFactory) {
+        if (config.key() == null) {
             weatherProvider = null;
             logger.info("❌ Weather information is not available because no API key has been specified");
         } else {

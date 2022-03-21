@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation.remote.notification.sms.com.smsapi;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.NotificationConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
 import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
 import org.slf4j.Logger;
@@ -23,7 +23,7 @@ public class SmsApiProvider extends SmsProvider {
             .create(SmsApiService.class);
 
     public SmsApiProvider(
-            FisConfiguration config,
+            NotificationConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {
         super(config, notificationUtil);

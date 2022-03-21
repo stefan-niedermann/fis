@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation.remote.notification.sms;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.NotificationConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,21 +15,16 @@ import static org.mockito.Mockito.when;
 public class SmsProviderTest {
 
     private SmsProvider provider;
-    private FisConfiguration config;
-    private FisConfiguration.OperationConfiguration.NotificationConfiguration notificationConfig;
+    private NotificationConfiguration config;
 
     @BeforeEach()
     public void setup() {
-        config = mock(FisConfiguration.class);
-        final var operationConfig = mock(FisConfiguration.OperationConfiguration.class);
-        notificationConfig = mock(FisConfiguration.OperationConfiguration.NotificationConfiguration.class);
-        when(config.operation()).thenReturn(operationConfig);
-        when(operationConfig.notification()).thenReturn(notificationConfig);
+        config = mock(NotificationConfiguration.class);
     }
 
     @Test
     public void shouldHandleNotConfiguredRecipients() {
-        when(notificationConfig.sms()).thenReturn(null);
+        when(config.sms()).thenReturn(null);
         provider = new SmsProvider(config, mock(OperationNotificationUtil.class)) {
             @Override
             public void accept(OperationDto operationDto) {
@@ -41,7 +36,7 @@ public class SmsProviderTest {
 
     @Test
     public void shouldFilterInvalidPhoneNumbers() {
-        when(notificationConfig.sms()).thenReturn(List.of("2055550125", "foobar", "123"));
+        when(config.sms()).thenReturn(List.of("2055550125", "foobar", "123"));
         provider = new SmsProvider(config, mock(OperationNotificationUtil.class)) {
             @Override
             public void accept(OperationDto operationDto) {

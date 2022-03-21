@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import net.sourceforge.tess4j.ITesseract;
 import org.slf4j.Logger;
@@ -22,7 +21,7 @@ public class OperationParserRepository {
     private final OperationParser parser;
 
     public OperationParserRepository(
-            FisConfiguration config,
+            TesseractConfiguration config,
             OperationTesseractFactory tesseractFactory,
             OperationParserFactory parserFactory
     ) {

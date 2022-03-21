@@ -165,13 +165,4 @@ public class OperationApiImplTest {
         assertEquals("Should return an active operation when available", HttpStatus.OK, resp2.getStatusCode());
         assertEquals("Should return an active operation when available", "Bar", Objects.requireNonNull(resp2.getBody()).getKeyword());
     }
-
-    /**
-     * The first poll will be ignored and not published
-     */
-    private void pollFirstTime() {
-        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Already existing PDF file.pdf", now())));
-
-        api.pollOperations();
-    }
 }

@@ -5,26 +5,40 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import java.util.List;
+import java.util.Collection;
 
 @SuppressWarnings("SpellCheckingInspection")
 @ConfigurationProperties("fis")
 @Validated
 public record FisConfiguration(
-        String contact,
+        FtpConfiguration ftp,
         TesseractConfiguration tesseract,
         WeatherConfiguration weather,
-        FtpConfiguration ftp,
         OperationConfiguration operation,
         ClientConfigurationDto client
 ) {
 
+    public static record FtpConfiguration(
+            @NotBlank String username,
+            @NotBlank String password,
+            @NotBlank String host,
+            String path,
+            @NotNull String fileSuffix,
+            @Min(100) long pollInterval,
+            @Min(100) long checkUploadCompleteInterval,
+            @Min(0) int checkUploadCompleteMaxAttempts,
+            @Min(0) long maxFileSize
+    ) {
+    }
+
     public static record TesseractConfiguration(
-            String tessdata,
-            @Length(min = 3, max = 3) @NotBlank String lang
+            @Length(min = 3, max = 3) @NotBlank String lang,
+            @Min(70) long dpi,
+            String tessdata
     ) {
     }
 
@@ -37,24 +51,20 @@ public record FisConfiguration(
     ) {
     }
 
-    public static record FtpConfiguration(
-            @NotBlank String host,
-            @NotBlank String username,
-            @NotBlank String password,
-            String path,
-            @NotNull String fileSuffix,
-            @Min(100) long pollInterval,
-            @Min(100) long checkUploadCompleteInterval,
-            @Min(0) int checkUploadCompleteMaxAttempts,
-            @Min(0) long maxFileSize
-    ) {
-    }
-
     public static record OperationConfiguration(
             long duration,
-            String location,
-            List<String> recipients,
-            String sender
+            String origin,
+            @NotNull NotificationConfiguration notification
     ) {
+
+        public static record NotificationConfiguration(
+                @NotBlank String senderName,
+                String senderMail,
+                String smsApiKey,
+                int smsLimit,
+                Collection<@Email String> mail,
+                Collection<String> sms
+        ) {
+        }
     }
 }

@@ -5,7 +5,7 @@ import it.niedermann.fis.main.api.OperationApi;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
-import it.niedermann.fis.operation.remote.mail.OperationMailRepository;
+import it.niedermann.fis.operation.remote.notification.OperationNotificationRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +23,7 @@ public class OperationApiImpl implements OperationApi {
 
     private final FisConfiguration config;
     private final OperationFTPRepository ftpRepository;
-    private final OperationMailRepository mailRepository;
+    private final OperationNotificationRepository notificationRepository;
     private final OperationParserRepository parserRepository;
 
     private Thread cancelCurrentOperation;
@@ -33,12 +33,12 @@ public class OperationApiImpl implements OperationApi {
     public OperationApiImpl(
             FisConfiguration config,
             OperationFTPRepository ftpRepository,
-            OperationMailRepository mailRepository,
+            OperationNotificationRepository notificationRepository,
             OperationParserRepository parserRepository
     ) {
         this.config = config;
         this.ftpRepository = ftpRepository;
-        this.mailRepository = mailRepository;
+        this.notificationRepository = notificationRepository;
         this.parserRepository = parserRepository;
     }
 
@@ -65,7 +65,7 @@ public class OperationApiImpl implements OperationApi {
         this.parserRepository.parse(operationFile).ifPresent(operationDto -> {
             logger.debug("🚒 Saving operation as currently active operation: \"" + operationDto.getKeyword() + "\"…");
             this.currentOperation = operationDto;
-            mailRepository.send(operationDto);
+            notificationRepository.accept(operationDto);
 
             logger.debug("Planning cancellation of currently active operation: \"" + operationDto.getKeyword() + "\"…");
             scheduleOperationCancellation(operationDto);

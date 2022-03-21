@@ -44,52 +44,33 @@ optical character recognition, parse the text to a machine-readable JSON file an
 
 ### Prerequisites
 
+- Download the [latest release of JarFIS](https://github.com/stefan-niedermann/fis/releases)
 - You will need at least a [Java Runtime Environment 17 or higher](https://java.com)
 - Install [`Tesseract ≥ 4.0.0`](https://tesseract-ocr.github.io/tessdoc/Installation.html), on Debian / Ubuntu based systems, this is usually done with
   ```sh
   sudo apt install tesseract-ocr
   ```
-- Optional: Get a free API key for [OpenWeatherMap](https://openweathermap.org/)
 
 ### Configuration
 
-Create a file called `application.yml` next to the `.jar` file which you downloaded. Comment lines (starting with a `#`)
-are optional. Remove the leading `#` to activate and change them. Unit for all time related options is `millisecond`.
+Copy the default [`application.yml`](https://github.com/stefan-niedermann/fis/blob/main/src/main/resources/application.yml) next to the `.jar` file which you downloaded and remove lines you don't want to change. Remove line you don't want to change.
+Unit for all time related options is `millisecond`. A minimal sample can seen below:
 
-```yml 
+```yml
 fis:
   ftp:
     username: SECRET
     password: SECRET
-    # host: fritz.box
-    # path: /FRITZ/faxbox
-    # fileSuffix: .pdf
-    # pollInterval: 5000
-    # checkUploadCompleteInterval: 300
-    # checkUploadCompleteMaxAttempts: 10
-    # maxFileSize: 10000000
-  # weather:
-    # key: SECRET # Optional OpenWeatherMap API key
-    # lang: de
-    # units: metric
-    # location: 2921044
-    # pollInterval: 60000
-  # tesseract:
-    # lang: deu
-    # tessdata: 
-  # operation:
-    # duration: 1800000
-    # location: YOUR LOCATION
-    # recipients:
-      # - getinfo@example.com
-    # sender: JarFIS <jarfis@example.com>
-  # client:
-    # weatherPollInterval: 30000
-    # operationPollInterval: 2000
-    # highlight: 
 ```
 
-For more information about advanced configuration (e.g. passing arguments from the command line, …) see
+- Optionally [configure logback](https://howtodoinjava.com/spring-boot2/logging/configure-logging-application-yml/) for enhanced logging
+- Optionally [configure an API key OpenWeatherMap](https://openweathermap.org/) to show weather information when no operation is active
+- Optionally [configure an API key for smsapi.com](https://www.smsapi.com) to enable push notifications via SMS  
+  ⚠️ This can cause costs, consider configuring a daily limit  
+  ⚠️ Depending on local laws it is usually illegal to forward operation information to not authorized people
+- Optionally [configure an SMTP server](https://www.baeldung.com/spring-email#2-spring-boot-mail-server-properties) to enable push notifications via mail  
+  ⚠️ Depending on local laws it is usually illegal to forward operation information to not authorized people
+- For more information about advanced configuration (e.g. passing arguments from the command line, …) see
 the [Spring Boot documentation](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config).
 
 ### Start
@@ -128,21 +109,7 @@ chmod +x fis.jar
 
 Call `sudo systemctl daemon-reload` to make `systemd` aware of the new service and `systemctl enable fis.service` to run JarFIS automatically when booting your server.
 
-See the Spring Boot documentation to learn how to configure JarFIS as [`init.d`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.nix-services.init-d) service or on [`Windows`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.windows-services). 
-
-It is highly recommended providing a proper logging strategy in your `application.yml` by appending:
-
-```yml
-logging:
-  pattern:
-    console:
-  file:
-    name: fis.log
-  logback:
-    rollingpolicy:
-      file-name-pattern: logs/fis-%d{yyyy-MM-dd}.%i.log
-      max-history: 30
-```
+See the Spring Boot documentation to learn how to configure JarFIS as [`init.d`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.nix-services.init-d) service or on [`Windows`](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment.html#deployment.installing.windows-services).
 
 ### Run with Docker
 

@@ -4,7 +4,7 @@ import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
-import it.niedermann.fis.operation.remote.mail.OperationMailRepository;
+import it.niedermann.fis.operation.remote.notification.OperationNotificationRepository;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,7 +25,7 @@ public class OperationApiImplTest {
     private OperationApiImpl api;
     private FisConfiguration config;
     private OperationFTPRepository operationFTPRepository;
-    private OperationMailRepository operationMailRepository;
+    private OperationNotificationRepository operationNotificationRepository;
     private OperationParserRepository operationParserRepository;
 
     @BeforeEach
@@ -35,12 +35,12 @@ public class OperationApiImplTest {
         when(config.operation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
         when(config.operation().duration()).thenReturn(500L);
         operationFTPRepository = mock(OperationFTPRepository.class);
-        operationMailRepository = mock(OperationMailRepository.class);
+        operationNotificationRepository = mock(OperationNotificationRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
         this.api = new OperationApiImpl(
                 config,
                 operationFTPRepository,
-                operationMailRepository,
+                operationNotificationRepository,
                 operationParserRepository
         );
     }
@@ -111,11 +111,11 @@ public class OperationApiImplTest {
 
         api.pollOperations();
 
-        verify(operationMailRepository, times(1)).send(any(OperationDto.class));
+        verify(operationNotificationRepository, times(1)).accept(any(OperationDto.class));
 
         api.pollOperations();
 
-        verify(operationMailRepository, times(2)).send(any(OperationDto.class));
+        verify(operationNotificationRepository, times(2)).accept(any(OperationDto.class));
     }
 
     @Test
@@ -164,14 +164,5 @@ public class OperationApiImplTest {
         final var resp2 = api.getOperation("");
         assertEquals("Should return an active operation when available", HttpStatus.OK, resp2.getStatusCode());
         assertEquals("Should return an active operation when available", "Bar", Objects.requireNonNull(resp2.getBody()).getKeyword());
-    }
-
-    /**
-     * The first poll will be ignored and not published
-     */
-    private void pollFirstTime() {
-        when(operationFTPRepository.poll()).thenReturn(Optional.of(createFTPFile("Already existing PDF file.pdf", now())));
-
-        api.pollOperations();
     }
 }

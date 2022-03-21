@@ -1,4 +1,4 @@
-package it.niedermann.fis.weather.provider.openweathermap;
+package it.niedermann.fis.weather.provider.org.openweathermap;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

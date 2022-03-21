@@ -6,7 +6,6 @@ import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil
 import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -35,8 +34,9 @@ public class Sms77Provider extends SmsProvider {
         apiKey.ifPresentOrElse(
                 apiKey -> recipients.forEach(recipient -> {
                     try {
-                        final Response<String> response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
-                        logger.debug(response.body());
+                        final var response = service.sendSms(apiKey, recipient, getMessage(operation)).execute();
+                        logger.debug("HTTP Response code: " + response.code());
+                        logger.trace("HTTP Response body: " + response.body().string());
                     } catch (IOException e) {
                         logger.error(e.getMessage(), e);
                     }

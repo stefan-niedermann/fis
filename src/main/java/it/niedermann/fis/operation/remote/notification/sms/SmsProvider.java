@@ -16,12 +16,11 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
     protected final Optional<String> apiKey;
     protected final Collection<String> recipients;
     protected final String senderName;
-    private final OperationNotificationUtil notificationUtil;
+    protected final OperationNotificationUtil notificationUtil;
 
     public SmsProvider(
             NotificationConfiguration config,
-            OperationNotificationUtil notificationUtil
-    ) {
+            OperationNotificationUtil notificationUtil) {
         this.notificationUtil = notificationUtil;
         this.apiKey = Optional.ofNullable(config.smsApiKey());
         this.senderName = config.senderName();
@@ -29,17 +28,19 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
     }
 
     protected String getMessage(OperationDto operation) {
-        return notificationUtil.getGoogleMapsLink(operation);
+        return String.format("Einsatz: %s, %s".stripIndent(),
+                operation.getKeyword(),
+                notificationUtil.getGoogleMapsLink(operation));
     }
 
     private Collection<String> filterPhoneRecipients(Collection<String> recipients) {
         return recipients == null
                 ? Collections.emptyList()
                 : recipients
-                .stream()
-                .filter(this::isValidPhoneNumber)
-                .map(this::sanitizePhoneNumber)
-                .toList();
+                        .stream()
+                        .filter(this::isValidPhoneNumber)
+                        .map(this::sanitizePhoneNumber)
+                        .toList();
     }
 
     protected boolean isValidPhoneNumber(String source) {

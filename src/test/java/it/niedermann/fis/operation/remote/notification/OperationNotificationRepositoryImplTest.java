@@ -3,7 +3,7 @@ package it.niedermann.fis.operation.remote.notification;
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.remote.notification.mail.MailProvider;
-import it.niedermann.fis.operation.remote.notification.sms.AbstractSmsProvider;
+import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
 import it.niedermann.fis.operation.remote.notification.sms.SmsProviderFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,13 +14,13 @@ public class OperationNotificationRepositoryImplTest {
 
     private OperationNotificationRepository repository;
     private MailProvider mailProvider;
-    private AbstractSmsProvider smsProvider;
+    private SmsProvider smsProvider;
     private FisConfiguration.OperationConfiguration.NotificationConfiguration notificationConfig;
 
     @BeforeEach()
     public void setup() {
         mailProvider = mock(MailProvider.class);
-        smsProvider = mock(AbstractSmsProvider.class);
+        smsProvider = mock(SmsProvider.class);
         final var smsProviderFactory = mock(SmsProviderFactory.class);
         when(smsProviderFactory.createSmsProvider(any())).thenReturn(smsProvider);
         final var config = mock(FisConfiguration.class);

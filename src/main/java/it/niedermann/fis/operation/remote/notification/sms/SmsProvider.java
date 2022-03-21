@@ -11,14 +11,14 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
-public abstract class AbstractSmsProvider implements Consumer<OperationDto> {
+public abstract class SmsProvider implements Consumer<OperationDto> {
 
     protected final Optional<String> apiKey;
     protected final Collection<String> recipients;
     protected final String senderName;
     private final OperationNotificationUtil notificationUtil;
 
-    public AbstractSmsProvider(
+    public SmsProvider(
             FisConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {

@@ -3,7 +3,7 @@ package it.niedermann.fis.operation.remote.notification.sms.sms77;
 import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
-import it.niedermann.fis.operation.remote.notification.sms.AbstractSmsProvider;
+import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import retrofit2.Response;
@@ -12,7 +12,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.io.IOException;
 
-public class Sms77Provider extends AbstractSmsProvider {
+public class Sms77Provider extends SmsProvider {
 
     private final Logger logger = LoggerFactory.getLogger(Sms77Provider.class);
 

@@ -12,9 +12,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-public class AbstractSmsProviderTest {
+public class SmsProviderTest {
 
-    private AbstractSmsProvider provider;
+    private SmsProvider provider;
     private FisConfiguration config;
     private FisConfiguration.OperationConfiguration.NotificationConfiguration notificationConfig;
 
@@ -30,7 +30,7 @@ public class AbstractSmsProviderTest {
     @Test
     public void shouldHandleNotConfiguredRecipients() {
         when(notificationConfig.sms()).thenReturn(null);
-        provider = new AbstractSmsProvider(config, mock(OperationNotificationUtil.class)) {
+        provider = new SmsProvider(config, mock(OperationNotificationUtil.class)) {
             @Override
             public void accept(OperationDto operationDto) {
                 assertEquals(0, recipients.size());
@@ -42,7 +42,7 @@ public class AbstractSmsProviderTest {
     @Test
     public void shouldFilterInvalidPhoneNumbers() {
         when(notificationConfig.sms()).thenReturn(List.of("2055550125", "foobar", "123"));
-        provider = new AbstractSmsProvider(config, mock(OperationNotificationUtil.class)) {
+        provider = new SmsProvider(config, mock(OperationNotificationUtil.class)) {
             @Override
             public void accept(OperationDto operationDto) {
                 assertEquals(1, recipients.size());

@@ -29,7 +29,7 @@ public class SmsProviderFactory {
         return switch (type) {
             case SMS77 -> new Sms77Provider(config, notificationUtil);
             case SMSAPI -> new SmsApiProvider(config, notificationUtil);
-            default -> throw new NotImplementedException("Could not find a " + AbstractSmsProvider.class.getSimpleName() + " for type \"" + type + "\"");
+            default -> throw new NotImplementedException("Could not find a " + SmsProvider.class.getSimpleName() + " for type \"" + type + "\"");
         };
     }
 }

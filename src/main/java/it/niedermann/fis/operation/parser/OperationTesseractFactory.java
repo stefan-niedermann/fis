@@ -15,7 +15,7 @@ class OperationTesseractFactory {
     public Tesseract createTesseract(FisConfiguration config) {
         final var tesseract = new Tesseract();
         tesseract.setVariable("LC_ALL", "C");
-        tesseract.setVariable("user_defined_dpi", "150"); // https://stackoverflow.com/a/58296472
+        tesseract.setVariable("user_defined_dpi", "96"); // https://stackoverflow.com/a/58296472
         tesseract.setDatapath(Optional.ofNullable(config.tesseract().tessdata()).orElse(extractTessResources("tessdata").getAbsolutePath()));
         tesseract.setLanguage(config.tesseract().lang());
         return tesseract;

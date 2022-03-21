@@ -6,7 +6,6 @@ import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil
 import it.niedermann.fis.operation.remote.notification.sms.SmsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -35,11 +34,13 @@ public class SmsApiProvider extends SmsProvider {
                 apiKey -> {
                     if (recipients.size() > 0) {
                         try {
-                            final Response<String> response = service.sendSms(apiKey, senderName, String.join(",", recipients), getMessage(operation)).execute();
-                            logger.debug(response.body());
+                            final var response = service.sendSms(apiKey, senderName, String.join(",", recipients), getMessage(operation)).execute();
+                            logger.debug("HTTP Response code: " + response.code());
                         } catch (IOException e) {
                             logger.error(e.getMessage(), e);
                         }
+                    } else {
+                        logger.trace("No recipients for SMS");
                     }
                 },
                 () -> this.logger.trace("✉️ Skipped sending SMS because API key has not been provided.")

@@ -22,14 +22,14 @@ fis:
   operation:
     duration: 1800000
     origin: # LOCATION OF YOUR FIRE STATION
-    notification:
-      senderName: JarFIS
-      senderMail: # TO AVOID JUNK FOLDER
-      smsLimit: 10 # PER DAY PER RECIPIENT TO AVOID COSTS BY SPAMMERS
-      mail:
-      # - foo@example.com
-      sms:
-      # - 0123456789
+  notification:
+    senderName: JarFIS
+    senderMail: # TO AVOID JUNK FOLDER
+    smsLimit: 10 # PER DAY PER RECIPIENT TO AVOID COSTS BY SPAMMERS
+    mail:
+    # - foo@example.com
+    sms:
+    # - 0123456789
   client:
     weatherPollInterval: 30000
     operationPollInterval: 2000

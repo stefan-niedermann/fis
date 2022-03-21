@@ -8,7 +8,7 @@ import javax.validation.constraints.NotBlank;
 import java.util.Collection;
 
 @SuppressWarnings("SpellCheckingInspection")
-@ConfigurationProperties("fis.operation.notification")
+@ConfigurationProperties("fis.notification")
 @Validated
 public record NotificationConfiguration(
                 @NotBlank String senderName,

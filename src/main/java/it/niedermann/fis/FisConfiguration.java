@@ -37,6 +37,7 @@ public record FisConfiguration(
 
     public static record TesseractConfiguration(
             @Length(min = 3, max = 3) @NotBlank String lang,
+            @Min(70) long dpi,
             String tessdata
     ) {
     }

@@ -11,6 +11,7 @@ fis:
     maxFileSize: 10000000
   tesseract:
     lang: deu
+    dpi: 96
     # tessdata: CUSTOM TESSDATA
   weather:
     # key: OPENWEATHERMAP API KEY

@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation.remote.ftp;
 
-import it.niedermann.fis.FisConfiguration;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,13 +25,11 @@ public class OperationFTPRepositoryTest {
 
     @BeforeEach
     public void setup() throws IOException {
-        final var ftpConfig = mock(FisConfiguration.FtpConfiguration.class);
-        when(ftpConfig.fileSuffix()).thenReturn(".pdf");
-        when(ftpConfig.checkUploadCompleteInterval()).thenReturn(0L);
-        when(ftpConfig.checkUploadCompleteMaxAttempts()).thenReturn(10);
-        when(ftpConfig.maxFileSize()).thenReturn(10_000_000L);
-        final var config = mock(FisConfiguration.class);
-        when(config.ftp()).thenReturn(ftpConfig);
+        final var config = mock(FtpConfiguration.class);
+        when(config.fileSuffix()).thenReturn(".pdf");
+        when(config.checkUploadCompleteInterval()).thenReturn(0L);
+        when(config.checkUploadCompleteMaxAttempts()).thenReturn(10);
+        when(config.maxFileSize()).thenReturn(10_000_000L);
         ftpClient = mock(OperationFTPClient.class);
         when(ftpClient.login(any(), any())).thenReturn(true);
         this.repository = new OperationFTPRepository(

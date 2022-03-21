@@ -1,11 +1,11 @@
 package it.niedermann.fis.operation.remote.notification;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.remote.notification.mail.MailProvider;
 import it.niedermann.fis.operation.remote.notification.sms.SmsProviderFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,6 +15,7 @@ import java.util.function.Consumer;
 import static it.niedermann.fis.operation.remote.notification.sms.SmsProviderType.SMSAPI;
 
 @Service
+@EnableConfigurationProperties(NotificationConfiguration.class)
 public class OperationNotificationRepositoryImpl implements OperationNotificationRepository {
 
     private final Logger logger = LoggerFactory.getLogger(OperationNotificationRepositoryImpl.class);
@@ -25,11 +26,11 @@ public class OperationNotificationRepositoryImpl implements OperationNotificatio
     private int smsCount = 0;
 
     public OperationNotificationRepositoryImpl(
-            FisConfiguration config,
+            NotificationConfiguration config,
             MailProvider mailProvider,
             SmsProviderFactory smsProviderFactory
     ) {
-        this.smsLimit = config.operation().notification().smsLimit();
+        this.smsLimit = config.smsLimit();
         if (smsLimit <= 0) {
             this.logger.warn("Consider defining a limit for SMS notifications to avoid high costs by spammers.");
         }

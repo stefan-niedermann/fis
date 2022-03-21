@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation.remote.notification.sms;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.NotificationConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
 import org.springframework.stereotype.Service;
 
@@ -19,13 +19,13 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
     private final OperationNotificationUtil notificationUtil;
 
     public SmsProvider(
-            FisConfiguration config,
+            NotificationConfiguration config,
             OperationNotificationUtil notificationUtil
     ) {
         this.notificationUtil = notificationUtil;
-        this.apiKey = Optional.ofNullable(config.operation().notification().smsApiKey());
-        this.senderName = config.operation().notification().senderName();
-        this.recipients = filterPhoneRecipients(config.operation().notification().sms());
+        this.apiKey = Optional.ofNullable(config.smsApiKey());
+        this.senderName = config.senderName();
+        this.recipients = filterPhoneRecipients(config.sms());
     }
 
     protected String getMessage(OperationDto operation) {

@@ -1,7 +1,7 @@
 package it.niedermann.fis.operation.remote.notification.mail;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
+import it.niedermann.fis.operation.remote.notification.NotificationConfiguration;
 import it.niedermann.fis.operation.remote.notification.OperationNotificationUtil;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
@@ -28,19 +28,19 @@ public class MailProvider implements Consumer<OperationDto> {
     private final Collection<String> recipients;
 
     public MailProvider(
-            FisConfiguration config,
+            NotificationConfiguration config,
             OperationNotificationUtil notificationUtil,
             Optional<JavaMailSender> mailSender,
             Optional<String> origin
     ) {
         this.mailSender = mailSender;
         this.notificationUtil = notificationUtil;
-        this.sender = config.operation().notification().senderName() + Optional
-                .ofNullable(config.operation().notification().senderMail())
+        this.sender = config.senderName() + Optional
+                .ofNullable(config.senderMail())
                 .map(mail -> String.format(" <%s>", mail))
                 .orElse("");
         this.origin = origin;
-        this.recipients = filterMailRecipients(config.operation().notification().mail());
+        this.recipients = filterMailRecipients(config.mail());
 
         if (mailSender.isPresent()) {
             logger.info("✅ Found SMTP configuration");

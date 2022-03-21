@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import it.niedermann.fis.operation.parser.OperationParserRepository;
 import it.niedermann.fis.operation.remote.ftp.OperationFTPRepository;
@@ -23,17 +22,15 @@ import static org.springframework.test.util.AssertionErrors.*;
 public class OperationApiImplTest {
 
     private OperationApiImpl api;
-    private FisConfiguration config;
+    private OperationConfiguration config;
     private OperationFTPRepository operationFTPRepository;
     private OperationNotificationRepository operationNotificationRepository;
     private OperationParserRepository operationParserRepository;
 
     @BeforeEach
     public void setup() {
-        config = mock(FisConfiguration.class);
-        when(config.ftp()).thenReturn(mock(FisConfiguration.FtpConfiguration.class));
-        when(config.operation()).thenReturn(mock(FisConfiguration.OperationConfiguration.class));
-        when(config.operation().duration()).thenReturn(500L);
+        config = mock(OperationConfiguration.class);
+        when(config.duration()).thenReturn(500L);
         operationFTPRepository = mock(OperationFTPRepository.class);
         operationNotificationRepository = mock(OperationNotificationRepository.class);
         operationParserRepository = mock(OperationParserRepository.class);
@@ -131,7 +128,7 @@ public class OperationApiImplTest {
         assertEquals("Should return an active operation when available", HttpStatus.OK, resp1.getStatusCode());
         assertNotNull("Should return an active operation when available", resp1.getBody());
 
-        Thread.sleep(config.operation().duration() + 500L);
+        Thread.sleep(config.duration() + 500L);
 
         final var resp2 = api.getOperation("");
         assertEquals("Should return an active operation when available", HttpStatus.NO_CONTENT, resp2.getStatusCode());

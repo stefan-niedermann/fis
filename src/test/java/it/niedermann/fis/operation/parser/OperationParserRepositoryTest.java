@@ -1,6 +1,5 @@
 package it.niedermann.fis.operation.parser;
 
-import it.niedermann.fis.FisConfiguration;
 import it.niedermann.fis.main.model.OperationDto;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -29,7 +28,7 @@ public class OperationParserRepositoryTest {
         final var operationParserFactory = mock(OperationParserFactory.class);
         when(operationParserFactory.createParser(any())).thenReturn(parser);
         this.repository = new OperationParserRepository(
-                mock(FisConfiguration.class),
+                mock(TesseractConfiguration.class),
                 tesseractFactory,
                 operationParserFactory
         );

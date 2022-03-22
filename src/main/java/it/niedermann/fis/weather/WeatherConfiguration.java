@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @ConfigurationProperties("fis.weather")
 @Validated
 public record WeatherConfiguration(
-                @Length(min = 32, max = 32) String key,
+                @Length(min = 32, max = 32) String apiKey,
                 @Length(min = 2, max = 2) @NotBlank String lang,
                 @NotBlank String units,
                 @NotBlank String location,

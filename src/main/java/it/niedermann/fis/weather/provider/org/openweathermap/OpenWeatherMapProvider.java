@@ -25,11 +25,11 @@ public class OpenWeatherMapProvider implements WeatherProvider {
             .build();
     private final OpenWeatherMapService service = retrofit.create(OpenWeatherMapService.class);
 
-    public OpenWeatherMapProvider(String lang, String location, String units, String key) {
+    public OpenWeatherMapProvider(String lang, String location, String units, String apiKey) {
         this.lang = lang;
         this.location = location;
         this.units = units;
-        this.key = key;
+        this.key = apiKey;
     }
 
     @Override

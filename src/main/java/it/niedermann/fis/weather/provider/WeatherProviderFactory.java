@@ -21,7 +21,7 @@ public class WeatherProviderFactory {
             case OPENWEATHERMAP -> new OpenWeatherMapProvider(config.lang(),
                     config.location(),
                     config.units(),
-                    config.key());
+                    config.apiKey());
             default -> throw new NotImplementedException(
                     String.format("Could not find a %s for type \"%s\"", WeatherProvider.class.getSimpleName(), type));
         };

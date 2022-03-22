@@ -30,7 +30,7 @@ public class WeatherApiImpl implements WeatherApi {
     public WeatherApiImpl(
             WeatherConfiguration config,
             WeatherProviderFactory weatherProviderFactory) {
-        if (config.key() == null) {
+        if (config.apiKey() == null) {
             weatherProvider = null;
             logger.info("❌ Weather information is not available because no API key has been specified");
         } else {

@@ -9,9 +9,7 @@ import org.slf4j.LoggerFactory;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-import static java.net.URLEncoder.encode;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 
 public class SmsApiProvider extends SmsProvider {
 
@@ -35,8 +33,13 @@ public class SmsApiProvider extends SmsProvider {
                 apiKey -> {
                     if (recipients.size() > 0) {
                         try {
-                            final var response = service.sendSms("Bearer " + apiKey, senderName,
-                                    String.join(",", recipients), getMessage(operation)).execute();
+                            final var response = service
+                                    .sendSms("Bearer " + apiKey,
+                                            senderName,
+                                            String.join(",", recipients),
+                                            getMessage(operation),
+                                            priority ? 1 : null)
+                                    .execute();
                             logger.debug("HTTP Response code: " + response.code());
                             logger.trace("HTTP Response body: " + response.body().string());
                         } catch (IOException e) {
@@ -49,11 +52,15 @@ public class SmsApiProvider extends SmsProvider {
                 () -> this.logger.trace("✉️ Skipped sending SMS because API key has not been provided."));
     }
 
+    /**
+     * Makes use of
+     * <a href="https://www.smsapi.com/docs/#messages-with-cut-li">short URL
+     * service</a> for sending the maps link
+     */
     @Override
     protected String getMessage(OperationDto operation) {
-        // Use short URLs: https://www.smsapi.com/docs/#messages-with-cut-li
-        return String.format("Einsatz: %s, %s".stripIndent(),
+        return String.format("Einsatz: %s, Karte: %s".stripIndent(),
                 operation.getKeyword(),
-                "[%goto:" + encode(notificationUtil.getGoogleMapsLink(operation), StandardCharsets.UTF_8) + "%]");
+                "[%goto:" + notificationUtil.getGoogleMapsLink(operation) + "%]");
     }
 }

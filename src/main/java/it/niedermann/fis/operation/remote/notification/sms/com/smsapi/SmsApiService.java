@@ -11,11 +11,12 @@ import retrofit2.http.Query;
  */
 interface SmsApiService {
 
-    @GET("sms.do?format=json&fast=1&test=1")
+    @GET("sms.do?format=json")
     Call<ResponseBody> sendSms(
             @Header("Authorization") String apiKey,
             @Query("from") String from,
             @Query("to") String to,
-            @Query("message") String message
+            @Query("message") String message,
+            @Query("fast") Integer fast
     );
 }

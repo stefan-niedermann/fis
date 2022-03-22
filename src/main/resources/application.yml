@@ -26,6 +26,7 @@ fis:
     senderName: JarFIS
     senderMail: # TO AVOID JUNK FOLDER
     smsLimit: 10 # PER DAY PER RECIPIENT TO AVOID COSTS BY SPAMMERS
+    smsPriority: false # IF SUPPORTED BY PROVIDER, CAN CAUSE ADDITIONAL COSTS
     mail:
     # - foo@example.com
     sms:

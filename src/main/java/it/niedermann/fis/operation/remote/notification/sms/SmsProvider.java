@@ -17,6 +17,7 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
     protected final Collection<String> recipients;
     protected final String senderName;
     protected final OperationNotificationUtil notificationUtil;
+    protected final boolean priority;
 
     public SmsProvider(
             NotificationConfiguration config,
@@ -25,10 +26,11 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
         this.apiKey = Optional.ofNullable(config.smsApiKey());
         this.senderName = config.senderName();
         this.recipients = filterPhoneRecipients(config.sms());
+        this.priority = config.smsPriority();
     }
 
     protected String getMessage(OperationDto operation) {
-        return String.format("Einsatz: %s, %s".stripIndent(),
+        return String.format("Einsatz: %s, Karte: %s".stripIndent(),
                 operation.getKeyword(),
                 notificationUtil.getGoogleMapsLink(operation));
     }

@@ -15,6 +15,7 @@ public record NotificationConfiguration(
                 String senderMail,
                 String smsApiKey,
                 int smsLimit,
+                boolean smsPriority,
                 Collection<@Email String> mail,
                 Collection<String> sms) {
 }

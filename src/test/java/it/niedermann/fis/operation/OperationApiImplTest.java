@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.Objects;
 import java.util.Optional;
 
-import static it.niedermann.fis.operation.OperationTestUtil.createFTPFile;
+import static it.niedermann.fis.operation.TestUtil.createFTPFile;
 import static java.time.Instant.now;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

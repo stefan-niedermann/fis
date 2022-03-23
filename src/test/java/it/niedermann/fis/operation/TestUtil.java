@@ -6,9 +6,12 @@ import org.springframework.core.io.ClassPathResource;
 
 import it.niedermann.fis.main.model.OperationDto;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -42,23 +45,24 @@ public class TestUtil {
     }
 
     public static Map<Integer, Sample<String, OperationDto>> getOperationSamples(String dir) throws IOException {
-        return Arrays.stream(new ClassPathResource("samples/" + dir).getFile().listFiles())
+        final var map = Arrays.stream(new ClassPathResource(Path.of("samples", dir).toString()).getFile().listFiles())
                 .map(File::getName)
                 .filter(fileName -> fileName.endsWith("-sample.txt"))
                 .map(fileName -> fileName.substring(0, fileName.indexOf("-")))
                 .map(Integer::parseInt)
                 .collect(Collectors.<Integer, Integer, Sample<String, OperationDto>>toMap(
-                    number -> number,
-                    number -> new Sample<String, OperationDto>(
-                        getSampleInput(dir, number),
-                        getSampleExpected(dir, number)
-                )));
+                        number -> number,
+                        number -> new Sample<String, OperationDto>(
+                                getSampleInput(dir, number),
+                                getSampleExpected(dir, number))));
+        assertTrue(map.size() > 0, "Expected to find at least one sample");
+        return map;
     }
 
     private static String getSampleInput(String dir, int number) {
         try {
             return IOUtils.toString(
-                    new ClassPathResource("samples/" + dir + "/" + number + "-sample.txt").getInputStream(),
+                    new ClassPathResource(Path.of("samples", dir, number + "-sample.txt").toString()).getInputStream(),
                     StandardCharsets.UTF_8);
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,7 +72,7 @@ public class TestUtil {
     private static OperationDto getSampleExpected(String dir, int number) {
         try {
             return new ObjectMapper().readValue(
-                    new ClassPathResource("samples/" + dir + "/" + number + "-expected.json").getInputStream(),
+                    new ClassPathResource(Path.of("samples", dir, number + "-expected.json").toString()).getInputStream(),
                     OperationDto.class);
         } catch (IOException e) {
             throw new RuntimeException(e);

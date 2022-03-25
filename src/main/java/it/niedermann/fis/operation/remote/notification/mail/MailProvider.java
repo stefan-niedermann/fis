@@ -81,7 +81,7 @@ public class MailProvider implements Consumer<OperationDto> {
         ));
         message.setText(String.format("""
                             Schlagworte: %s (%s)
-                            Adresse: %s %s, %s
+                            Adresse: %s
                             %s
                             
                             Notiz: %s
@@ -89,9 +89,7 @@ public class MailProvider implements Consumer<OperationDto> {
                         """.stripIndent(),
                 operation.getKeyword(),
                 String.join(", ", operation.getTags()),
-                operation.getStreet(),
-                operation.getNumber(),
-                operation.getLocation(),
+                notificationUtil.getHumanReadableLocation(operation),
                 origin.isPresent()
                         ? notificationUtil.getGoogleMapsLink(operation, origin.get())
                         : notificationUtil.getGoogleMapsLink(operation),

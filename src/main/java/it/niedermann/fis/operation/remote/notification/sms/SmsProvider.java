@@ -30,9 +30,15 @@ public abstract class SmsProvider implements Consumer<OperationDto> {
     }
 
     protected String getMessage(OperationDto operation) {
-        return String.format("Einsatz: %s, Karte: %s".stripIndent(),
-                operation.getKeyword(),
-                notificationUtil.getGoogleMapsLink(operation));
+        final var address = notificationUtil.getHumanReadableLocation(operation);
+        return address.isPresent()
+                ? String.format("Einsatz: %s, %s",
+                        operation.getKeyword(),
+                        String.join(", ", operation.getTags()))
+                : String.format("Einsatz: %s, Karte: %s, Adresse: %s",
+                        operation.getKeyword(),
+                        notificationUtil.getGoogleMapsLink(operation),
+                        address);
     }
 
     private Collection<String> filterPhoneRecipients(Collection<String> recipients) {

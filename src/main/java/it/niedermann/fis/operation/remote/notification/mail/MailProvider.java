@@ -73,6 +73,7 @@ public class MailProvider implements Consumer<OperationDto> {
         final var message = new SimpleMailMessage();
         message.setFrom(sender);
         message.setTo(recipient);
+        message.setSubject(String.format("%s, %s", operation.getKeyword(), String.join(", ", operation.getTags())));
         message.setText(String.format("Einsatz: %s, %s %s, %s".stripIndent(),
                 operation.getKeyword(),
                 operation.getStreet(),
@@ -86,7 +87,7 @@ public class MailProvider implements Consumer<OperationDto> {
                             
                             Notiz: %s
                             Alarmiert: %s
-                        """.stripIndent(),
+                        """.stripLeading(),
                 operation.getKeyword(),
                 String.join(", ", operation.getTags()),
                 notificationUtil.getHumanReadableLocation(operation),

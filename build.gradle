@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'it.niedermann'
-version = '3.0.2-SNAPSHOT'
+version = '3.0.2'
 sourceCompatibility = '17'
 
 repositories {

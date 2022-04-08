@@ -107,7 +107,7 @@ jobs:
           distribution: 'zulu'
           java-version: 17
       - name: Unstash frontend artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: frontend
           path: src/main/resources/static
@@ -140,7 +140,7 @@ jobs:
           sudo systemctl restart vsftpd
           sleep 3
       - name: Unstash JarFIS
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jar
           path: frontend
@@ -195,7 +195,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Unstash JarFIS
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jar
       - name: Move unstashed JarFIS to docker folder
@@ -244,7 +244,7 @@ jobs:
       contents: write
     steps:
       - name: Unstash JarFIS
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: jar
       - uses: marvinpinto/action-automatic-releases@latest

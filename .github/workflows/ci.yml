@@ -51,7 +51,7 @@ jobs:
         working-directory: frontend
         run: npm run e2e:mock
       - name: Upload videos
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: e2e-mock-results
@@ -86,7 +86,7 @@ jobs:
         working-directory: frontend
         run: npm run build
       - name: Upload build artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: frontend
           path: frontend/dist
@@ -114,7 +114,7 @@ jobs:
       - name: Build JAR
         run: bash ./gradlew assemble
       - name: Upload JAR
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: jar
           path: build/libs/fis*.jar
@@ -175,7 +175,7 @@ jobs:
           CYPRESS_FTP_USER: testuser
           CYPRESS_FTP_PASS: testuser
       - name: Upload results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: e2e-prod-results

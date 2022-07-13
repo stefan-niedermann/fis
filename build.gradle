@@ -16,7 +16,7 @@ repositories {
 dependencies {
     // OpenAPI
     implementation 'org.openapitools:openapi-generator-gradle-plugin:6.0.0'
-    implementation 'org.openapitools:jackson-databind-nullable:0.2.2'
+    implementation 'org.openapitools:jackson-databind-nullable:0.2.3'
 
     // OCR
     implementation 'net.sourceforge.tess4j:tess4j:5.2.1'

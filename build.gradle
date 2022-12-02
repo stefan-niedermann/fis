@@ -22,7 +22,7 @@ dependencies {
     implementation 'net.sourceforge.tess4j:tess4j:5.2.1'
 
     // FTP
-    implementation 'commons-net:commons-net:3.8.0'
+    implementation 'commons-net:commons-net:3.9.0'
 
     // Mail address validation
     implementation 'commons-validator:commons-validator:1.7'

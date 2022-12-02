@@ -151,7 +151,7 @@ jobs:
         working-directory: frontend
         run: mv fis*.jar fis.jar
       - name: Cypress run
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           start: java -jar fis.jar
           wait-on: 'http://localhost:8080'
